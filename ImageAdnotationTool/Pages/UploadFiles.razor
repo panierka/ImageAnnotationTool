@@ -1,23 +1,46 @@
 ﻿@page "/upload"
 @using System.Drawing;
+@using System.Text;
 
 <PageTitle>Test wczytywania plików</PageTitle>
 
 <h1>Naciśnij, aby wczytać</h1>
 
-<InputFile 
-    OnChange="@LoadFiles"
+<InputFile OnChange="@LoadFiles"
     multiple 
     draggable="true" 
-    accept=".png,.jpg"/>
+    accept=".png,.jpg,.jpeg"/>
+
+<h1>@testCount</h1>
+<h1>@allCount</h1>
 
 @code{
-    private List<Image> images;
+    private List<string>? images;
+    private int testCount;
+    private int allCount;
 
-    private void LoadFiles(InputFileChangeEventArgs e)
+    private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         var maxFiles = e.FileCount;
         var files = e.GetMultipleFiles(maxFiles);
-        
+
+        images = (await Task.WhenAll(files
+        .Select(async file =>
+        {
+            var resizedFile = await file.RequestImageFileAsync(
+                file.ContentType,
+                640,
+                500);
+            byte[] buffer = new byte[resizedFile.Size];
+            using (var stream = resizedFile.OpenReadStream())
+            {
+                await stream.ReadAsync(buffer);
+            }
+            var base64BufferString = Convert.ToBase64String(buffer);
+            var base64Builder = new StringBuilder("data:image/png;base64,")
+                .Append(base64BufferString);
+
+            return base64Builder.ToString();
+        }))).ToList();
     }
 }
