@@ -1,0 +1,23 @@
+﻿@page "/upload"
+@using System.Drawing;
+
+<PageTitle>Test wczytywania plików</PageTitle>
+
+<h1>Naciśnij, aby wczytać</h1>
+
+<InputFile 
+    OnChange="@LoadFiles"
+    multiple 
+    draggable="true" 
+    accept=".png,.jpg"/>
+
+@code{
+    private List<Image> images;
+
+    private void LoadFiles(InputFileChangeEventArgs e)
+    {
+        var maxFiles = e.FileCount;
+        var files = e.GetMultipleFiles(maxFiles);
+        
+    }
+}
