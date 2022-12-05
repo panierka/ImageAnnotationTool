@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Text;
 
+
 namespace ImageProcessing
 {
     public static class FileConverter
     {
         public static async Task<string> BrowserFileToBase64Async(IBrowserFile file)
         {
-            var resizedFile = await file.RequestImageFileAsync(
-                file.ContentType,
-                640,
-                500);
-            byte[] buffer = new byte[resizedFile.Size];
-            using (var stream = resizedFile.OpenReadStream())
+            byte[] buffer = new byte[file.Size];
+            using (var stream = file.OpenReadStream())
             {
                 await stream.ReadAsync(buffer);
             }

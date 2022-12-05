@@ -20,10 +20,13 @@
         var maxFiles = e.FileCount;
         var files = e.GetMultipleFiles(maxFiles);
 
-        var tasks = await Task.WhenAll(
-            files.Select(FileConverter.BrowserFileToBase64Async)
-        );
+        var scaleTasks = files
+            .Select(f => BrowserFileImageScaler.ScaleAsync(f, 400, 400));
 
-        images = tasks.ToList();
+        var convertTasks = (await Task.WhenAll(scaleTasks))
+            .Select(FileConverter.BrowserFileToBase64Async);
+
+        images = (await Task.WhenAll(convertTasks)).ToList();
+        ; ;
     }
 }
