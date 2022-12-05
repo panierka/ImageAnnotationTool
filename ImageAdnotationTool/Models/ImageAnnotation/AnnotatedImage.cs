@@ -1,7 +1,9 @@
-﻿namespace ImageAdnotationTool.Models.ImageAdnotation
+﻿namespace ImageAnnotationTool.Models.ImageAnnotation
 {
     public class AnnotatedImage
     {
         // jakaś reprezentacja zdjęcia -> bajty?    
+
+
     }
 }

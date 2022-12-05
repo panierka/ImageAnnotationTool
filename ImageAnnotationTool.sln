@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageAdnotationTool", "ImageAdnotationTool\ImageAdnotationTool.csproj", "{A1C62C2A-A660-41D5-AA9A-B605AA5C6C88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageAnnotationTool", "ImageAdnotationTool\ImageAnnotationTool.csproj", "{A1C62C2A-A660-41D5-AA9A-B605AA5C6C88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

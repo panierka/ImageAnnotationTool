@@ -1,4 +1,4 @@
-namespace ImageAdnotationTool.Data
+namespace ImageAnnotationTool.Data
 {
     public class WeatherForecast
     {

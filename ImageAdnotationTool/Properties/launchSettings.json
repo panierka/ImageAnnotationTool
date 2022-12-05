@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "ImageAdnotationTool": {
+    "ImageAnnotationTool": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
