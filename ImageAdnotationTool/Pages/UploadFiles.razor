@@ -1,6 +1,7 @@
 ﻿@page "/upload"
 @using System.Drawing;
 @using System.Text;
+@using ImageProcessing;
 
 <PageTitle>Test wczytywania plików</PageTitle>
 
@@ -24,23 +25,10 @@
         var maxFiles = e.FileCount;
         var files = e.GetMultipleFiles(maxFiles);
 
-        images = (await Task.WhenAll(files
-        .Select(async file =>
-        {
-            var resizedFile = await file.RequestImageFileAsync(
-                file.ContentType,
-                640,
-                500);
-            byte[] buffer = new byte[resizedFile.Size];
-            using (var stream = resizedFile.OpenReadStream())
-            {
-                await stream.ReadAsync(buffer);
-            }
-            var base64BufferString = Convert.ToBase64String(buffer);
-            var base64Builder = new StringBuilder("data:image/png;base64,")
-                .Append(base64BufferString);
+        var tasks = await Task.WhenAll(
+            files.Select(FileConverter.BrowserFileToBase64Async)
+        );
 
-            return base64Builder.ToString();
-        }))).ToList();
+        images = tasks.ToList();
     }
 }

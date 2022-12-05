@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageAnnotationTool", "ImageAdnotationTool\ImageAnnotationTool.csproj", "{A1C62C2A-A660-41D5-AA9A-B605AA5C6C88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessing", "ImageProcessing\ImageProcessing.csproj", "{AD36A5F5-DA70-458C-9164-E50EDE57D52E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A1C62C2A-A660-41D5-AA9A-B605AA5C6C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1C62C2A-A660-41D5-AA9A-B605AA5C6C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1C62C2A-A660-41D5-AA9A-B605AA5C6C88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD36A5F5-DA70-458C-9164-E50EDE57D52E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD36A5F5-DA70-458C-9164-E50EDE57D52E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD36A5F5-DA70-458C-9164-E50EDE57D52E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD36A5F5-DA70-458C-9164-E50EDE57D52E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
