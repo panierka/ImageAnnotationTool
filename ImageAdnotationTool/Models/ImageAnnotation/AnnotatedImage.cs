@@ -2,8 +2,6 @@
 {
     public class AnnotatedImage
     {
-        // jakaś reprezentacja zdjęcia -> bajty?    
-
-
+        public ImageData ImageData { get; set; }
     }
 }

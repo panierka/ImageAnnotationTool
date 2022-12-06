@@ -1,6 +1,6 @@
 ﻿@page "/upload"
-@using System.Drawing;
 @using System.Text;
+@using ImageAnnotationTool.Models.ImageAnnotation;
 @using ImageProcessing;
 
 <PageTitle>Test wczytywania plików</PageTitle>
@@ -20,12 +20,12 @@
         <tr>
             @for (int j = 0; j < 3 && i + j < images.Count; j++)
             {
-                string base64 = images[i + j];
+                var image = images[i + j];
                 <td>                      
-                    <img 
-                        src=@base64
-                        alt="student"
-                        title=@base64.Length/>
+                    <img src=@image.SourceBase64
+                         alt=@image.Name
+                         title=@image.Name
+                         style="width: 300px; height: auto"/>
                 </td>
             }
         </tr>
@@ -34,7 +34,7 @@
 }
 
 @code{
-    private List<string> images = new();
+    private List<ImageData> images = new();
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
@@ -44,14 +44,15 @@
 
         foreach (var file in files)
         {
-            var scaledImage = await Scale(file);
-            var base64 = await FileConverter.BrowserFileToBase64Async(scaledImage);
-            images.Add(base64);
+            var base64 = await FileConverter.BrowserFileToBase64Async(file);
+            var image = new ImageData
+            {
+                Name = file.Name,
+                SourceBase64 = base64,
+            };
+            images.Add(image);
         }
 
         StateHasChanged();
-
-        ValueTask<IBrowserFile> Scale(IBrowserFile f) 
-            => BrowserFileImageScaler.GetScaleTask(f, 400, 400);
     }
 }
