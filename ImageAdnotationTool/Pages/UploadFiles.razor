@@ -12,21 +12,46 @@
     draggable="true" 
     accept=".png,.jpg,.jpeg"/>
 
+@if (images is {})
+{
+    <table>
+    @for (int i = 0; i < images.Count; i += 3)
+    {
+        <tr>
+            @for (int j = 0; j < 3 && i + j < images.Count; j++)
+            {
+                string base64 = images[i + j];
+                <td>                      
+                    <img 
+                        src=@base64
+                        alt="student"
+                        title=@base64.Length/>
+                </td>
+            }
+        </tr>
+    }
+    </table>
+}
+
 @code{
-    private List<string>? images;
+    private List<string> images = new();
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
+        images.Clear();
         var maxFiles = e.FileCount;
         var files = e.GetMultipleFiles(maxFiles);
 
-        var scaleTasks = files
-            .Select(f => BrowserFileImageScaler.ScaleAsync(f, 400, 400));
+        foreach (var file in files)
+        {
+            var scaledImage = await Scale(file);
+            var base64 = await FileConverter.BrowserFileToBase64Async(scaledImage);
+            images.Add(base64);
+        }
 
-        var convertTasks = (await Task.WhenAll(scaleTasks))
-            .Select(FileConverter.BrowserFileToBase64Async);
+        StateHasChanged();
 
-        images = (await Task.WhenAll(convertTasks)).ToList();
-        ; ;
+        ValueTask<IBrowserFile> Scale(IBrowserFile f) 
+            => BrowserFileImageScaler.GetScaleTask(f, 400, 400);
     }
 }

@@ -4,9 +4,10 @@ namespace ImageProcessing
 {
     public static class BrowserFileImageScaler
     {
-        public static async Task<IBrowserFile> ScaleAsync(IBrowserFile file, int maxWidth, int maxHeight)
+        public static ValueTask<IBrowserFile> GetScaleTask(IBrowserFile file, int maxWidth, int maxHeight)
         {
-            return await file.RequestImageFileAsync(file.ContentType, maxWidth, maxHeight);
+            var task = file.RequestImageFileAsync(file.ContentType, maxWidth, maxHeight);
+            return task;
         }
     }
 }
