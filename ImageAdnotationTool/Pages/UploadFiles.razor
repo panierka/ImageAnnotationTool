@@ -1,13 +1,22 @@
 ﻿@page "/upload"
 @using System.Text;
-@using ImageAnnotationTool.Models.ImageAnnotation;
+@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 @using ImageProcessing;
 
 <PageTitle>Test wczytywania plików</PageTitle>
 
 <h1>Naciśnij, aby wczytać</h1>
 
-<InputFile OnChange="@LoadFiles"
+<button 
+    class ="btn btn-primary"
+    @onclick="@AddFilesToProjectAsync">
+
+    Prześlij wybrane pliki do projektu
+</button>
+<br />
+<br />
+
+<InputFile OnChange="@LoadFilesAsync"
     multiple 
     draggable="true" 
     accept=".png,.jpg,.jpeg"/>
@@ -36,7 +45,7 @@
 @code{
     private List<ImageData> images = new();
 
-    private async Task LoadFiles(InputFileChangeEventArgs e)
+    private async Task LoadFilesAsync(InputFileChangeEventArgs e)
     {
         images.Clear();
         var maxFiles = e.FileCount;
@@ -53,6 +62,22 @@
             images.Add(image);
         }
 
+        StateHasChanged();
+    }
+
+    private async Task AddFilesToProjectAsync()
+    {
+        var annotatedImages = images.Select(i =>
+        {
+            return new AnnotatedImage
+                {
+                    ImageData = i
+                };
+        }).ToList();
+
+
+
+        images.Clear();
         StateHasChanged();
     }
 }

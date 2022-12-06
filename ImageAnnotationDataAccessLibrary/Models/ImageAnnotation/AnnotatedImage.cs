@@ -1,4 +1,4 @@
-﻿namespace ImageAnnotationTool.Models.ImageAnnotation
+﻿namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 {
     public class AnnotatedImage
     {
