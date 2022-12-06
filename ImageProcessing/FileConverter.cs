@@ -9,7 +9,7 @@ namespace ImageProcessing
     {
         public static async Task<string> BrowserFileToBase64Async(IBrowserFile file)
         {
-            var buffer = await BrowserFileToByteArray(file);
+            var buffer = await BrowserFileToByteArrayAsync(file);
 
             var base64BufferString = Convert.ToBase64String(buffer);
             var format = file.ContentType;
@@ -19,7 +19,7 @@ namespace ImageProcessing
             return base64Builder.ToString();
         }
 
-        public static async Task<byte[]> BrowserFileToByteArray(IBrowserFile file)
+        public static async Task<byte[]> BrowserFileToByteArrayAsync(IBrowserFile file)
         {
             byte[] buffer = new byte[file.Size];
 
