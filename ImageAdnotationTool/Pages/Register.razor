@@ -2,78 +2,95 @@
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 @using System.ComponentModel.DataAnnotations;
 
-<h3>Register</h3>
+<h3>Rejestracja</h3>
 
-
-<form>
-	<label> Name: </label>
-	<input type="text"
-		   name="Name">
-	
-</form>
-
-<form>
-	<label> Surname: </label>
-	<input type="text"
-		   name="Surname">
-</form>
-
-<form>
-	<label> Email: </label>
-    <input type="email" 
-	name="emailaddress"> 
-</form>
-
-<form>
-	<label> Password: </label>
-	<input type="password"
-		   name="password">
-</form>
-
-<form>
-	<label> Confirm password: </label>
-	<input type="password"
-		   name="confirmpassword">
-</form>
-
-<br/>
-
-<EditForm Model="@signInFormData">
+<EditForm Model="@signUpFormData">
 	<DataAnnotationsValidator />
 	<InputText 
-		type="password" 
-		placeholder="Password" 
-		@bind-Value="@signInFormData.Password" />
+		type="text" 
+		placeholder="Login" 
+		@bind-Value="@signUpFormData.Login" />
 	<ValidationSummary />
 </EditForm>
 
+<EditForm Model="@signUpFormData">
+	<DataAnnotationsValidator />
+	<InputText 
+		type="email" 
+		placeholder="Email" 
+		@bind-Value="@signUpFormData.Email" />
+	<ValidationSummary />
+</EditForm>
+
+<EditForm Model="@signUpFormData">
+	<DataAnnotationsValidator />
+	<InputText 
+		type="password" 
+		placeholder="Hasło" 
+		@bind-Value="@signUpFormData.Password" 
+		/>
+	<ValidationSummary />
+</EditForm>
+
+<EditForm Model="@signUpFormData">
+	<DataAnnotationsValidator />
+	<InputText type="password"
+			   placeholder="Potwierdź hasło"
+			   @bind-Value="@signUpFormData.ConfirmPassword"
+			   />
+	<ValidationSummary />
+</EditForm>
+
+<br/>
+
 <button
 	type="submit"
-		class="btn btn-success form-"
-		@onclick="@AddNewAccount">
-
+	class="btn btn-success form-"
+	@onclick="@AddNewAccount">
+		
 	Zarejestruj
 </button>
 
 
 @code {
-	private class SignInFormData
+	private class SignUpFormData
 	{
+		[Required(ErrorMessage = "Pole wymagane")]
+
 		public string Login { get; set; }
+
+		[Required(ErrorMessage = "Pole wymagane")]
+		[EmailAddress(ErrorMessage = "Błędny adres email")]
+
 		public string Email { get; set; }
 
-		private const int MINIMUM_PASSWORD_LENGTH = 10;
+		private const int MINIMUM_PASSWORD_LENGTH = 8;
 
 		[Required(ErrorMessage = "Pole wymagane")]
 		[StringLength(
 			int.MaxValue, 
 			MinimumLength = MINIMUM_PASSWORD_LENGTH, 
-			ErrorMessage = "Hasło musi składać się z conajmniej 10 znaków")]
+			ErrorMessage = "Hasło musi składać się z conajmniej 8 znaków")]
 
-		public string Password { get; set; }
+		public string Password 
+		{ 
+			get => password;
+			set
+			{ 
+				password = value; 
+				ConfirmPassword = string.Empty; 
+			} 
+		}
+
+		[Required(ErrorMessage = "Pole wymagane")]
+		[Compare(nameof(Password), ErrorMessage = "Hasła muszą być jednakowe")]
+
+		public string ConfirmPassword { get; set; }
+
+		private string password;
 	}
 
-	private SignInFormData signInFormData = new();
+	private SignUpFormData signUpFormData = new();
 
 	private async Task AddNewAccount()
 	{
