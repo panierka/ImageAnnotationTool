@@ -1,4 +1,6 @@
 ﻿@page "/register"
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using System.ComponentModel.DataAnnotations;
 
 <h3>Register</h3>
 
@@ -36,6 +38,15 @@
 
 <br/>
 
+<EditForm Model="@signInFormData">
+	<DataAnnotationsValidator />
+	<InputText 
+		type="password" 
+		placeholder="Password" 
+		@bind-Value="@signInFormData.Password" />
+	<ValidationSummary />
+</EditForm>
+
 <button
 	type="submit"
 		class="btn btn-success form-"
@@ -46,6 +57,24 @@
 
 
 @code {
+	private class SignInFormData
+	{
+		public string Login { get; set; }
+		public string Email { get; set; }
+
+		private const int MINIMUM_PASSWORD_LENGTH = 10;
+
+		[Required(ErrorMessage = "Pole wymagane")]
+		[StringLength(
+			int.MaxValue, 
+			MinimumLength = MINIMUM_PASSWORD_LENGTH, 
+			ErrorMessage = "Hasło musi składać się z conajmniej 10 znaków")]
+
+		public string Password { get; set; }
+	}
+
+	private SignInFormData signInFormData = new();
+
 	private async Task AddNewAccount()
 	{
 		
