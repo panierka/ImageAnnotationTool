@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageAnnotationTool", "Imag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProcessing", "ImageProcessing\ImageProcessing.csproj", "{AD36A5F5-DA70-458C-9164-E50EDE57D52E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageAnnotationToolDataAccessLibrary", "ImageAnnotationDataAccessLibrary\ImageAnnotationToolDataAccessLibrary.csproj", "{1C58936A-EA65-486D-9832-FAA574A239D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageAnnotationToolDataAccessLibrary", "ImageAnnotationDataAccessLibrary\ImageAnnotationToolDataAccessLibrary.csproj", "{1C58936A-EA65-486D-9832-FAA574A239D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,53 @@
+﻿@page "/register"
+
+<h3>Register</h3>
+
+
+<form>
+	<label> Name: </label>
+	<input type="text"
+		   name="Name">
+	
+</form>
+
+<form>
+	<label> Surname: </label>
+	<input type="text"
+		   name="Surname">
+</form>
+
+<form>
+	<label> Email: </label>
+    <input type="email" 
+	name="emailaddress"> 
+</form>
+
+<form>
+	<label> Password: </label>
+	<input type="password"
+		   name="password">
+</form>
+
+<form>
+	<label> Confirm password: </label>
+	<input type="password"
+		   name="confirmpassword">
+</form>
+
+<br/>
+
+<button
+	type="submit"
+		class="btn btn-success form-"
+		@onclick="@AddNewAccount">
+
+	Zarejestruj
+</button>
+
+
+@code {
+	private async Task AddNewAccount()
+	{
+		
+	}
+}
