@@ -1,5 +1,9 @@
-﻿using System;
+﻿using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +12,16 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 {
     public class Project
     {
-        public int Id { get; set; }
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		public int Id { get; set; }
 
-        public List<ProjectMemberSeat> Members { get; set; }
+        public virtual Team Team { get; set; }
+
+        public virtual ICollection<ProjectMemberSeat> Members { get; set; }
+
+        public virtual ICollection<Job> Jobs { get; set; }
+
+        public virtual ICollection<AnnotatedImage> AnnotatedImages { get; set; }
     }
 }

@@ -1,8 +1,13 @@
-﻿namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 {
     public class ImageData
     {
-        public int Id { get; set; }
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		public int Id { get; set; }
 
         public string Name { get; set; }
         

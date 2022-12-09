@@ -1,7 +1,9 @@
 ﻿@page "/register"
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 @using System.ComponentModel.DataAnnotations;
+@using Microsoft.EntityFrameworkCore;
 
+<PageTitle>Rejestracja</PageTitle>
 <h3>Rejestracja</h3>
 
 <EditForm Model="@signUpFormData">
@@ -94,6 +96,11 @@
 
 	private async Task AddNewAccount()
 	{
-		
+		var account = new UserAccount
+		{
+			Login = signUpFormData.Login,
+			Email = signUpFormData.Email,
+			Password = signUpFormData.Password
+		};
 	}
 }

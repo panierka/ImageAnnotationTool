@@ -1,12 +1,23 @@
 using ImageAnnotationTool.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using ImageAnnotationToolDataAccessLibrary.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+const string CONNECTION_STRING_KEY = "Default";
+var connectionString = builder.Configuration.GetConnectionString(CONNECTION_STRING_KEY)
+	?? throw new NullReferenceException($"No connection string with key={CONNECTION_STRING_KEY}");
+
+builder.Services.AddDbContextFactory<ImageAnnotationToolContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+});
 
 var app = builder.Build();
 
