@@ -3,12 +3,21 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using ImageAnnotationToolDataAccessLibrary.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Security;
+using Security.Hashing;
+using Security.Hashing.Algorithms;
+using Security.Salting;
+using Security.Salting.Algorithms;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddTransient<IHashingFunctionProvider, SHA256Hashing>();
+builder.Services.AddTransient<ISaltProvider, RngSalting>();
+builder.Services.AddTransient<IHashProvider, SaltedHashProvider>();
 
 const string CONNECTION_STRING_KEY = "Default";
 var connectionString = builder.Configuration.GetConnectionString(CONNECTION_STRING_KEY)

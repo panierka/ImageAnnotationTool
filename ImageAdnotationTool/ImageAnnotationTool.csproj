@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hashing\Security.csproj" />
     <ProjectReference Include="..\ImageAnnotationDataAccessLibrary\ImageAnnotationToolDataAccessLibrary.csproj" />
     <ProjectReference Include="..\ImageProcessing\ImageProcessing.csproj" />
   </ItemGroup>
