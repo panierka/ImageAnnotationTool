@@ -1,0 +1,52 @@
+﻿@page "/login"
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using System.ComponentModel.DataAnnotations;
+
+<PageTitle>Logowanie</PageTitle>
+<h3>Zaloguj się</h3>
+
+<EditForm Model="@loginFormData">
+	<DataAnnotationsValidator />
+	<InputText type="email"
+			   placeholder="Email"
+			   @bind-Value="@loginFormData.Email" />
+	<ValidationSummary />
+</EditForm>
+
+<EditForm Model="@loginFormData">
+	<DataAnnotationsValidator />
+	<InputText type="password"
+			   placeholder="Hasło"
+			   @bind-Value="@loginFormData.Password" />
+	<ValidationSummary />
+</EditForm>
+
+<br/>
+
+<button
+	type="submit"
+	class="btn btn-success form-"
+	@onclick="@LoginToAccount">
+
+	Zaloguj
+</button>
+
+@code {
+	private class LoginFormData
+	{
+		[Required(ErrorMessage = "Pole wymagane")]
+
+		public string Email { get; set; }
+
+		[Required(ErrorMessage = "Pole wymagane")]
+
+		public string Password { get; set; }
+	}
+
+	private LoginFormData loginFormData = new();
+
+	private async Task LoginToAccount()
+	{
+
+	}
+}
