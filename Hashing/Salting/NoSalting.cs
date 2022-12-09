@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Security
+namespace Security.Salting
 {
-	public interface IHashProvider
+	public class NoSalting : ISaltProvider
 	{
-		public string CreateHash(string plainText, out string salt);
+		public string GetSalt(int _)
+		{
+			return string.Empty;
+		}
 	}
 }

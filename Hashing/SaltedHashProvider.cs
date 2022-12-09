@@ -10,10 +10,10 @@ namespace Security
 {
 	public class SaltedHashProvider : IHashProvider
 	{
-		private IHashingFunctionProvider hashingFunctionProvider;
-		private ISaltProvider saltProvider;
+		private readonly IHashingFunctionProvider hashingFunctionProvider;
+		private readonly ISaltProvider saltProvider;
 
-		private int SALT_SIZE = 16;
+		private const int SALT_SIZE = 16;
 
 		public SaltedHashProvider(IHashingFunctionProvider hashingFunctionProvider, ISaltProvider saltProvider)
 		{
@@ -21,9 +21,9 @@ namespace Security
 			this.saltProvider = saltProvider;
 		}
 
-		public string CreateHash(string plainText)
+		public string CreateHash(string plainText, out string salt)
 		{
-			var salt = saltProvider.GetSalt(length: SALT_SIZE);
+			salt = saltProvider.GetSalt(length: SALT_SIZE);
 			var saltedText = string.Format("{0}{1}", plainText, salt);
 			var hash = hashingFunctionProvider.Hash(saltedText);
 

@@ -13,22 +13,14 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 	{
 		public ImageAnnotationToolContext(DbContextOptions options) : base(options) { }
 
-		public DbSet<ImageData> Images { get; set; }
-		public DbSet<AnnotatedImage> AnnotatedImages { get; set; }
-		public DbSet<Job> Jobs { get; set; }
-		public DbSet<Project> Projects { get; set; }
-		public DbSet<ProjectMemberSeat> ProjectMemberSeats { get; set; }
-		public DbSet<Team> Teams { get; set; }
-		public DbSet<TeamMemberSeat> TeamMemberSeats { get; set; }
 		public DbSet<UserAccount> UserAccounts { get; set; }
+
+		public DbSet<ImageData> ImageDatas { get; set; }
+
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<Job>()
-				.HasOne(x => x.Project)
-				.WithMany(x => x.Jobs)
-				.OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }

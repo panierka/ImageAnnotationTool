@@ -14,8 +14,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-		public virtual ICollection<Project> Projects { get; set; }
+		public ICollection<Project> Projects { get; set; }
 
-        public virtual ICollection<TeamMemberSeat> Members { get; set; }
+        public ICollection<TeamMemberSeat> Members { get; set; }
     }
 }

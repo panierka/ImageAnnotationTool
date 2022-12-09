@@ -10,31 +10,23 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 {
     public class UserAccount
     {
-		[Key]
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public string Login { get; set; }
 
         public string FirstName { get; set; }
-        
+
         public string LastName { get; set; }
 
         public string Email { get; set; }
 
 
-        protected virtual string PasswordHashed
-        {
-            get;
-            private set;
-        }
+        public string Password { get; set; }
 
-        [NotMapped]
-        public string Password
-        {
-            set { /*PasswordHashed = Encrypt(value)*/; }
-        }
+        public string Salt { get; set; }
 
-        public virtual ICollection<TeamMemberSeat> TeamMemberSeats { get; set; }
+        public ICollection<TeamMemberSeat> TeamMemberSeats { get; set; }
     }
 }

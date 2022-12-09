@@ -1,13 +1,10 @@
-using ImageAnnotationTool.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using ImageAnnotationToolDataAccessLibrary.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Security;
 using Security.Hashing;
-using Security.Hashing.Algorithms;
 using Security.Salting;
-using Security.Salting.Algorithms;
 
 var builder = WebApplication.CreateBuilder(args);
 

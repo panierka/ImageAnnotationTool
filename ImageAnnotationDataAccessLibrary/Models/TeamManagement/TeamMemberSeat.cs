@@ -14,10 +14,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-		public virtual UserAccount AssignedUser { get; set; }
+		public UserAccount AssignedUser { get; set; }
 
-		public virtual Team Team { get; set; }
+		public Team Team { get; set; }
 
-		public virtual ICollection<ProjectMemberSeat> ProjectMemberSeats { get; set; }
+		public ICollection<ProjectMemberSeat> ProjectMemberSeats { get; set; }
 	}
 }
