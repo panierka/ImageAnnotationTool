@@ -15,7 +15,7 @@ using ImageAnnotationToolDataAccessLibrary.Exceptions;
 
 namespace ImageAnnotationToolDataAccessLibrary.Services
 {
-	public class UserAccountsServiceProvider
+	public class UserAccountsServiceProvider : IUserAccountsServiceProvider
 	{
 		private readonly IDbContextFactory<ImageAnnotationToolContext> dbContextFactory;
 		private readonly ISaltProvider saltProvider;
@@ -39,7 +39,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 			}
 
 			var salt = saltProvider.GetSalt(maxLength: SALT_SIZE);
-			var hashedPassword = CreateHash(signUpFormData.Password, salt);
+			var hashedPassword = HashPassword(signUpFormData.Password, salt);
 			
 			var account = new UserAccount
 			{
@@ -81,9 +81,9 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 			return hashedPassword == userAccount.Password;
 		}
 
-		private string CreateHash(string text, string salt)
+		private string HashPassword(string password, string salt)
 		{
-			return hashProvider?.CreateHash(text, salt) ?? text;
+			return hashProvider?.CreateHash(password, salt) ?? password;
 		}
 	}
 }
