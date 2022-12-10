@@ -6,6 +6,7 @@ using Security;
 using Security.Hashing;
 using Security.Salting;
 using ImageAnnotationToolDataAccessLibrary.Services;
+using ImageAnnotationTool.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddTransient<ISaltProvider, RngSalting>();
 builder.Services.AddTransient<IHashGenerator, SaltedHashGenerator>();
 
 builder.Services.AddTransient<IUserAccountsServiceProvider, UserAccountsServiceProvider>();
+
+builder.Services.AddTransient<SignUpFormDataValidation>();
 
 const string CONNECTION_STRING_KEY = "Default";
 var connectionString = builder.Configuration.GetConnectionString(CONNECTION_STRING_KEY)

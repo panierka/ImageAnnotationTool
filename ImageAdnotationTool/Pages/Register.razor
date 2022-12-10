@@ -4,7 +4,10 @@
 @using Microsoft.EntityFrameworkCore;
 @using ImageAnnotationToolDataAccessLibrary.ModelCreationRequests;
 @using ImageAnnotationToolDataAccessLibrary.Exceptions;
+@using Blazored.FluentValidation;
+@using Validation;
 @inject IUserAccountsServiceProvider userAccountsService;
+@inject SignUpFormDataValidation validator;
 
 <PageTitle>Rejestracja</PageTitle>
 <h3>Rejestracja</h3>
@@ -13,6 +16,7 @@
 	Model="@signUpFormData"
 		  OnValidSubmit="@AddNewAccount">
 	<DataAnnotationsValidator />
+	<FluentValidationValidator Validator="validator"/>
 	<InputText 
 		type="text" 
 		placeholder="Login" 
