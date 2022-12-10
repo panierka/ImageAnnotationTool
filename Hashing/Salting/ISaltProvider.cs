@@ -8,6 +8,6 @@ namespace Security.Salting
 {
 	public interface ISaltProvider
 	{
-		public string GetSalt(int length);
+		public string GetSalt(int maxLength);
 	}
 }

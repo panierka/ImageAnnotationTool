@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Security
 {
-	public interface IHashProvider
+	public interface IHashGenerator
 	{
-		public string CreateHash(string plainText, out string salt);
+		public string CreateHash(string plainText, string salt);
 	}
 }

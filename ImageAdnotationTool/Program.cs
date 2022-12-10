@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Security;
 using Security.Hashing;
 using Security.Salting;
+using ImageAnnotationToolDataAccessLibrary.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,9 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.AddTransient<IHashingFunctionProvider, SHA256Hashing>();
 builder.Services.AddTransient<ISaltProvider, RngSalting>();
-builder.Services.AddTransient<IHashProvider, SaltedHashProvider>();
+builder.Services.AddTransient<IHashGenerator, SaltedHashGenerator>();
+
+builder.Services.AddTransient<UserAccountsServiceProvider>();
 
 const string CONNECTION_STRING_KEY = "Default";
 var connectionString = builder.Configuration.GetConnectionString(CONNECTION_STRING_KEY)

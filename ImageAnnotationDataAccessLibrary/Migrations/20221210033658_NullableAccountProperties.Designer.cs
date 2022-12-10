@@ -4,6 +4,7 @@ using ImageAnnotationToolDataAccessLibrary.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageAnnotationToolDataAccessLibrary.Migrations
 {
     [DbContext(typeof(ImageAnnotationToolContext))]
-    partial class ImageAnnotationToolContextModelSnapshot : ModelSnapshot
+    [Migration("20221210033658_NullableAccountProperties")]
+    partial class NullableAccountProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +198,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -206,9 +209,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Login")
-                        .IsUnique();
 
                     b.ToTable("UserAccounts");
                 });
@@ -246,8 +246,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasOne("ImageAnnotationToolDataAccessLibrary.Models.TeamManagement.Project", "Project")
                         .WithMany("Jobs")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ProjectId");
 
                     b.Navigation("AssignedProjectMember");
 

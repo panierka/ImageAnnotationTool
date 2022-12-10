@@ -3,64 +3,69 @@
 @using System.ComponentModel.DataAnnotations;
 @using Microsoft.EntityFrameworkCore;
 @using ImageAnnotationToolDataAccessLibrary.ModelCreationRequests;
+@using ImageAnnotationToolDataAccessLibrary.Exceptions;
+@inject UserAccountsServiceProvider userAccountsService;
 
 <PageTitle>Rejestracja</PageTitle>
 <h3>Rejestracja</h3>
 
-<EditForm Model="@signUpFormData">
+<EditForm 
+	Model="@signUpFormData"
+		  OnValidSubmit="@AddNewAccount">
 	<DataAnnotationsValidator />
 	<InputText 
 		type="text" 
 		placeholder="Login" 
 		@bind-Value="@signUpFormData.Login" />
-	<ValidationSummary />
-</EditForm>
-
-<EditForm Model="@signUpFormData">
-	<DataAnnotationsValidator />
+	<br />
 	<InputText 
 		type="email" 
 		placeholder="Email" 
 		@bind-Value="@signUpFormData.Email" />
-	<ValidationSummary />
-</EditForm>
-
-<EditForm Model="@signUpFormData">
-	<DataAnnotationsValidator />
+	<br />
 	<InputText 
 		type="password" 
 		placeholder="Hasło" 
 		@bind-Value="@signUpFormData.Password" 
 		/>
-	<ValidationSummary />
-</EditForm>
-
-<EditForm Model="@signUpFormData">
-	<DataAnnotationsValidator />
+	<br />
 	<InputText type="password"
 			   placeholder="Potwierdź hasło"
 			   @bind-Value="@signUpFormData.ConfirmPassword"
 			   />
 	<ValidationSummary />
+
+	<br />		
+
+	<button type="submit"
+			class="btn btn-success form-"
+			disabled="@(!context.Validate() || !context.IsModified())">
+		Zarejestruj
+	</button>
 </EditForm>
-
-<br/>
-
-<button
-	type="submit"
-	class="btn btn-success form-"
-	@onclick="@AddNewAccount">
-		
-	Zarejestruj
-</button>
 
 
 @code {
 
 	private SignUpFormData signUpFormData = new();
 
-	private async Task AddNewAccount()
+	private void AddNewAccount(EditContext context)
 	{
-		
+		if (userAccountsService.UserWithLoginExists(signUpFormData.Login))
+		{
+			// 			
+			return;
+		}
+
+		var sentSignUpFormData = signUpFormData;
+		signUpFormData = new();
+
+		context.NotifyValidationStateChanged();
+
+		try
+		{
+			userAccountsService.RegisterAccount(sentSignUpFormData);
+		}
+		catch (LoginIsAlreadyTakenException) {}
 	}
 }

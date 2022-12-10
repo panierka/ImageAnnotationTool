@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Hashing\Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ModelCreationRequests\Validation\" />
+  </ItemGroup>
+
 </Project>

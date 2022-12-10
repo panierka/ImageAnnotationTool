@@ -21,6 +21,14 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			modelBuilder.Entity<Job>()
+				.HasOne(x => x.Project)
+				.WithMany(x => x.Jobs)
+				.OnDelete(DeleteBehavior.NoAction);
+
+			modelBuilder.Entity<UserAccount>()
+				.HasIndex(x => x.Login)
+				.IsUnique();
 		}
 	}
 }
