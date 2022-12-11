@@ -2,6 +2,7 @@
 @using System.Text;
 @using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 @using ImageProcessing;
+@inject IAnnotatedImagesProjectDatabaseServiceProvider databaseProvider;
 
 <PageTitle>Test wczytywania plików</PageTitle>
 
@@ -9,7 +10,7 @@
 
 <button 
     class ="btn btn-primary"
-    @onclick="@AddFilesToProjectAsync">
+    @onclick="@AddFilesToProject">
 
     Prześlij wybrane pliki do projektu
 </button>
@@ -17,7 +18,8 @@
 <br />
 
 <InputFile OnChange="@LoadFilesAsync"
-    multiple 
+    multiple
+    webkitdirectory
     draggable="true" 
     accept=".png,.jpg,.jpeg"/>
 
@@ -65,7 +67,7 @@
         StateHasChanged();
     }
 
-    private async Task AddFilesToProjectAsync()
+    private void AddFilesToProject()
     {
         var annotatedImages = images.Select(i =>
         {
@@ -75,9 +77,9 @@
                 };
         }).ToList();
 
-
-
         images.Clear();
         StateHasChanged();
+
+        databaseProvider.AddAnnotatedImages(annotatedImages);
     }
 }

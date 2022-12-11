@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 {
@@ -11,7 +12,9 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public ImageData ImageData { get; set; }
 
-        public Job Job { get; set; }
+        public Job? Job { get; set; }
+
+        public Project Project { get; set; }
 
         // adnotacje
     }

@@ -19,6 +19,7 @@ builder.Services.AddTransient<ISaltProvider, RngSalting>();
 builder.Services.AddTransient<IHashGenerator, SaltedHashGenerator>();
 
 builder.Services.AddTransient<IUserAccountsServiceProvider, UserAccountsServiceProvider>();
+builder.Services.AddTransient<IAnnotatedImagesProjectDatabaseServiceProvider, AnnotatedImagesProjectDatabaseServiceProvider>();
 
 builder.Services.AddTransient<SignUpFormDataValidation>();
 
