@@ -26,7 +26,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
             images
                 .ToList()
-                .ForEach(x => dbContext.Add(x));
+                .ForEach(x => dbContext.AnnotatedImages.Add(x));
             dbContext.SaveChanges();
         }
 
