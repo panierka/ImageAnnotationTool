@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageProcessing", "ImagePro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageAnnotationToolDataAccessLibrary", "ImageAnnotationDataAccessLibrary\ImageAnnotationToolDataAccessLibrary.csproj", "{1C58936A-EA65-486D-9832-FAA574A239D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security", "Hashing\Security.csproj", "{066D4DAF-B20F-436E-A0D4-9CF6886E597A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Security", "Hashing\Security.csproj", "{066D4DAF-B20F-436E-A0D4-9CF6886E597A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
