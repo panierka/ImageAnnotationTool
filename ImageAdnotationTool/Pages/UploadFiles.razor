@@ -11,7 +11,7 @@
 
 <button 
     class ="btn btn-primary"
-    @onclick="@AddFilesToProject">
+    @onclick="@AddFilesToProjectAsync">
 
     Prześlij wybrane pliki do projektu
 </button>
@@ -95,7 +95,7 @@ Wczytaj folder
         };
     }
 
-    private void AddFilesToProject()
+    private async Task AddFilesToProjectAsync()
     {
         var annotatedImages = images.Select(i =>
         {
@@ -107,8 +107,7 @@ Wczytaj folder
         }).ToList();
 
         images.Clear();
-        StateHasChanged();
 
-        databaseProvider.AddAnnotatedImages(annotatedImages);
+        await databaseProvider.AddAnnotatedImagesAsync(annotatedImages);
     }
 }

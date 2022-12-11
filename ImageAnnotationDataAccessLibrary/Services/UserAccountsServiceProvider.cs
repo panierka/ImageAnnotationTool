@@ -50,7 +50,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 			};
 
 			using var dbContext = dbContextFactory.CreateDbContext();
-			dbContext.UserAccounts.Add(account);
+			dbContext.UserAccounts.AddAsync(account);
 			dbContext.SaveChanges();
 		}
 

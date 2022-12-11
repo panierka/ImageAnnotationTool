@@ -20,21 +20,24 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             this.dbContextFactory = dbContextFactory;
         }
 
-        public void AddAnnotatedImages(IEnumerable<AnnotatedImage> images)
+        public async Task AddAnnotatedImagesAsync(IEnumerable<AnnotatedImage> images)
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
-            images
-                .ToList()
-                .ForEach(x => dbContext.AnnotatedImages.Add(x));
-            dbContext.SaveChanges();
+            foreach(var image in images)
+            {
+                await dbContext.AnnotatedImages.AddAsync(image);
+            }
+            await dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<AnnotatedImage> GetAllAnnotatedImagesFromProject(Project project)
+        public IQueryable<AnnotatedImage> GetAllAnnotatedImagesFromProject(Project project)
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
-            return dbContext.AnnotatedImages.Where(x => x.Project.Id == project.Id);
+            return dbContext.AnnotatedImages
+                .AsQueryable()
+                .Where(x => x.Project.Id == project.Id);
         }
     }
 }

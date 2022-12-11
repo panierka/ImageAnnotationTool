@@ -10,8 +10,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 {
     public interface IAnnotatedImagesProjectDatabaseServiceProvider
     {
-        public void AddAnnotatedImages(IEnumerable<AnnotatedImage> images);
+        public Task AddAnnotatedImagesAsync(IEnumerable<AnnotatedImage> images);
 
-        public IEnumerable<AnnotatedImage> GetAllAnnotatedImagesFromProject(Project project);
+        public IQueryable<AnnotatedImage> GetAllAnnotatedImagesFromProject(Project project);
     }
 }
