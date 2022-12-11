@@ -8,6 +8,7 @@
 
 <div @onmousedown=@BeginDrawing
      @onmouseup=@EndDrawingAsync
+     @onmousemove=@ContinueDrawingAsync
      style="background-image: url('@DOG'); 
      background-repeat: no-repeat">
     <BECanvas Width="460" Height="292" @ref="@canvasReference"></BECanvas>
@@ -28,16 +29,15 @@
         await context.SetLineWidthAsync(2);
     }
 
-    private async Task DrawCurrentAnnotationAsync()
+    private async Task DrawCurrentAnnotationAsync(AnnotationInProgress annotationInProgress)
     {
-        var x = currentAnnotation!.BeginPoint.X;
-        var y = currentAnnotation!.BeginPoint.Y;
+        var x = annotationInProgress.BeginPoint.X;
+        var y = annotationInProgress.BeginPoint.Y;
 
-        var sizeX = currentAnnotation!.EndPoint.X - x;
-        var sizeY = currentAnnotation!.EndPoint.Y - y;
+        var sizeX = annotationInProgress.EndPoint.X - x;
+        var sizeY = annotationInProgress.EndPoint.Y - y;
 
-        currentAnnotation = null;
-
+        await context!.ClearRectAsync(0, 0, 460, 292);
         await context!.StrokeRectAsync(x, y, sizeX, sizeY);
     }
 
@@ -52,13 +52,33 @@
         };
     }
 
+    private async Task ContinueDrawingAsync(MouseEventArgs e)
+    {
+        if (currentAnnotation is not { })
+        {
+            return;
+        }
+
+        var x = (float)e.OffsetX;
+        var y = (float)e.OffsetY;
+
+        var asfoasfoa = new AnnotationInProgress()
+        {
+            BeginPoint = currentAnnotation.BeginPoint,
+            EndPoint = new(x, y)
+        };
+
+        await DrawCurrentAnnotationAsync(asfoasfoa);
+    }
+
     private async Task EndDrawingAsync(MouseEventArgs e)
     {
         var x = (float)e.OffsetX;
         var y = (float)e.OffsetY;
 
         currentAnnotation!.EndPoint = new(x, y);
-        await DrawCurrentAnnotationAsync();
+        await DrawCurrentAnnotationAsync(currentAnnotation);
+        currentAnnotation = null;
     }
 
     private class AnnotationInProgress
