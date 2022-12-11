@@ -1,6 +1,7 @@
 ﻿@page "/upload"
 @using System.Text;
 @using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 @using ImageProcessing;
 @inject IAnnotatedImagesProjectDatabaseServiceProvider databaseProvider;
 
@@ -19,9 +20,13 @@
 
 <InputFile OnChange="@LoadFilesAsync"
     multiple
-    webkitdirectory
-    draggable="true" 
     accept=".png,.jpg,.jpeg"/>
+Wczytaj pliki
+<br />
+<InputFile OnChange="@LoadFilesAsync"
+    multiple
+    webkitdirectory/>
+Wczytaj folder
 
 @if (images is {})
 {
@@ -46,25 +51,48 @@
 
 @code{
     private List<ImageData> images = new();
+    private readonly List<string> supportedContentTypes = new()
+    {
+        "image/png",
+        "image/jpg",
+        "image/jpeg"
+    };
 
     private async Task LoadFilesAsync(InputFileChangeEventArgs e)
     {
-        images.Clear();
         var maxFiles = e.FileCount;
-        var files = e.GetMultipleFiles(maxFiles);
+        var files = e.GetMultipleFiles(maxFiles)
+            .Where(x => supportedContentTypes.Contains(x.ContentType));
 
         foreach (var file in files)
         {
+            var filename = file.Name;
+            var name = Path.GetFileNameWithoutExtension(filename);
+            var extension = Path.GetExtension(filename);
+
             var base64 = await FileConverter.BrowserFileToBase64Async(file);
             var image = new ImageData
             {
-                Name = file.Name,
+                Name = name,
                 SourceBase64 = base64,
+                Extension = extension,
             };
             images.Add(image);
         }
 
         StateHasChanged();
+    }
+
+    private Team fakeTeam;
+    private Project fakeProject;
+
+    protected override void OnInitialized()
+    {
+        fakeTeam = new();
+        fakeProject = new()
+        {
+            Team = fakeTeam
+        };
     }
 
     private void AddFilesToProject()
@@ -73,7 +101,8 @@
         {
             return new AnnotatedImage
                 {
-                    ImageData = i
+                    ImageData = i,
+                    Project = fakeProject,
                 };
         }).ToList();
 
