@@ -34,11 +34,16 @@
         var x = annotationInProgress.BeginPoint.X;
         var y = annotationInProgress.BeginPoint.Y;
 
-        var sizeX = annotationInProgress.EndPoint.X - x;
-        var sizeY = annotationInProgress.EndPoint.Y - y;
+        var targetX = annotationInProgress.EndPoint.X;
+        var targetY = annotationInProgress.EndPoint.Y;
 
-        await context!.ClearRectAsync(0, 0, 460, 292);
-        await context!.StrokeRectAsync(x, y, sizeX, sizeY);
+        await context!.BeginBatchAsync();
+        //await context!.ClearRectAsync(0, 0, 460, 292);
+        await context!.BeginPathAsync();
+        await context!.MoveToAsync(x, y);
+        await context!.LineToAsync(targetX, targetY);
+        await context!.StrokeAsync();
+        await context!.EndBatchAsync();
     }
 
     private void BeginDrawing(MouseEventArgs e)
@@ -54,6 +59,7 @@
 
     private async Task ContinueDrawingAsync(MouseEventArgs e)
     {
+        return;
         if (currentAnnotation is not { })
         {
             return;
@@ -70,7 +76,7 @@
 
         await DrawCurrentAnnotationAsync(asfoasfoa);
     }
-
+    
     private async Task EndDrawingAsync(MouseEventArgs e)
     {
         var x = (float)e.OffsetX;
