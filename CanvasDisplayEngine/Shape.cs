@@ -11,9 +11,9 @@ namespace CanvasDisplayEngine
     public class Shape : ICanvasDrawable
     {
         private readonly List<Point> points = new();
-        private string Color { get; set; }
+        public ColorRGB Color { get; set; }
         
-        public Shape(string color)
+        public Shape(ColorRGB color)
         {
             Color = color;
         }
@@ -25,29 +25,27 @@ namespace CanvasDisplayEngine
                 return;
             }
 
-            await canvasContext.BeginBatchAsync();
             await canvasContext.BeginPathAsync();
-            await canvasContext.SetStrokeStyleAsync(Color);
+            await canvasContext.SetStrokeStyleAsync(Color.ToString());
             
-            var previousPoint = points.First();
+            var firstPoint = points.First();
+            await canvasContext.MoveToAsync(
+                firstPoint.X,
+                firstPoint.Y
+            );
 
-            foreach(var currentPoint in points.Skip(1))
-            {
-                await canvasContext.MoveToAsync(
-                    previousPoint.X, 
-                    previousPoint.Y
-                );
-                
+            foreach (var currentPoint in points.Skip(1).Concat(points.Take(1)))
+            {      
                 await canvasContext.LineToAsync(
                     currentPoint.X, 
                     currentPoint.Y
                 );
-
-                previousPoint = currentPoint;
             }
-
+            
+            await canvasContext.ClosePathAsync();
+            await canvasContext.SetFillStyleAsync("rgba(255, 0, 0, 0.2)");
+            await canvasContext.FillAsync();
             await canvasContext.StrokeAsync();
-            await canvasContext.EndBatchAsync();
         }
 
         public void AddPoint(Point point)
