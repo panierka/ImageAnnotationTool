@@ -12,6 +12,7 @@ namespace CanvasDisplayEngine
     {
         private readonly List<Point> points = new();
         public ColorRGB Color { get; set; }
+        public float Transparency { get; set; } = 0.2f;
         
         public Shape(ColorRGB color)
         {
@@ -25,9 +26,17 @@ namespace CanvasDisplayEngine
                 return;
             }
 
-            await canvasContext.BeginPathAsync();
+            await DrawPolygon(canvasContext);
+            await FillPolygon(canvasContext);
+
+            await canvasContext.StrokeAsync();
+        }
+
+        private async Task DrawPolygon(Canvas2DContext canvasContext)
+        {
             await canvasContext.SetStrokeStyleAsync(Color.ToString());
-            
+            await canvasContext.BeginPathAsync();
+
             var firstPoint = points.First();
             await canvasContext.MoveToAsync(
                 firstPoint.X,
@@ -35,17 +44,21 @@ namespace CanvasDisplayEngine
             );
 
             foreach (var currentPoint in points.Skip(1).Concat(points.Take(1)))
-            {      
+            {
                 await canvasContext.LineToAsync(
-                    currentPoint.X, 
+                    currentPoint.X,
                     currentPoint.Y
                 );
             }
-            
+
             await canvasContext.ClosePathAsync();
-            await canvasContext.SetFillStyleAsync("rgba(255, 0, 0, 0.2)");
+        }
+
+        private async Task FillPolygon(Canvas2DContext canvasContext)
+        {
+            var fillColor = new ColorRGBA(Color, Transparency);
+            await canvasContext.SetFillStyleAsync(fillColor.ToString());
             await canvasContext.FillAsync();
-            await canvasContext.StrokeAsync();
         }
 
         public void AddPoint(Point point)
@@ -57,5 +70,7 @@ namespace CanvasDisplayEngine
         {
             points.Remove(point);
         }
+
+        public IEnumerable<Point> Points => points;
     }
 }

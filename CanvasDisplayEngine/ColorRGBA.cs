@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace CanvasDisplayEngine
 {
@@ -38,7 +39,12 @@ namespace CanvasDisplayEngine
 
         public override string ToString()
         {
-            return $"rgba({Red}, {Green}, {Blue}, {Alpha})";
+            NumberFormatInfo numberFormat = new()
+            {
+                NumberDecimalSeparator = "."
+            };
+
+            return $"rgba({Red}, {Green}, {Blue}, {Alpha.ToString(numberFormat)})";
         }
     }
 }

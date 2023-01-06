@@ -7,9 +7,9 @@
 
 <h3>Annotating</h3>
 
-<div @onmousedown=@BeginDrawing
-     @onmouseup=@EndDrawingAsync
-     @onmousemove=@ContinueDrawingAsync
+<div @onmousedown=@MouseDown
+     @onmouseup=@MouseUp
+     @onmousemove=@MouseUpdate
      style="background-image: url('@DOG'); 
      background-repeat: no-repeat">
     <BECanvas Width="460" Height="292" @ref="@canvas"></BECanvas>
@@ -20,38 +20,50 @@
 
     private Canvas2DContext? context;
     private BECanvasComponent? canvas;
-    private CanvasDrawingEngine? drawingEngine;
+    private CanvasDisplayEngine? drawingEngine;
+    private InteractiveShapeController? shapeController;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender)
+        {
+            return;
+        }
+
         context = await canvas.CreateCanvas2DAsync();
         await context.SetStrokeStyleAsync("green");
         await context.SetLineWidthAsync(2);
 
         drawingEngine = new(context, canvas!);
 
-        var square = new Shape(new(255, 0, 0));
-        square.AddPoint(new(30, 30));
-        square.AddPoint(new(120, 30));
-        square.AddPoint(new(190, 200));
-        square.AddPoint(new(44, 100));
+        var testPolygon = new Shape(new(255, 0, 0));
+        testPolygon.AddPoint(new(30, 30));
+        testPolygon.AddPoint(new(120, 30));
+        testPolygon.AddPoint(new(190, 200));
+        testPolygon.AddPoint(new(44, 100));
 
-        drawingEngine.Drawables.Add(square);
+        drawingEngine.Drawables.Add(testPolygon);
         await drawingEngine.RenderFrame();
+
+        shapeController = new(testPolygon);
     }
 
-    private void BeginDrawing(MouseEventArgs e)
+    private void MouseDown(MouseEventArgs e)
     {
-
+        var data = new MouseEventData(e.OffsetX, e.OffsetY, e.Button);
+        shapeController?.GrabPoint(data);
     }
 
-    private async Task ContinueDrawingAsync(MouseEventArgs e)
+    private async Task MouseUpdate(MouseEventArgs e)
     {
-
+        var data = new MouseEventData(e.OffsetX, e.OffsetY, e.Button);
+        shapeController?.DragPoint(data);
+        await drawingEngine!.RenderFrame();
     }
     
-    private async Task EndDrawingAsync(MouseEventArgs e)
+    private void MouseUp(MouseEventArgs e)
     {
-
+        var data = new MouseEventData(e.OffsetX, e.OffsetY, e.Button);
+        shapeController?.DropPoint(data);
     }
 }

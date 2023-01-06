@@ -16,5 +16,11 @@ namespace CanvasDisplayEngine
             X = x;
             Y = y;
         }
+
+        public void SetPosition(double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }
