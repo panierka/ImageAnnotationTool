@@ -27,11 +27,11 @@ namespace CanvasDisplayEngine
             set => baseColor.Blue = value;
         }
 
-        public float Alpha { get; set; }
+        public double Alpha { get; set; }
 
         private readonly ColorRGB baseColor;
 
-        public ColorRGBA(ColorRGB baseColor, float alpha)
+        public ColorRGBA(ColorRGB baseColor, double alpha)
         {
             this.baseColor = baseColor;
             Alpha = alpha;

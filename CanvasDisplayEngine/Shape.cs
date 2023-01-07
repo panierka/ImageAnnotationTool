@@ -12,7 +12,6 @@ namespace CanvasDisplayEngine
     {
         private readonly List<Point> points = new();
         public ColorRGB Color { get; set; }
-        public float Transparency { get; set; } = 0.2f;
         
         public Shape(ColorRGB color)
         {
@@ -36,6 +35,8 @@ namespace CanvasDisplayEngine
 
         private async Task DrawPolygon(Canvas2DContext canvasContext)
         {
+            var lineWidth = ShapeStyle.Instance.LineWidth;
+            await canvasContext.SetLineWidthAsync(lineWidth);
             await canvasContext.SetStrokeStyleAsync(Color.ToString());
             await canvasContext.BeginPathAsync();
 
@@ -58,7 +59,8 @@ namespace CanvasDisplayEngine
 
         private async Task FillPolygon(Canvas2DContext canvasContext)
         {
-            var fillColor = new ColorRGBA(Color, Transparency);
+            var opacity = ShapeStyle.Instance.FillOpacity;
+            var fillColor = new ColorRGBA(Color, opacity);
             await canvasContext.SetFillStyleAsync(fillColor.ToString());
             await canvasContext.FillAsync();
         }
@@ -70,7 +72,9 @@ namespace CanvasDisplayEngine
             foreach (var point in points)
             {
                 await canvasContext.BeginPathAsync();
-                await canvasContext.ArcAsync(point.X, point.Y, 4, 0, 2 * Math.PI);
+
+                var radius = ShapeStyle.Instance.PointRadius;
+                await canvasContext.ArcAsync(point.X, point.Y, radius, 0, 2 * Math.PI);
                 await canvasContext.FillAsync();
                 await canvasContext.ClosePathAsync();
             }

@@ -31,9 +31,6 @@
         }
 
         context = await canvas.CreateCanvas2DAsync();
-        await context.SetStrokeStyleAsync("green");
-        await context.SetLineWidthAsync(2);
-
         drawingEngine = new(context, canvas!);
 
         var testPolygon = new Shape(new(255, 0, 0));
