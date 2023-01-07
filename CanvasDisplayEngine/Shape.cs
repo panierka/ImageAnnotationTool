@@ -12,8 +12,8 @@ namespace CanvasDisplayEngine
     {
         private readonly List<Point> points = new();
         public ColorRGB Color { get; set; }
-
-        public bool Closed { get; set; } = true;
+        
+        public bool Closed { get; set; }
         
         public Shape(ColorRGB color)
         {

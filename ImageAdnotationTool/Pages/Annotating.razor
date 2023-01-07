@@ -34,17 +34,13 @@
         drawingEngine = new(context, canvas!);
 
         var testPolygon = new Shape(new(255, 0, 0));
-        testPolygon.AddPoint(new(30, 30));
-        testPolygon.AddPoint(new(120, 30));
-        testPolygon.AddPoint(new(190, 200));
-        testPolygon.AddPoint(new(44, 100));
 
         drawingEngine.Drawables.Add(testPolygon);
         await drawingEngine.RenderFrame();
 
         shapeController = new(testPolygon);
         
-        IShapeEditingTool tool = new RemovalTool();
+        IShapeEditingTool tool = new CreationTool();
         shapeController.EquipEditingTool(tool);
     }
 
