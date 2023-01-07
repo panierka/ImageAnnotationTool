@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    public class CreationTool : IShapeEditingTool
+    public class SplittingTool : IShapeEditingTool
     {
         public void PressOnCoordinate(Shape shape, InputEventData inputEvent)
         {
-            if (shape.Closed)
-            {
-                return;
-            }
-
             var x = inputEvent.MouseX;
             var y = inputEvent.MouseY;
-            
-            var point = ShapeInterpreter.GetPointWithCoordinates(shape, x, y);
-            
-            if (point is { })
+
+            var tryGetLineResult = ShapeInterpreter.GetLineWithCoordinates(shape, x, y);
+
+            if (tryGetLineResult is not LineData line)
             {
-                shape.Closed = true;
                 return;
             }
 
-            shape.AddPoint(new(x, y));
+            var endPoint = line.EndPoint;
+            var insertIndex = shape
+                .Points
+                .TakeWhile(point => endPoint != point)
+                .Count();
+            
+            shape.InsertPoint(new(x, y), insertIndex);
         }
 
         public void MoveOnCoordinate(Shape shape, InputEventData inputEvent) { }

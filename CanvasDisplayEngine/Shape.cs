@@ -34,7 +34,7 @@ namespace CanvasDisplayEngine
 
             await canvasContext.StrokeAsync();
         }
-
+        
         private async Task DrawPolygon(Canvas2DContext canvasContext)
         {
             var lineWidth = ShapeStyle.Instance.LineWidth;
@@ -98,6 +98,11 @@ namespace CanvasDisplayEngine
         public void RemovePoint(Point point)
         {
             points.Remove(point);
+        }
+        
+        public void InsertPoint(Point point, int index)
+        {
+            points.Insert(index, point);
         }
 
         public IEnumerable<Point> Points => points;
