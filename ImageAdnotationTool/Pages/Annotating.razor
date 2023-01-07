@@ -7,9 +7,9 @@
 
 <h3>Annotating</h3>
 
-<div @onmousedown=@MouseDown
-     @onmouseup=@MouseUp
-     @onmousemove=@MouseUpdate
+<div @onmousedown=@RegisterMouseDownAsync
+     @onmouseup=@RegisterMouseUpAsync
+     @onmousemove=@RegisterMouseUpdateAsync
      style="background-image: url('@DOG'); 
      background-repeat: no-repeat">
     <BECanvas Width="460" Height="292" @ref="@canvas"></BECanvas>
@@ -47,26 +47,28 @@
 
         shapeController = new(testPolygon);
         
-        IShapeEditingTool reshaper = new ReshapingTool();
-        shapeController.EquipEditingTool(reshaper);
+        IShapeEditingTool tool = new RemovalTool();
+        shapeController.EquipEditingTool(tool);
     }
 
-    private void MouseDown(MouseEventArgs e)
+    private async Task RegisterMouseDownAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
         shapeController?.CallPressOnCoordinate(data);
+        await drawingEngine!.RenderFrame();
     }
 
-    private async Task MouseUpdate(MouseEventArgs e)
+    private async Task RegisterMouseUpdateAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
         shapeController?.CallMoveOnCoordinate(data);
         await drawingEngine!.RenderFrame();
     }
     
-    private void MouseUp(MouseEventArgs e)
+    private async Task RegisterMouseUpAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
         shapeController?.CallReleaseOnCoordinate(data);
+        await drawingEngine!.RenderFrame();
     }
 }
