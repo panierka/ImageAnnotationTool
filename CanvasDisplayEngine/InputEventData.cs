@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    public record MouseEventData(double X, double Y, long Button);
+    public record InputEventData(double MouseX, double MouseY, long MouseButton);
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,36 +6,30 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    public class InteractiveShapeController
+    public class ReshapingTool : IShapeEditingTool
     {
-        public Shape Shape { get; }
         private Point? currentlyHeldPoint;
 
-        public InteractiveShapeController(Shape shape)
+        public void PressOnCoordinate(Shape shape, InputEventData inputEvent)
         {
-            Shape = shape;
+            var x = inputEvent.MouseX;
+            var y = inputEvent.MouseY;
+            currentlyHeldPoint = GetPointWithCoordinates(shape, x, y);
         }
 
-        public void GrabPoint(MouseEventData mouseData)
+        public void MoveOnCoordinate(Shape shape, InputEventData inputEvent)
         {
-            var x = mouseData.X;
-            var y = mouseData.Y;
-            currentlyHeldPoint = GetPointWithCoordinates(x, y);
-        }
-
-        public void DragPoint(MouseEventData mouseData)
-        {
-            var x = mouseData.X;
-            var y = mouseData.Y;
+            var x = inputEvent.MouseX;
+            var y = inputEvent.MouseY;
             currentlyHeldPoint?.SetPosition(x, y);
         }
 
-        public void DropPoint(MouseEventData _)
+        public void ReleaseOnCoordinate(Shape shape, InputEventData inputEvent)
         {
             currentlyHeldPoint = null;
         }
 
-        private Point? GetPointWithCoordinates(double x, double y)
+        private static Point? GetPointWithCoordinates(Shape shape, double x, double y)
         {
             static double GetDistanceToPoint(double x, double y, Point p)
             {
@@ -46,7 +39,7 @@ namespace CanvasDisplayEngine
 
             const double EPS = 10;
 
-            return Shape
+            return shape
                 .Points
                 .Select(p => new
                 {

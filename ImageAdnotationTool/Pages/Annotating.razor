@@ -21,7 +21,7 @@
     private Canvas2DContext? context;
     private BECanvasComponent? canvas;
     private CanvasDisplayEngine? drawingEngine;
-    private InteractiveShapeController? shapeController;
+    private ShapeEditor? shapeController;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -46,24 +46,27 @@
         await drawingEngine.RenderFrame();
 
         shapeController = new(testPolygon);
+        
+        IShapeEditingTool reshaper = new ReshapingTool();
+        shapeController.EquipEditingTool(reshaper);
     }
 
     private void MouseDown(MouseEventArgs e)
     {
-        var data = new MouseEventData(e.OffsetX, e.OffsetY, e.Button);
-        shapeController?.GrabPoint(data);
+        var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
+        shapeController?.CallPressOnCoordinate(data);
     }
 
     private async Task MouseUpdate(MouseEventArgs e)
     {
-        var data = new MouseEventData(e.OffsetX, e.OffsetY, e.Button);
-        shapeController?.DragPoint(data);
+        var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
+        shapeController?.CallMoveOnCoordinate(data);
         await drawingEngine!.RenderFrame();
     }
     
     private void MouseUp(MouseEventArgs e)
     {
-        var data = new MouseEventData(e.OffsetX, e.OffsetY, e.Button);
-        shapeController?.DropPoint(data);
+        var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
+        shapeController?.CallReleaseOnCoordinate(data);
     }
 }
