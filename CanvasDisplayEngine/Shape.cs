@@ -12,12 +12,14 @@ namespace CanvasDisplayEngine
     {
         private readonly List<Point> points = new();
         public ColorRGB Color { get; set; }
+
+        public bool Closed { get; set; } = true;
         
         public Shape(ColorRGB color)
         {
             Color = color;
         }
-
+        
         public async Task DrawAsync(Canvas2DContext canvasContext)
         {
             if (points.Count == 0)
@@ -46,19 +48,27 @@ namespace CanvasDisplayEngine
                 firstPoint.Y
             );
 
-            foreach (var currentPoint in points.Skip(1).Concat(points.Take(1)))
+            foreach (var currentPoint in points.Skip(1))
             {
                 await canvasContext.LineToAsync(
                     currentPoint.X,
                     currentPoint.Y
                 );
             }
-
-            await canvasContext.ClosePathAsync();
+            
+            if (Closed)
+            {
+                await canvasContext.ClosePathAsync();
+            }
         }
 
         private async Task FillPolygon(Canvas2DContext canvasContext)
         {
+            if (!Closed)
+            {
+                return;
+            }
+
             var opacity = ShapeStyle.Instance.FillOpacity;
             var fillColor = new ColorRGBA(Color, opacity);
             await canvasContext.SetFillStyleAsync(fillColor.ToString());
