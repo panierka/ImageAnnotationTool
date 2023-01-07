@@ -20,6 +20,7 @@ builder.Services.AddTransient<IHashGenerator, SaltedHashGenerator>();
 
 builder.Services.AddTransient<IUserAccountsServiceProvider, UserAccountsServiceProvider>();
 builder.Services.AddTransient<IAnnotatedImagesProjectDatabaseServiceProvider, AnnotatedImagesProjectDatabaseServiceProvider>();
+builder.Services.AddTransient<ITeamServiceProvider, TeamServiceProvider>();
 
 builder.Services.AddTransient<SignUpFormDataValidation>();
 
