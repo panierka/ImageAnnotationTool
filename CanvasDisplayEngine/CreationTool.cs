@@ -20,13 +20,16 @@ namespace CanvasDisplayEngine
             
             var point = ShapeInterpreter.GetPointWithCoordinates(shape, x, y);
             
-            if (point is { })
+            if (point is not { })
             {
-                shape.Closed = true;
+                shape.AddPoint(new(x, y));
                 return;
             }
 
-            shape.AddPoint(new(x, y));
+            if (point == shape.Points.First())
+            {
+                shape.Closed = true;
+            }       
         }
 
         public void MoveOnCoordinate(Shape shape, InputEventData inputEvent) { }
