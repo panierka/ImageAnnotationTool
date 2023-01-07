@@ -98,6 +98,11 @@ namespace CanvasDisplayEngine
         public void RemovePoint(Point point)
         {
             points.Remove(point);
+
+            if (points.Count <= 2)
+            {
+                Closed = false;
+            }
         }
         
         public void InsertPoint(Point point, int index)
