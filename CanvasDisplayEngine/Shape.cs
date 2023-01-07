@@ -26,6 +26,8 @@ namespace CanvasDisplayEngine
                 return;
             }
 
+            // do not change order -w
+            await DrawPoints(canvasContext);
             await DrawPolygon(canvasContext);
             await FillPolygon(canvasContext);
 
@@ -59,6 +61,19 @@ namespace CanvasDisplayEngine
             var fillColor = new ColorRGBA(Color, Transparency);
             await canvasContext.SetFillStyleAsync(fillColor.ToString());
             await canvasContext.FillAsync();
+        }
+
+        private async Task DrawPoints(Canvas2DContext canvasContext)
+        {
+            await canvasContext.SetFillStyleAsync(Color.ToString());
+
+            foreach (var point in points)
+            {
+                await canvasContext.BeginPathAsync();
+                await canvasContext.ArcAsync(point.X, point.Y, 4, 0, 2 * Math.PI);
+                await canvasContext.FillAsync();
+                await canvasContext.ClosePathAsync();
+            }
         }
 
         public void AddPoint(Point point)
