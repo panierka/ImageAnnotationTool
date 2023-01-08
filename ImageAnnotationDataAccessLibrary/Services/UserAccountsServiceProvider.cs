@@ -30,10 +30,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 			this.hashProvider = hashProvider;
 		}
 
-		public void RegisterAccount(SignUpFormData signUpFormData)
+		public async Task RegisterAccount(SignUpFormData signUpFormData)
 		{
 			var login = signUpFormData.Login;
-			if (GetUserAccount(login) is { })
+			if (await GetUserAccount(login) is { })
 			{
 				throw new LoginIsAlreadyTakenException(login);
 			}
@@ -49,27 +49,27 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 				Salt = salt,
 			};
 
-			using var dbContext = dbContextFactory.CreateDbContext();
-			dbContext.UserAccounts.AddAsync(account);
-			dbContext.SaveChanges();
+			using var dbContext = await dbContextFactory.CreateDbContextAsync();
+			await dbContext.UserAccounts.AddAsync(account);
+			await dbContext.SaveChangesAsync();
 		}
 
-		private UserAccount? GetUserAccount(string login)
+        private async Task<UserAccount?> GetUserAccount(string login)
 		{
-			using var dbContext = dbContextFactory.CreateDbContext();
+			using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
 			var user = dbContext.UserAccounts.FirstOrDefault(x => x.Login == login);
 			return user;
-		} 
-
-		public bool UserWithLoginExists(string login)
-		{
-			return GetUserAccount(login) is { };
 		}
 
-		public bool UserWithLoginAndPasswordExists(string loginToCheck, string passwordToCheck)
+        public async Task<bool> UserWithLoginExists(string login)
 		{
-			var userAccount = GetUserAccount(loginToCheck);
+			return await GetUserAccount(login) is { };
+		}
+
+        public async Task<bool> UserWithLoginAndPasswordExists(string loginToCheck, string passwordToCheck)
+		{
+			var userAccount = await GetUserAccount(loginToCheck);
 
 			if (userAccount is not { })
 			{

@@ -1,6 +1,7 @@
 ﻿using ImageAnnotationToolDataAccessLibrary.DataAccess;
 using ImageAnnotationToolDataAccessLibrary.Exceptions;
 using ImageAnnotationToolDataAccessLibrary.ModelCreationRequests;
+using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -16,7 +17,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
     {
         private readonly IDbContextFactory<ImageAnnotationToolContext> dbContextFactory;
 
-        public void CreateTeam(Team team)
+        public TeamServiceProvider(IDbContextFactory<ImageAnnotationToolContext> dbContextFactory)
+        {
+            this.dbContextFactory = dbContextFactory;
+        }
+
+        public async Task CreateTeam(Team team)
         {
             //var teamName = team.TeamName;
             //if (GetTeam(teamName) is { })
@@ -24,49 +30,56 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             //    throw new TeamNameIsAlreadyTakenException(teamName);
             //}
 
-            using var dbContext = dbContextFactory.CreateDbContext();
-            dbContext.Teams.AddAsync(team);
-            dbContext.SaveChanges();
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            await dbContext.Teams.AddAsync(team);
+            await dbContext.SaveChangesAsync();
         }
 
 
-        public void DeleteTeam(int teamID) 
+        public async Task DeleteTeam(int teamID) 
         {
             var team = new Team
             {
                 Id = teamID,
             };
 
-            using var dbContext = dbContextFactory.CreateDbContext();
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
             dbContext.Teams.Remove(team);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
         }
 
-        public void UpdateTeam(int teamId, Team team)
+        public async Task UpdateTeam(int teamId, Team team)
         {
-            var TeamName = team.TeamName;
+            var TeamName = team.Name;
             //if (GetTeam(TeamName) is { })
             //{
             //    throw new TeamNameIsAlreadyTakenException(TeamName);
             //}
 
-            using var dbContext = dbContextFactory.CreateDbContext();
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
             var updatedTeam = dbContext.Teams.Where(t => t.Id == teamId).FirstOrDefault();
             if (updatedTeam == null)
             {
                 throw new TeamDoesNotExistException(teamId);
             }
 
-            updatedTeam.TeamName = TeamName;
-            dbContext.SaveChanges();
+            updatedTeam.Name = TeamName;
+            await dbContext.SaveChangesAsync();
         }
 
         private Team? GetTeam(string teamName)
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
-            var team = dbContext.Teams.FirstOrDefault(x => x.TeamName == teamName);
+            var team = dbContext.Teams.FirstOrDefault(x => x.Name == teamName);
             return team;
+        }
+
+        public async Task<List<Team>> GetAllTeams()
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext.Teams.ToListAsync();
         }
     }
 }

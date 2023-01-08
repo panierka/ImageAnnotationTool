@@ -11,10 +11,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 {
     public interface ITeamServiceProvider
     {
-        public void CreateTeam(Team team);
+        public Task CreateTeam(Team team);
 
-        public void DeleteTeam(int teamId);
+        public Task DeleteTeam(int teamId);
 
-        public void UpdateTeam(int teamId, Team team);
+        public Task UpdateTeam(int teamId, Team team);
     }
 }

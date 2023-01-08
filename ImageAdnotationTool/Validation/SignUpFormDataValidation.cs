@@ -14,13 +14,13 @@ namespace ImageAnnotationTool.Validation
 
 			RuleFor(x => x.Login)
 				.NotEmpty()
-				.Must(BeUnique)
+				.MustAsync(BeUnique)
 				.WithMessage("Ten login jest już używany");
 		}
 
-		private bool BeUnique(string login)
+		private async Task<bool> BeUnique(string login, CancellationToken _)
 		{
-			return !userAccountsServiceProvider.UserWithLoginExists(login);
+			return !(await userAccountsServiceProvider.UserWithLoginExists(login));
 		}
 	}
 }

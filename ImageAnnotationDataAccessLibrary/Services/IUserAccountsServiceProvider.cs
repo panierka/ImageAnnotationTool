@@ -9,10 +9,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 {
 	public interface IUserAccountsServiceProvider
 	{
-		public void RegisterAccount(SignUpFormData signUpFormData);
+		public Task RegisterAccount(SignUpFormData signUpFormData);
 
-		public bool UserWithLoginExists(string login);
+		public Task<bool> UserWithLoginExists(string login);
 
-		public bool UserWithLoginAndPasswordExists(string loginToCheck, string passwordToCheck);
+		public Task<bool> UserWithLoginAndPasswordExists(string loginToCheck, string passwordToCheck);
 	}
 }
