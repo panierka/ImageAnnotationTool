@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    public record InputEventData(double MouseX, double MouseY, long MouseButton)
+    public record ShapeEditorOptions
     {
-        public static InputEventData Default => new(0, 0, 0);
+        public int ActionHistoryCapacity { get; set; } = 16;
     }
 }

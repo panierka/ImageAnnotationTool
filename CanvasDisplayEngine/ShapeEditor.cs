@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using CanvasDisplayEngine.EditorTools;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CanvasDisplayEngine
 {
@@ -12,30 +14,49 @@ namespace CanvasDisplayEngine
         public Shape Shape { get; }
 
         private IShapeEditingTool? currentlyEquippedEditingTool;
+        private InputEventData lastInputEvent;
+        private EditorActionHistory actionHistory;
 
-        public ShapeEditor(Shape shape)
+        public ShapeEditor(Shape shape) : this(shape, new ShapeEditorOptions()) { }
+
+        public ShapeEditor(Shape shape, ShapeEditorOptions options)
         {
             Shape = shape;
+            lastInputEvent = InputEventData.Default;
+
+            actionHistory = new(options.ActionHistoryCapacity);
         }
         
         public void EquipEditingTool(IShapeEditingTool tool)
         {
+            ReleaseTool(lastInputEvent);
             currentlyEquippedEditingTool = tool;
         }
         
-        public void CallPressOnCoordinate(InputEventData inputEvent)
+        public void PressTool(InputEventData inputEvent)
         {
-            currentlyEquippedEditingTool?.PressOnCoordinate(Shape, inputEvent);
+            var action = currentlyEquippedEditingTool?.PressOnCoordinate(Shape, inputEvent);
+            actionHistory.ExecuteAndRemember(action);
+            lastInputEvent = inputEvent;
         }
         
-        public void CallMoveOnCoordinate(InputEventData inputEvent)
+        public void MoveTool(InputEventData inputEvent)
         {
-            currentlyEquippedEditingTool?.MoveOnCoordinate(Shape, inputEvent);
+            var action = currentlyEquippedEditingTool?.MoveOnCoordinate(Shape, inputEvent);
+            actionHistory.ExecuteAndRemember(action);
+            lastInputEvent = inputEvent;
         }
         
-        public void CallReleaseOnCoordinate(InputEventData inputEvent)
+        public void ReleaseTool(InputEventData inputEvent)
         {
-            currentlyEquippedEditingTool?.ReleaseOnCoordinate(Shape, inputEvent);
+            var action = currentlyEquippedEditingTool?.ReleaseOnCoordinate(Shape, inputEvent);
+            actionHistory.ExecuteAndRemember(action);
+            lastInputEvent = inputEvent;
+        }
+        
+        public void Undo()
+        {
+            actionHistory.UndoLast();
         }
     }
 }
