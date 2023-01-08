@@ -67,9 +67,9 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             await dbContext.SaveChangesAsync();
         }
 
-        private Team? GetTeam(string teamName)
+        private async Task<Team?> GetTeam(string teamName)
         {
-            using var dbContext = dbContextFactory.CreateDbContext();
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
             var team = dbContext.Teams.FirstOrDefault(x => x.Name == teamName);
             return team;
