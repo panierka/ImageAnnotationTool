@@ -5,6 +5,7 @@
 @using System.Numerics;
 @using CanvasDisplayEngine;
 @using CanvasDisplayEngine.EditorTools;
+`
 
 <h3>Annotating</h3>
 
@@ -30,6 +31,24 @@
     private BECanvasComponent? canvas;
     private CanvasDisplayEngine? drawingEngine;
     private ShapeEditor? shapeEditor;
+
+    private Test? test;
+    private Test[] test1 = new Test[] { 
+        new() { Abc = "student" }, 
+        new() { Abc = "to" }, 
+        new() { Abc = "debil" } 
+    };
+
+
+    private class Test
+    {
+        public string? Abc { get; set; }
+
+        public override string ToString()
+        {
+            return Abc ?? string.Empty;
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

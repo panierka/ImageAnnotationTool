@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageAnnotationToolDataAcce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Security", "Hashing\Security.csproj", "{066D4DAF-B20F-436E-A0D4-9CF6886E597A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanvasDisplayEngine", "CanvasDisplayEngine\CanvasDisplayEngine.csproj", "{5E13378F-B317-4640-BFE0-4FB8F590577B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanvasDisplayEngine", "CanvasDisplayEngine\CanvasDisplayEngine.csproj", "{5E13378F-B317-4640-BFE0-4FB8F590577B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

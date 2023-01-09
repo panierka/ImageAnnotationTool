@@ -15,7 +15,7 @@ namespace CanvasDisplayEngine
 
         private IShapeEditingTool? currentlyEquippedEditingTool;
         private InputEventData lastInputEvent;
-        private EditorActionHistory actionHistory;
+        private readonly EditorActionHistory actionHistory;
 
         public ShapeEditor(Shape shape) : this(shape, new ShapeEditorOptions()) { }
 
