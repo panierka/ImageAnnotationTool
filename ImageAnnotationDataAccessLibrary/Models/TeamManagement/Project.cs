@@ -16,6 +16,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
+        public string Name { get; set; }
+
         public Team Team { get; set; }
 
         public ICollection<ProjectMemberSeat> Members { get; set; }

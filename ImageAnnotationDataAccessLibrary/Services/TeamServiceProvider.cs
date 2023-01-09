@@ -36,14 +36,15 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         }
 
 
-        public async Task DeleteTeam(int teamID) 
+        public async Task DeleteTeam(int teamId) 
         {
             var team = new Team
             {
-                Id = teamID,
+                Id = teamId,
             };
 
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            dbContext.Teams.Attach(team);
             dbContext.Teams.Remove(team);
             await dbContext.SaveChangesAsync();
         }
@@ -80,6 +81,20 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
             return await dbContext.Teams.ToListAsync();
+        }
+
+        public async Task AddTeamMember(int accountId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveTeamMember(int accountId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
