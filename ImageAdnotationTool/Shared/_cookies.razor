@@ -1,0 +1,14 @@
+﻿<!--TODO: Zmiana miejsca przycisku akceptuj i zmienjszenie wysiwetlania-->
+<div class="alert alert-dismissible alert-light">
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  <p class="mb-0">This website uses cookies to enhance user experience and to analyze performance and traffic on our website. <a href="Regulamin" class="alert-link">Regulamin</a>.</p>
+  <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm">Akceptuj</button>
+   </div>
+</div>
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string? Title { get; set; }
+}

@@ -1,0 +1,98 @@
+﻿<div @onclick="ToggleFooterWebsite">
+<footer class="footer" >
+    <table class="table table-hover">
+ 
+  <tbody>
+    
+    <tr class="table-dark">
+        <!--TODO:modal-footer*/ --> 
+      <th>
+          <a class="footer-link" href="ImageAnnotationTool">Fotograf</a>
+      </th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td> 
+          <a class="footer-link" href="ONas">Licencja </a>
+      </td>
+      <td> 
+          <a class="footer-link" href="Kontakt">Kontakt </a>
+      </td>
+      <td> 
+          <a class="footer-link" href="https://github.com/panierka/ImageAnnotationTool" target=”_blank”>GitHub</a>
+      </td>
+      <td> 
+          <a class="footer-link" href="Regulamin">Regulamin </a>
+      </td>
+
+      <td> 
+          <a class="footer-link" href="Licencja">Licencja </a>
+      </td>
+    </tr>
+    <tr class="table-active">
+        <td></td>
+        <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>      
+        <th colspan="5" >
+     © 2022 Copyright: TODO
+     </th>
+     <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+  @*<div class="container">
+      <ul class="navbar-nav me-auto">
+      <li class="nav-item"><a class="nav-link" href="https://github.com/panierka/ImageAnnotationTool" target=”_blank”>GitHub</a></li>
+     <li class="nav-item"><a class="nav-link" href="https://github.com/panierka/ImageAnnotationTool" target=”_blank”>GitHub</a></li>
+      <li class="nav-item"><a class="nav-link" href="https://github.com/panierka/ImageAnnotationTool" target=”_blank”>GitHub</a></li>
+
+    </ul>
+    <div class="container d-flex justify-content-center py-5">
+     © 2022 Copyright: TODO
+    </div>
+    <a class="navbar-brand" href="ImageAnnotationTool">Fotograf</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="Licecnja">Licencja TODO
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Kontakt">Kontakt</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/panierka/ImageAnnotationTool" target=”_blank”>GitHub</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="ONas">O nas </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Regulamin">Regulamin</a>
+        </li>
+      </ul>
+      
+    </div>
+  </div>*@
+</footer>
+</div>
+
+@code {
+    private bool collapseFooterWebsite = true;
+
+    private string? FooterWebsiteCssClass => collapseFooterWebsite ? "collapse" : null;
+
+    private void ToggleFooterWebsite()
+    {
+        collapseFooterWebsite = !collapseFooterWebsite;
+    }
+}

@@ -1,0 +1,18 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/bootstrap/_variables.css",
+    "inputFile": "wwwroot/css/bootstrap/_variables.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/bootstrap/_bootswatch.css",
+    "inputFile": "wwwroot/css/bootstrap/_bootswatch.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/Customized/_variables.css",
+    "inputFile": "wwwroot/css/Customized/_variables.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/Customized/StyleSheet.css",
+    "inputFile": "wwwroot/css/Customized/StyleSheet.scss"
+  }
+]

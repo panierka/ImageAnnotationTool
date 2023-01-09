@@ -3,8 +3,45 @@
 @using System.ComponentModel.DataAnnotations;
 
 <PageTitle>Logowanie</PageTitle>
-<h3>Zaloguj się</h3>
 
+
+<form>
+  <fieldset>
+	<h3>Zaloguj się</h3>
+    <div class="form-group">
+      <label for="exampleInputEmail1" class="form-label mt-4">E-mail</label>
+       
+<EditForm Model="@loginFormData">
+	<DataAnnotationsValidator />
+	<InputText type="email"
+			   class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Wprowadź e-mail"
+			   @bind-Value="@loginFormData.Email" />
+	<ValidationSummary />
+</EditForm>
+
+	  
+      </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1" class="form-label mt-4">Hasło</label>
+<EditForm Model="@loginFormData">
+	<DataAnnotationsValidator />
+	<InputText type="password"
+			   class="form-control" id="exampleInputPassword1" placeholder="Hasło"
+			   @bind-Value="@loginFormData.Password" />
+	<ValidationSummary />
+</EditForm>
+
+    </div>
+
+
+    </fieldset>
+	<br/>
+    <button type="submit" class="btn btn-primary" @onclick="@LoginToAccount">Zaloguj</button>
+	<a class="btn btn-primary" data-bs-toggle="offcanvas" href="/register" role="button" aria-controls="offcanvasExample">
+  Zarejestruj
+</a>
+</form>
+@*
 <EditForm Model="@loginFormData">
 	<DataAnnotationsValidator />
 	<InputText type="email"
@@ -29,7 +66,7 @@
 	@onclick="@LoginToAccount">
 
 	Zaloguj
-</button>
+</button>*@
 
 @code {
 	private class LoginFormData

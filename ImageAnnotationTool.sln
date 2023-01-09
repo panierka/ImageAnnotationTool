@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Security", "Hashing\Securit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanvasDisplayEngine", "CanvasDisplayEngine\CanvasDisplayEngine.csproj", "{5E13378F-B317-4640-BFE0-4FB8F590577B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamServiceTest", "TeamServiceTest\TeamServiceTest.csproj", "{492D53C1-D33A-4C01-A295-A7A072B1505D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamServiceTest", "TeamServiceTest\TeamServiceTest.csproj", "{492D53C1-D33A-4C01-A295-A7A072B1505D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
