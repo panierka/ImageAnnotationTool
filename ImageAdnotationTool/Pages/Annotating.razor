@@ -63,6 +63,7 @@
         var polygon = new Shape(new(255, 0, 0));
 
         drawingEngine.Drawables.Add(polygon);
+        drawingEngine.Drawables.Add(new SelectionIndicator() { Shape = polygon });
         await drawingEngine.RenderFrame();
 
         shapeEditor = new(polygon);
