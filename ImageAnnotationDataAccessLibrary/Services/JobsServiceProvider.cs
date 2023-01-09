@@ -55,6 +55,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task<List<Job>> GetAllJobs()
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
+            return await dbContext.Jobs.ToListAsync();
+        }
     }
 }

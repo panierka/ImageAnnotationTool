@@ -110,5 +110,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             dbContext.TeamMemberSeats.Remove(teamMember);
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<TeamMemberSeat>> GetAllTeamMembers(int teamId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext.TeamMemberSeats.Where(t => t.Id == teamId).ToListAsync();
+        }
     }
 }

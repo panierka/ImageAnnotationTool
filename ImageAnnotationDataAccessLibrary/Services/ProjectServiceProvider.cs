@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Services
 {
-    public class ProjectServiceProvider : IProjectServiceProvier
+    public class ProjectServiceProvider : IProjectServiceProvider
     {
         private readonly IDbContextFactory<ImageAnnotationToolContext> dbContextFactory;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Services
 {
-    public interface IProjectServiceProvier
+    public interface IProjectServiceProvider
     {
         public Task CreateProject(Project project);
 
