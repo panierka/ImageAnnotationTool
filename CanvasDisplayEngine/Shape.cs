@@ -13,7 +13,7 @@ namespace CanvasDisplayEngine
         private readonly List<Point> points = new();
         public ColorRGB Color { get; set; }
         
-        public bool Closed { get; set; }
+        public bool IsClosed { get; set; }
         
         public Shape(ColorRGB color)
         {
@@ -54,7 +54,7 @@ namespace CanvasDisplayEngine
                 );
             }
             
-            if (Closed)
+            if (IsClosed)
             {
                 await canvasContext.ClosePathAsync();
             }
@@ -62,7 +62,7 @@ namespace CanvasDisplayEngine
 
         private async Task FillPolygon(Canvas2DContext canvasContext)
         {
-            if (!Closed)
+            if (!IsClosed)
             {
                 return;
             }
@@ -84,18 +84,13 @@ namespace CanvasDisplayEngine
 
             if (points.Count <= 2)
             {
-                Closed = false;
+                IsClosed = false;
             }
         }
         
         public void InsertPoint(Point point, int index)
         {
             points.Insert(index, point);
-        }
-
-        public void Reset()
-        {
-            points.Clear();
         }
 
         public IEnumerable<Point> Points => points;

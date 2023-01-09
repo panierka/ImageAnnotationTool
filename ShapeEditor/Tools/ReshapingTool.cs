@@ -1,11 +1,12 @@
-﻿using CanvasDisplayEngine.EditorActions;
+﻿using ShapeEditor.Actions;
+using CanvasDisplayEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CanvasDisplayEngine.EditorTools
+namespace ShapeEditor.Tools
 {
     public class ReshapingTool : IShapeEditingTool
     {

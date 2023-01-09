@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CanvasDisplayEngine;
 
-namespace CanvasDisplayEngine.EditorActions
+
+namespace ShapeEditor.Actions
 {
     internal class PointMovementAction : IEditorAction
     {

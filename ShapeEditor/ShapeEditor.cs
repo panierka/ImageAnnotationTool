@@ -1,12 +1,14 @@
-﻿using CanvasDisplayEngine.EditorTools;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShapeEditor.Tools;
+using CanvasDisplayEngine;
+using ShapeEditor.Actions;
 
-namespace CanvasDisplayEngine
+namespace ShapeEditor
 {
     public class ShapeEditor
     {
@@ -75,6 +77,17 @@ namespace CanvasDisplayEngine
         public void Undo()
         {
             actionHistory.UndoLast();
+        }
+        
+        public void ResetShape()
+        {
+            if (currentlyEditedShape is null)
+            {
+                return;
+            }
+
+            var action = new ResetShapeAction(currentlyEditedShape);
+            actionHistory.ExecuteAndRemember(action);
         }
     }
 }

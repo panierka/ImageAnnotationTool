@@ -1,34 +1,25 @@
-﻿using CanvasDisplayEngine.EditorActions;
+﻿using ShapeEditor.Actions;
+using CanvasDisplayEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CanvasDisplayEngine.EditorTools
+namespace ShapeEditor.Tools
 {
-    public class CreationTool : IShapeEditingTool
+    public class RemovalTool : IShapeEditingTool
     {
         public IEditorAction? PressOnCoordinate(Shape shape, InputEventData inputEvent)
         {
-            if (shape.Closed)
-            {
-                return null;
-            }
-
             var x = inputEvent.MouseX;
             var y = inputEvent.MouseY;
 
             var point = ShapeInterpreter.GetPointWithCoordinates(shape, x, y);
 
-            if (point is not { })
+            if (point is { })
             {
-                return new PointAppendanceAction(shape, new(x, y));
-            }
-
-            if (point == shape.Points.First())
-            {
-                return new CloseShapeAction(shape);
+                return new PointRemovalAction(shape, point);
             }
 
             return null;

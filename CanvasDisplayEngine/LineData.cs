@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    internal record LineData
+    public record LineData
     {
         public Point StartPoint { get; set; }
         public Point EndPoint { get; set; }

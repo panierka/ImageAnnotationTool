@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CanvasDisplayEngine;
 
-namespace CanvasDisplayEngine.EditorActions
+namespace ShapeEditor.Actions
 {
-    public class PointInsertionAction : IEditorAction
+    public class PointRemovalAction : IEditorAction
     {
         private readonly Shape shape;
         private readonly Point point;
         private readonly int index;
 
-        public PointInsertionAction(Shape shape, Point point, int index)
+        public PointRemovalAction(Shape shape, Point point)
         {
             this.shape = shape;
             this.point = point;
-            this.index = index;
+            index = shape.Points.TakeWhile(p => point != p).Count();
         }
 
         public void Execute()
         {
-            shape.InsertPoint(point, index);
+            shape.RemovePoint(point);
         }
 
         public void Undo()
         {
-            shape.RemovePoint(point);
+            shape.InsertPoint(point, index);
         }
     }
 }

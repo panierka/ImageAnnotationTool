@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    internal static class ShapeInterpreter
+    public static class ShapeInterpreter
     {
         public static Point? GetPointWithCoordinates(Shape shape, double x, double y)
         {

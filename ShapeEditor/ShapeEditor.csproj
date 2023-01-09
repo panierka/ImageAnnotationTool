@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CanvasDisplayEngine\CanvasDisplayEngine.csproj" />
+  </ItemGroup>
+
 </Project>

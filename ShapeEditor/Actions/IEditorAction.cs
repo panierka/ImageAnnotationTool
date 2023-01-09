@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CanvasDisplayEngine
+namespace ShapeEditor.Actions
 {
-    public record ShapeEditorOptions
+    public interface IEditorAction
     {
-        public int ActionHistoryCapacity { get; set; } = 16;
+        public void Execute();
+
+        public void Undo();
     }
 }

@@ -19,10 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AnnotationEditor\AnnotationEditor.csproj" />
     <ProjectReference Include="..\CanvasDisplayEngine\CanvasDisplayEngine.csproj" />
     <ProjectReference Include="..\Hashing\Security.csproj" />
     <ProjectReference Include="..\ImageAnnotationDataAccessLibrary\ImageAnnotationToolDataAccessLibrary.csproj" />
     <ProjectReference Include="..\ImageProcessing\ImageProcessing.csproj" />
+    <ProjectReference Include="..\ShapeEditor\ShapeEditor.csproj" />
   </ItemGroup>
 
 </Project>
