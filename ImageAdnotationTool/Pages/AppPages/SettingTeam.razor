@@ -1,0 +1,102 @@
+﻿@page "/czlonkowie"
+@using ImageAnnotationTool.Pages.AppPages.Shared
+<div class="page-after-logon">
+<_leftMenu/>
+
+<div class="main-container">
+	
+	
+		<table>
+			<tr class="container-team-setting">
+				<th>Zespół Alpha</th>
+				<td>Edycja</td>
+				<td>Dodaj członków</td>
+			</tr>
+		</table>
+		<h5 class="muted-headers">
+				Członkowie Zespołu mogą przyjąć poszczególne role:
+				</h5>
+		<ul>
+			<li>
+				<strong>
+					Użytkownik
+				</strong>
+				<ul>
+					<li>
+						dziedziczy wszystkie uprawnienia po Administratorze,
+					</li>
+					<li>
+						modyfikacja uprawnień wszczystkich osób w zespole,
+					</li>
+					<li>
+						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
+					</li>
+				</ul>
+			</li>
+			<li>
+				<strong>
+					Menadżer Projektu
+				</strong>
+				<ul>
+					<li>
+						dziedziczy wszystkie uprawnienia po Administratorze,
+					</li>
+					<li>
+						modyfikacja uprawnień wszczystkich osób w zespole,
+					</li>
+					<li>
+						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
+					</li>
+				</ul>
+			</li>
+			<li>
+				<strong>
+					Administrator
+				</strong>
+				<ul>
+					<li>
+						dziedziczy wszystkie uprawnienia po Administratorze,
+					</li>
+					<li>
+						modyfikacja uprawnień wszczystkich osób w zespole,
+					</li>
+					<li>
+						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
+					</li>
+				</ul>
+			</li>
+			<li>
+				<strong>
+					Właściciel
+				</strong>
+				<ul>
+					<li>
+						dziedziczy wszystkie uprawnienia po Administratorze,
+					</li>
+					<li>
+						modyfikacja uprawnień wszczystkich osób w zespole,
+					</li>
+					<li>
+						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
+					</li>
+				</ul>
+			</li>
+		</ul>
+		
+		<table class="table table-hover">
+
+			<tr class="table-active">
+			<th scope="row">Active</th>
+			<td>Column content</td>
+			<td>Column content</td>
+			<td>Column content</td>
+			</tr>
+
+		</table>
+
+</div>
+
+</div>
+@code {
+
+}

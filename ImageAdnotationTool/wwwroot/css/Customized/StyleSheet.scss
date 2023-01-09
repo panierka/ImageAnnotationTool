@@ -23,11 +23,11 @@ a {
     text-decoration: none;
 }
 //MainLayoutStyle
-.main-container{
+.container-main {
     display: flex;
     flex-direction: column;
+    gap:1rem;
     height: 100vh;
-
 }
 
 header {
@@ -60,8 +60,6 @@ article {
     flex-direction: row;
     flex-wrap: wrap;
     row-gap:1rem;
-    margin-left:-20px;
-
     align-content: flex-start;
     width: 10rem;
     height: 100%;
@@ -164,3 +162,4 @@ ul {
     font-size: 0.8rem;
     margin-bottom: 0.2rem;
 }
+
