@@ -66,12 +66,13 @@
         drawingEngine.Drawables.Add(new SelectionIndicator() { Shape = polygon });
         await drawingEngine.RenderFrame();
 
-        shapeEditor = new(polygon);
+        shapeEditor = new();
+        shapeEditor.AssignShape(polygon);
 
         IShapeEditingTool tool = new CreationTool();
         shapeEditor.EquipEditingTool(tool);
     }
-
+    
     private async Task RegisterMouseDownAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);

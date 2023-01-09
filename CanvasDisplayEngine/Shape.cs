@@ -93,6 +93,11 @@ namespace CanvasDisplayEngine
             points.Insert(index, point);
         }
 
+        public void Reset()
+        {
+            points.Clear();
+        }
+
         public IEnumerable<Point> Points => points;
     }
 }
