@@ -83,17 +83,31 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             return await dbContext.Teams.ToListAsync();
         }
 
-        public async Task AddTeamMember(int accountId)
+        public async Task AddTeamMember(int accountId, int teamId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            var newTeamMember = dbContext.UserAccounts.Where(t => t.Id == accountId).FirstOrDefault();
+            var team = dbContext.Teams.Where(t => t.Id == teamId).FirstOrDefault();
+            var teamMemberSeat = new TeamMemberSeat
+            {
+                AssignedUser = newTeamMember,
+                Team = team,
+            };
+
+            await dbContext.TeamMemberSeats.AddAsync(teamMemberSeat);
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveTeamMember(int accountId)
+        public async Task RemoveTeamMember(int teamMemberSeatId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
+            var teamMember = dbContext.TeamMemberSeats.Where(t => t.Id == teamMemberSeatId).FirstOrDefault();
+
+            dbContext.TeamMemberSeats.Attach(teamMember);
+            dbContext.TeamMemberSeats.Remove(teamMember);
             await dbContext.SaveChangesAsync();
         }
     }
