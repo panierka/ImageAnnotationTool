@@ -15,7 +15,7 @@ namespace ShapeEditor.Actions
         private readonly double startingY;
         private readonly double targetX;
         private readonly double targetY;
-
+        
         public PointMovementAction(Point point, double targetX, double targetY, double startingX, double startingY)
         {
             this.point = point;

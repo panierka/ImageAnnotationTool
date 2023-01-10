@@ -10,6 +10,8 @@
 
 <h3>Annotating</h3>
 
+<ComboBox Items="test1" SelectedItem="test"/>
+
 <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
      @onmousemove=@RegisterMouseUpdateAsync
@@ -22,6 +24,9 @@
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new ReshapingTool()))">Przekształcanie</button>
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new SplittingTool()))">Rozdzielanie</button>
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RemovalTool()))">Usuwanie</button>
+<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangularScalingTool()))">Skalowanie Prostokątne</button>
+<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangleCreationTool()))">Prostokąt</button>
+
 <br />
 <button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
 <button class="btn btn-primary" @onclick="@ResetShape">Resetuj</button>
@@ -37,8 +42,8 @@
     private Test? test;
     private Test[] test1 = new Test[] { 
         new() { Abc = "student" }, 
-        new() { Abc = "to" }, 
-        new() { Abc = "debil" } 
+        new() { Abc = "dziekan" }, 
+        new() { Abc = "rektor" } 
     };
 
 
