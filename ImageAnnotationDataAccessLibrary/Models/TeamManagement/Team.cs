@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 {
@@ -16,8 +17,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 
         public string Name { get; set; }
 
-		public ICollection<Project> Projects { get; set; }
+		public virtual ICollection<Project> Projects { get; set; }
 
-        public ICollection<TeamMemberSeat> Members { get; set; }
+        public virtual ICollection<TeamMemberSeat> Members { get; set; }
     }
 }

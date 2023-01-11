@@ -87,8 +87,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            var newTeamMember = dbContext.UserAccounts.Where(t => t.Id == accountId).FirstOrDefault();
-            var team = dbContext.Teams.Where(t => t.Id == teamId).FirstOrDefault();
+            var newTeamMember = await dbContext.UserAccounts.Where(t => t.Id == accountId).FirstOrDefaultAsync();
+            var team = await dbContext.Teams.Where(t => t.Id == teamId).FirstOrDefaultAsync();
             var teamMemberSeat = new TeamMemberSeat
             {
                 AssignedUser = newTeamMember,
@@ -115,7 +115,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            return await dbContext.TeamMemberSeats.Where(t => t.Team.Id == teamId).ToListAsync();
+            return await dbContext
+                .TeamMemberSeats
+                .Where(t => t.Team.Id == teamId)
+                .Include(t => t.AssignedUser)
+                .Include(t => t.Team)
+                .ToListAsync();
         }
 
         //public async Task<List<Team>> GetAllTeamsOfUserAccount(int accountId)

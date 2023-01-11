@@ -10,11 +10,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-        public ImageData ImageData { get; set; }
+        public virtual ImageData ImageData { get; set; }
 
-        public Job? Job { get; set; }
+        public virtual Job? Job { get; set; }
 
-        public Project Project { get; set; }
+        public virtual Project Project { get; set; }
 
         // adnotacje
     }
