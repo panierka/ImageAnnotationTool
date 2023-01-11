@@ -45,7 +45,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
         public async Task UpdateProject(int projectId, Project project)
         {
-            var ProjectName = project.Name;
+            var projectName = project.Name;
 
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
             var updatedProject = dbContext.Projects.Where(t => t.Id == projectId).FirstOrDefault();
@@ -54,7 +54,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 throw new TeamDoesNotExistException(projectId);
             }
 
-            updatedProject.Name = ProjectName;
+            //updatedProject.Name = projectName;
+            updatedProject = project;
             await dbContext.SaveChangesAsync();
         }
 
@@ -99,5 +100,17 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             dbContext.ProjectMemberSeats.Remove(projectMember);
             await dbContext.SaveChangesAsync();
         }
+
+        //public async Task<List<ProjectMemberSeat>> GetAllProjectMembers(int projectId)
+        //{
+        //    using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        //    return await dbContext.ProjectMemberSeats.Where(t => t.Project.Id == teamId).ToListAsync();
+        //}
+
+        //public async Task<List<Project>> GetAllProjectsOfTeamMember(int accountId)
+        //{
+
+        //}
     }
 }

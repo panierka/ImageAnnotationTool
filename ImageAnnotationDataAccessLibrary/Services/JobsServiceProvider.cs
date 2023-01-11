@@ -61,5 +61,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
             return await dbContext.Jobs.ToListAsync();
         }
+
+        //public async Task GetJobOfProjectMemeber(int accountId)
+        //{
+
+        //}
     }
 }

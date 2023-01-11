@@ -19,5 +19,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public Task UpdateJob(int jobId, Job job);
 
         public Task<List<Job>> GetAllJobs();
+
+        //public Task GetJobOfProjectMemeber(int accountId);
     }
 }
