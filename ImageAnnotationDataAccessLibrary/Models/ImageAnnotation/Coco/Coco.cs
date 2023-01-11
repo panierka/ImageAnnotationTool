@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CanvasDisplayEngine
+namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 {
-    public record LineData(Point StartPoint, Point EndPoint);
+    public class Coco
+    {
+
+    }
 }
