@@ -26,6 +26,7 @@
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RemovalTool()))">Usuwanie</button>
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangularScalingTool()))">Skalowanie Prostokątne</button>
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangleCreationTool()))">Prostokąt</button>
+<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new MovementTool()))">Poruszanie</button>
 
 <br />
 <button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
