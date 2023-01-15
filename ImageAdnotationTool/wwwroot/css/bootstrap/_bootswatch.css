@@ -170,6 +170,11 @@ th {
   align-content: center;
 }
 
+td {
+  width: 100%;
+  align-content: flex-end;
+}
+
 label,
 .control-label,
 .help-block,
