@@ -54,17 +54,17 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 throw new TeamDoesNotExistException(projectId);
             }
 
-            //updatedProject.Name = projectName;
-            updatedProject = project;
+            updatedProject.Name = projectName;
+            //updatedProject = project;
             await dbContext.SaveChangesAsync();
         }
 
-        private async Task<Project?> GetProject(string projectName)
+        public async Task<Project?> GetProject(string projectName)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            var team = dbContext.Projects.FirstOrDefault(x => x.Name == projectName);
-            return team;
+            var project = dbContext.Projects.FirstOrDefault(x => x.Name == projectName);
+            return project;
         }
 
         public async Task<List<Project>> GetAllProjects()
@@ -74,15 +74,17 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             return await dbContext.Projects.ToListAsync();
         }
 
-        public async Task AddProjectMember(int teamMemberSeatId)
+        public async Task AddProjectMember(int teamMemberSeatId, int projectId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
             var newProjectMember = dbContext.TeamMemberSeats.Where(t => t.Id == teamMemberSeatId).FirstOrDefault();
+            var project = dbContext.Projects.Where(t => t.Id == projectId).FirstOrDefault();
 
             var projectMemberSeat = new ProjectMemberSeat
             {
                 AssignedTeamMember = newProjectMember,
+                Project = project
             };
 
             await dbContext.ProjectMemberSeats.AddAsync(projectMemberSeat);
@@ -101,16 +103,28 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             await dbContext.SaveChangesAsync();
         }
 
-        //public async Task<List<ProjectMemberSeat>> GetAllProjectMembers(int projectId)
-        //{
-        //    using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        public async Task<List<ProjectMemberSeat>> GetProjectMembers(int projectId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-        //    return await dbContext.ProjectMemberSeats.Where(t => t.Project.Id == teamId).ToListAsync();
-        //}
+            return await dbContext
+                .ProjectMemberSeats
+                .Where(t => t.Project.Id == projectId)
+                .Include(t => t.AssignedTeamMember.AssignedUser)
+                .Include(t => t.Project)
+                .ToListAsync();
+        }
 
-        //public async Task<List<Project>> GetAllProjectsOfTeamMember(int accountId)
-        //{
+        public async Task<List<ProjectMemberSeat>> GetProjectsOfTeamMember(int teamMemberId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-        //}
+            return await dbContext
+                .ProjectMemberSeats
+                .Where(t => t.AssignedTeamMember.Id == teamMemberId)
+                .Include(t => t.AssignedTeamMember)
+                .Include(t => t.Project)
+                .ToListAsync();
+        }
     }
 }

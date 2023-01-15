@@ -65,6 +65,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             }
 
             updatedTeam.Name = TeamName;
+            
             await dbContext.SaveChangesAsync();
         }
 
@@ -111,7 +112,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<TeamMemberSeat>> GetAllTeamMembers(int teamId)
+        public async Task<List<TeamMemberSeat>> GetTeamMembers(int teamId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
@@ -123,9 +124,16 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .ToListAsync();
         }
 
-        //public async Task<List<Team>> GetAllTeamsOfUserAccount(int accountId)
-        //{
+        public async Task<List<TeamMemberSeat>> GetTeamsOfUserAccount(int accountId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-        //}
+            return await dbContext
+                .TeamMemberSeats
+                .Where(t => t.AssignedUser.Id == accountId)
+                .Include(t => t.AssignedUser)
+                .Include(t => t.Team)
+                .ToListAsync();
+        }
     }
 }

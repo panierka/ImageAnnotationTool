@@ -32,6 +32,8 @@ namespace TeamServiceTest
             var hashGenerator = new SaltedHashGenerator(hashingfunctionProvider, saltProvider);
             var userAccountServiceProvider = new UserAccountsServiceProvider(mockDbFactory.Object, saltProvider, hashGenerator);
 
+            //test CreateTeam(Team team);, GetAllTeams()
+
             await teamsServiceProvider.CreateTeam(new() { Id = 1, Name = "Student1" });
             await teamsServiceProvider.CreateTeam(new() { Id = 2, Name = "Student2" });
             await teamsServiceProvider.CreateTeam(new() { Id = 3, Name = "Student3" });
@@ -43,6 +45,8 @@ namespace TeamServiceTest
             var actual1 = string.Join(';', teams1.Select(x => x.Name));
             Assert.AreEqual(predicted1, actual1);
 
+            //test UpdateTeam(int teamId, Team team)
+
             await teamsServiceProvider.UpdateTeam(3, new() { Name = "StudentX" });
 
             const string predicted2 = "Student1;Student2;StudentX;Student4";
@@ -51,6 +55,7 @@ namespace TeamServiceTest
             var actual2 = string.Join(';', teams2.Select(x => x.Name));
             Assert.AreEqual(predicted2, actual2);
 
+            //test DeleteTeam(int teamId)
 
             await teamsServiceProvider.DeleteTeam(4);
 
@@ -61,11 +66,7 @@ namespace TeamServiceTest
 
             Assert.AreEqual(predicted3, actual3);
 
-
-            //test AddTeamMember(int accountId, int teamId)
-            //test RemoveTeamMember(int teamMemberSeatId)
-            //test GetAllTeamMembers(int teamId)
-
+            //test AddTeamMember(int accountId, int teamId), GetAllTeamMembers(int teamId)
 
             var signupformdata1 = new SignUpFormData
             {
@@ -125,10 +126,32 @@ namespace TeamServiceTest
             };
 
             string predicted4 = "student1;student2";
-            var teamMembers1 = await teamsServiceProvider.GetAllTeamMembers(1);
+            var teamMembers1 = await teamsServiceProvider.GetTeamMembers(1);
             var actual4 = string.Join(';', teamMembers1.Select(x => x.AssignedUser.Login));
 
             Assert.AreEqual(predicted4, actual4);
+
+            //test RemoveTeamMember(int teamMemberSeatId)
+
+            await teamsServiceProvider.RemoveTeamMember(2);
+
+            string predicted5 = "student1";
+            var teamMembers2 = await teamsServiceProvider.GetTeamMembers(1);
+            var actual5 = string.Join(';', teamMembers2.Select(x => x.AssignedUser.Login));
+
+            Assert.AreEqual(predicted5, actual5);
+
+            //test GetAllTeamsOfUserAccount(int accountId)
+
+            await teamsServiceProvider.AddTeamMember(1, 2);
+            await teamsServiceProvider.AddTeamMember(1, 3);
+
+            string predicted6 = "Student1;Student2;StudentX";
+
+            var userTeams = await teamsServiceProvider.GetTeamsOfUserAccount(1);
+            var actual6 = string.Join(';', userTeams.Select(x => x.Team.Name));
+
+            Assert.AreEqual(predicted6, actual6);
         }
     }
 }

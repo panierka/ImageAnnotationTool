@@ -17,12 +17,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
         public Task<List<Project>> GetAllProjects();
 
-        public Task AddProjectMember(int projectMemberId);
+        public Task AddProjectMember(int projectMemberId, int projectId);
 
         public Task RemoveProjectMember(int projectMemberSeatId);
 
-        //public Task<List<ProjectMemberSeat>> GetAllProjectMembers(int projectId);
+        public Task<List<ProjectMemberSeat>> GetProjectMembers(int projectId);
 
-        //public Task<List<Project>> GetAllProjectsOfTeamMember(int accountId);
+        public Task<List<ProjectMemberSeat>> GetProjectsOfTeamMember(int teamMemberId);
     }
 }

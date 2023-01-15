@@ -17,6 +17,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 
         public virtual TeamMemberSeat AssignedTeamMember { get; set; }
 
+        public virtual Project Project { get; set; }
+
         public virtual ICollection<Job> Jobs { get; set; }
 
         // rola
