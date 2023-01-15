@@ -10,7 +10,11 @@
 
 <h3>Annotating</h3>
 
-<ComboBox Items="test1" SelectedItem="test"/>
+<ComboBox 
+    Items="modes" 
+    SelectedItem="currentMode" 
+    OnSelectedItemChanged="SwitchToolset"
+    T="ShapeEditionType" />
 
 <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
@@ -26,6 +30,7 @@
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RemovalTool()))">Usuwanie</button>
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangularScalingTool()))">Skalowanie Prostokątne</button>
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangleCreationTool()))">Prostokąt</button>
+
 <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new MovementTool()))">Poruszanie</button>
 
 <br />
@@ -38,12 +43,12 @@
     private BECanvasComponent? canvas;
     private CanvasDisplayEngine? drawingEngine;
     private ShapeEditor? shapeEditor;
+    private ShapeToolsetHandler toolsetHandler = null!;
 
-    private Test? test;
-    private Test[] test1 = new Test[] { 
-        new() { Abc = "student" }, 
-        new() { Abc = "dziekan" }, 
-        new() { Abc = "rektor" } 
+    private ShapeEditionType currentMode;
+    private ShapeEditionType[] modes = new ShapeEditionType[] {
+        ShapeEditionType.Rectangle,
+        ShapeEditionType.Polygon,
     };
 
 
@@ -76,10 +81,25 @@
         shapeEditor = new();
         shapeEditor.AssignShape(polygon);
 
-        IShapeEditingTool tool = new CreationTool();
-        shapeEditor.EquipEditingTool(tool);
+        toolsetHandler = new(shapeEditor);
+
+        var rectangleToolset = new ShapeToolset();
+        rectangleToolset.AddTool("create", new RectangleCreationTool());
+        rectangleToolset.AddTool("reshape", new RectangularScalingTool());
+        rectangleToolset.AddTool("move", new MovementTool());
+        toolsetHandler.AddToolset(ShapeEditionType.Rectangle, rectangleToolset);
+
+        var polygonToolset = new ShapeToolset();
+        polygonToolset.AddTool("create", new CreationTool());
+        polygonToolset.AddTool("reshape", new ReshapingTool());
+        polygonToolset.AddTool("split", new SplittingTool());
+        polygonToolset.AddTool("remove", new RemovalTool());
+        polygonToolset.AddTool("move", new MovementTool());
+        toolsetHandler.AddToolset(ShapeEditionType.Polygon, polygonToolset);
+
+        toolsetHandler.EquipToolFromCurrentToolset("create");
     }
-    
+
     private async Task RegisterMouseDownAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
@@ -111,5 +131,17 @@
     {
         shapeEditor?.ResetShape();
         await drawingEngine!.RenderFrame();
+    }
+
+    private void SwitchToolset(ShapeEditionType type)
+    {
+        toolsetHandler.EquipToolset(type);
+        StateHasChanged();
+    }
+
+    private void SwitchTool(string name)
+    {
+        toolsetHandler.EquipToolFromCurrentToolset(name);
+        StateHasChanged();
     }
 }

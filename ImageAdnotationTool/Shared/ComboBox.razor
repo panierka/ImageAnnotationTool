@@ -26,7 +26,8 @@
 
     private IEnumerable<ItemContainer> itemContainers = null!;
 
-    public event Action<T?>? OnSelectedItemChanged;
+    [Parameter]
+    public Action<T?>? OnSelectedItemChanged { get; set; }
 
     protected override void OnInitialized()
     {
