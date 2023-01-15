@@ -1,6 +1,7 @@
 ﻿using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Proxies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,11 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 		public DbSet<Team> Teams { get; set; }
 		public DbSet<TeamMemberSeat> TeamMemberSeats { get; set; }
         public DbSet<UserAccount> UserAccounts { get; set; }
+
+   //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+   //     {
+			//optionsBuilder.UseLazyLoadingProxies();
+   //     }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Services
 {
-    public interface IProjectServiceProvier
+    public interface IProjectServiceProvider
     {
         public Task CreateProject(Project project);
 
@@ -15,8 +15,14 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
         public Task UpdateProject(int projectId, Project project);
 
-        public Task AddProjectMember(int teamMemberId);
+        public Task<List<Project>> GetAllProjects();
 
-        public Task RemoveProjectMember(int teamMemberId);
+        public Task AddProjectMember(int projectMemberId, int projectId);
+
+        public Task RemoveProjectMember(int projectMemberSeatId);
+
+        public Task<List<ProjectMemberSeat>> GetProjectMembers(int projectId);
+
+        public Task<List<ProjectMemberSeat>> GetProjectsOfTeamMember(int teamMemberId);
     }
 }

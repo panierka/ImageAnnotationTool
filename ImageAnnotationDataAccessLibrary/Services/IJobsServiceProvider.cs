@@ -1,6 +1,7 @@
 ﻿﻿using ImageAnnotationToolDataAccessLibrary.ModelCreationRequests;
 using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public Task DeleteJob(int jobId);
 
         public Task UpdateJob(int jobId, Job job);
+
+        public Task<List<Job>> GetAllJobs();
+
+        public Task<List<Job>> GetJobsOfProjectMemeber(int projectMemberId);
+
+        public Task<List<Job>> GetJobsOfProject(int projectId);
     }
 }

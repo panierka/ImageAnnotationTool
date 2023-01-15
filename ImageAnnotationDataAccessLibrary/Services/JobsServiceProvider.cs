@@ -51,8 +51,37 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 throw new JobDoesNotExistException(jobId);
             }
 
-            updatedJob = job;
+            updatedJob.Project = job.Project;
+            updatedJob.ProjectId = job.ProjectId;
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Job>> GetAllJobs()
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext
+                .Jobs
+                .Include(t => t.Project)
+                .ToListAsync();
+        }
+
+        public async Task<List<Job>> GetJobsOfProjectMemeber(int projectMemberId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext.Jobs.Where(t => t.AssignedProjectMember.Id == projectMemberId).ToListAsync();
+        }
+
+        public async Task<List<Job>> GetJobsOfProject(int projectId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext
+                .Jobs
+                .Where(t => t.Project.Id == projectId)
+                .Include(t => t.Project)
+                .ToListAsync();
         }
     }
 }

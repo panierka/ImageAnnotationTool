@@ -15,12 +15,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-        public ICollection<AnnotatedImage> AnnotatedImages { get; set; }
+        public virtual ICollection<AnnotatedImage> AnnotatedImages { get; set; }
 
-        public ProjectMemberSeat AssignedProjectMember { get; set; }
+        public virtual ProjectMemberSeat AssignedProjectMember { get; set; }
 
         [ForeignKey(nameof(ProjectId))]
-		public Project? Project { get; set; }
+		public virtual Project? Project { get; set; }
 
         public int? ProjectId { get; set; }
     }

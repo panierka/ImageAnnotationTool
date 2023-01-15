@@ -27,6 +27,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 
         public string Salt { get; set; }
 
-        public ICollection<TeamMemberSeat>? TeamMemberSeats { get; set; }
+        public virtual ICollection<TeamMemberSeat>? TeamMemberSeats { get; set; }
     }
 }

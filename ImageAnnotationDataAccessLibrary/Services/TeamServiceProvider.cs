@@ -65,10 +65,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             }
 
             updatedTeam.Name = TeamName;
+            
             await dbContext.SaveChangesAsync();
         }
 
-        private async Task<Team?> GetTeam(string teamName)
+        public async Task<Team?> GetTeam(string teamName)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
@@ -83,18 +84,56 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             return await dbContext.Teams.ToListAsync();
         }
 
-        public async Task AddTeamMember(int accountId)
+        public async Task AddTeamMember(int accountId, int teamId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            var newTeamMember = await dbContext.UserAccounts.Where(t => t.Id == accountId).FirstOrDefaultAsync();
+            var team = await dbContext.Teams.Where(t => t.Id == teamId).FirstOrDefaultAsync();
+            var teamMemberSeat = new TeamMemberSeat
+            {
+                AssignedUser = newTeamMember,
+                Team = team,
+            };
+
+            await dbContext.TeamMemberSeats.AddAsync(teamMemberSeat);
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveTeamMember(int accountId)
+        public async Task RemoveTeamMember(int teamMemberSeatId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
+            var teamMember = dbContext.TeamMemberSeats.Where(t => t.Id == teamMemberSeatId).FirstOrDefault();
+
+            dbContext.TeamMemberSeats.Attach(teamMember);
+            dbContext.TeamMemberSeats.Remove(teamMember);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<TeamMemberSeat>> GetTeamMembers(int teamId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext
+                .TeamMemberSeats
+                .Where(t => t.Team.Id == teamId)
+                .Include(t => t.AssignedUser)
+                .Include(t => t.Team)
+                .ToListAsync();
+        }
+
+        public async Task<List<TeamMemberSeat>> GetTeamsOfUserAccount(int accountId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext
+                .TeamMemberSeats
+                .Where(t => t.AssignedUser.Id == accountId)
+                .Include(t => t.AssignedUser)
+                .Include(t => t.Team)
+                .ToListAsync();
         }
     }
 }

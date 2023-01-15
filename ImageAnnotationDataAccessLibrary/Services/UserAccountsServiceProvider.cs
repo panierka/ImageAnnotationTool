@@ -54,6 +54,44 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 			await dbContext.SaveChangesAsync();
 		}
 
+        public async Task DeleteAccount(int accountId)
+		{
+            var account = new UserAccount
+            {
+                Id = accountId,
+            };
+
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            dbContext.UserAccounts.Attach(account);
+            dbContext.UserAccounts.Remove(account);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateAccount(int accountId, SignUpFormData signUpFormData)
+		{
+            var login = signUpFormData.Login;
+            if (await GetUserAccount(login) is { })
+            {
+                throw new LoginIsAlreadyTakenException(login);
+            }
+
+            var salt = saltProvider.GetSalt(maxLength: SALT_SIZE);
+            var hashedPassword = HashPassword(signUpFormData.Password, salt);
+
+            var account = new UserAccount
+            {
+                Email = signUpFormData.Email,
+                Login = login,
+                Password = hashedPassword,
+                Salt = salt,
+            };
+
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            var updatedTeam = dbContext.UserAccounts.Where(t => t.Id == accountId).FirstOrDefault();
+			updatedTeam = account;
+            await dbContext.SaveChangesAsync();
+        }
+
         private async Task<UserAccount?> GetUserAccount(string login)
 		{
 			using var dbContext = await dbContextFactory.CreateDbContextAsync();
