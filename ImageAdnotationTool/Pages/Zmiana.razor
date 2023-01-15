@@ -1,0 +1,56 @@
+﻿@page "/zmiana"
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using System.ComponentModel.DataAnnotations;
+
+<PageTitle>Zmień hasło</PageTitle>
+
+
+<form>
+	<fieldset>
+		<h3>Zmień hasło</h3>
+		<h5>Podaj nowe hasło</h5>
+		<div class="form-group">
+			<label for="exampleInputEmail1" class="form-label mt-4">E-mail</label>
+
+			<EditForm Model="@loginFormData">
+				<DataAnnotationsValidator />
+				<InputText type="email"
+						   class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Wprowadź nowe hasło"
+						   @bind-Value="@loginFormData.Email" />
+				<ValidationSummary />
+			</EditForm>
+
+			<EditForm Model="@loginFormData">
+				<DataAnnotationsValidator />
+				<InputText type="email"
+						   class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Potwierdź nowe hasło"
+						   @bind-Value="@loginFormData.Email" />
+				<ValidationSummary />
+			</EditForm>
+
+		</div>
+
+	</fieldset>
+	<br />
+	<button type="submit" class="btn btn-primary" @onclick="@ResetAccount">Odzyskaj</button>
+
+</form>
+
+
+@code {
+	private class LoginFormData
+	{
+		[Required(ErrorMessage = "Pole wymagane")]
+
+		public string Email { get; set; }
+
+
+	}
+
+	private LoginFormData loginFormData = new();
+
+	private async Task ResetAccount()
+	{
+
+	}
+}
