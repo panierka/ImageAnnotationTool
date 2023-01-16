@@ -12,7 +12,7 @@
 <ComboBox 
     Items="modes" 
     SelectedItem="currentMode" 
-    OnSelectedItemChanged="SwitchToolset"
+    OnSelectedItemChanged="@(async x => await SwitchToolset(x))"
     T="ShapeEditionType" />
 
 <div @onmousedown=@RegisterMouseDownAsync
@@ -25,18 +25,18 @@
 
 @if (currentMode == ShapeEditionType.Rectangle)
 {
-    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangleCreationTool()))">Twórz</button>
-    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangularScalingTool()))">Formuj</button>
+    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("create"))">Twórz</button>
+    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("reshape"))">Formuj</button>
 }
 else if (currentMode == ShapeEditionType.Polygon)
 {
-    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new CreationTool()))">Twórz</button>
-    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new ReshapingTool()))">Formuj</button>
-    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new SplittingTool()))">Dziel</button>
-    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RemovalTool()))">Usuwaj</button>
+    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("create"))">Twórz</button>
+    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("reshape"))">Formuj</button>
+    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("split"))">Dziel</button>
+    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("remove"))">Usuwaj</button>
 }
 
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new MovementTool()))">Rusz</button>
+<button class="btn btn-primary" @onclick="@(_ =>SwitchTool("move"))">Rusz</button>
 
 <br />
 <button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
@@ -138,8 +138,10 @@ else if (currentMode == ShapeEditionType.Polygon)
         await drawingEngine!.RenderFrame();
     }
 
-    private void SwitchToolset(ShapeEditionType type)
+    private async Task SwitchToolset(ShapeEditionType type)
     {
+        await ResetShape();
+        shapeEditor?.ClearHistory();
         currentMode = type;
         toolsetHandler.EquipToolset(type);
         StateHasChanged();

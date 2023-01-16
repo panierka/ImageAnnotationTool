@@ -89,5 +89,10 @@ namespace ShapeEditor
             var action = new ResetShapeAction(currentlyEditedShape);
             actionHistory.ExecuteAndRemember(action);
         }
+
+        public void ClearHistory()
+        {
+            actionHistory.Clear();
+        }
     }
 }

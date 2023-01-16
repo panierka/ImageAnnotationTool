@@ -69,5 +69,10 @@ namespace ShapeEditor
             value = Peek();
             return true;
         }
+        
+        public void Clear()
+        {
+            values.Clear();
+        }
     }
 }

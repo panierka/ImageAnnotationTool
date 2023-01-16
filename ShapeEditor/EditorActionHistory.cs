@@ -34,5 +34,10 @@ namespace ShapeEditor
                 action!.Undo();
             }
         }
+
+        public void Clear()
+        {
+            pastActions.Clear();
+        }
     }
 }
