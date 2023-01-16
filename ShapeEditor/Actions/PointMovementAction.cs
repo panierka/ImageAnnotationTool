@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CanvasDisplayEngine;
 
 
-namespace ShapeEditor.Actions
+namespace ShapeEditing.Actions
 {
     internal class PointMovementAction : IEditorAction
     {

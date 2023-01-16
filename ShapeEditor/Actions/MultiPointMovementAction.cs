@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeEditor.Actions
+namespace ShapeEditing.Actions
 {
     internal class MultiPointMovementAction : IEditorAction
     {

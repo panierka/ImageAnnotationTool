@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeEditor
+namespace ShapeEditing
 {
     public record InputEventData(double MouseX, double MouseY, long MouseButton)
     {

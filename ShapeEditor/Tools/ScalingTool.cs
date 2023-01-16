@@ -1,14 +1,14 @@
 ﻿using CanvasDisplayEngine;
-using ShapeEditor.Actions;
+using ShapeEditing.Actions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using static ShapeEditor.Actions.MultiPointMovementAction;
+using static ShapeEditing.Actions.MultiPointMovementAction;
 
-namespace ShapeEditor.Tools
+namespace ShapeEditing.Tools
 {
     [Obsolete("This tool does not work properly", true)]
     public class ScalingTool : IShapeEditingTool

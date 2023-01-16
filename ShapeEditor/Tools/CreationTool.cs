@@ -1,4 +1,4 @@
-﻿using ShapeEditor.Actions;
+﻿using ShapeEditing.Actions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using CanvasDisplayEngine;
 
 
-namespace ShapeEditor.Tools
+namespace ShapeEditing.Tools
 {
     public class CreationTool : IShapeEditingTool
     {

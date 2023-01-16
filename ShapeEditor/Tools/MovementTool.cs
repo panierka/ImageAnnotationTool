@@ -1,13 +1,13 @@
 ﻿using CanvasDisplayEngine;
-using ShapeEditor.Actions;
+using ShapeEditing.Actions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ShapeEditor.Actions.MultiPointMovementAction;
+using static ShapeEditing.Actions.MultiPointMovementAction;
 
-namespace ShapeEditor.Tools
+namespace ShapeEditing.Tools
 {
     public class MovementTool : IShapeEditingTool
     {
