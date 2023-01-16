@@ -6,7 +6,6 @@
 @using CanvasDisplayEngine;
 @using ShapeEditor;
 @using ShapeEditor.Tools;
-`
 
 <h3>Annotating</h3>
 
@@ -24,14 +23,20 @@
     <BECanvas Width="460" Height="292" @ref="@canvas"></BECanvas>
 </div>
 
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new CreationTool()))">Tworzenie</button>
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new ReshapingTool()))">Przekształcanie</button>
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new SplittingTool()))">Rozdzielanie</button>
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RemovalTool()))">Usuwanie</button>
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangularScalingTool()))">Skalowanie Prostokątne</button>
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangleCreationTool()))">Prostokąt</button>
+@if (currentMode == ShapeEditionType.Rectangle)
+{
+    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangleCreationTool()))">Twórz</button>
+    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RectangularScalingTool()))">Formuj</button>
+}
+else if (currentMode == ShapeEditionType.Polygon)
+{
+    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new CreationTool()))">Twórz</button>
+    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new ReshapingTool()))">Formuj</button>
+    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new SplittingTool()))">Dziel</button>
+    <button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new RemovalTool()))">Usuwaj</button>
+}
 
-<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new MovementTool()))">Poruszanie</button>
+<button class="btn btn-primary" @onclick="@(_ => shapeEditor?.EquipEditingTool(new MovementTool()))">Rusz</button>
 
 <br />
 <button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
@@ -135,6 +140,7 @@
 
     private void SwitchToolset(ShapeEditionType type)
     {
+        currentMode = type;
         toolsetHandler.EquipToolset(type);
         StateHasChanged();
     }

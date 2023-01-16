@@ -1,7 +1,7 @@
 ﻿@typeparam T
 
 <div>
-    <select @onchange=HandleSelectionChange>
+    <select @oninput=HandleSelectionChange>
         @foreach (var container in itemContainers)
         {
             <option value="@container.Id">@container.Item.ToString()</option>
@@ -17,7 +17,6 @@
         set
         {
             selectedItem = value;
-            OnSelectedItemChanged?.Invoke(SelectedItem);
         }
     }
 
@@ -46,6 +45,7 @@
         }
 
         SelectedItem = itemContainers.First(x => x.Id == id).Item;
+        OnSelectedItemChanged?.Invoke(SelectedItem);
     }
 
     private T? selectedItem;
