@@ -4,6 +4,7 @@
 @using Blazor.Extensions;
 @using System.Numerics;
 @using CanvasDisplayEngine;
+@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 @using ShapeEditor;
 @using ShapeEditor.Tools;
 
@@ -26,6 +27,19 @@
             };
         }
     ))"/>
+
+<AnnotationsListBox Classes="@(new()
+{ 
+    new() { Name = "Pies", DescriptorBlueprints = new List<DescriptorBlueprint>() 
+        {
+            new() { Name = "Rasa", Type = DescriptorBlueprint.DataType.String },
+            new() { Name = "Kolor", Type = DescriptorBlueprint.DataType.String },
+        } },
+    new() { Name = "Broń", DescriptorBlueprints = new List<DescriptorBlueprint>() 
+        {
+            new() { Name = "Rodzaj", Type = DescriptorBlueprint.DataType.String }
+        } } 
+})"/>
 
 <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync

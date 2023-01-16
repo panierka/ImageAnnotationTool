@@ -8,16 +8,27 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 {
-    public class AnnotationDescriptor
+    public class DescriptorBlueprint
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        
+        public string Name { get; set; }
 
-        public string Value { get; set; }
+        public DataType Type { get; set; }
 
-        public Annotation Annotation { get; set; }
+        public AnnotationClass ParentClass { get; set; }
 
-        public AnnotationDescriptorBlueprint Blueprint { get; set; }
+        public ICollection<Descriptor> CreatedDescriptors { get; set; }
+
+        public enum DataType
+        {
+            Integer,
+            Double,
+            Boolean,
+            String,
+            Choice
+        }
     }
 }

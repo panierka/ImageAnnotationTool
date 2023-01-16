@@ -5,22 +5,19 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 {
-    public class AnnotationClass
+    public class Descriptor
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Value { get; set; }
 
-        public ICollection<Annotation> AnnotationsWithClass { get; set; }
+        public Annotation Annotation { get; set; }
 
-        public ICollection<DescriptorBlueprint> DescriptorBlueprints { get; set; }
-
-        public Project ParentProject { get; set; }
+        public DescriptorBlueprint Blueprint { get; set; }
     }
 }

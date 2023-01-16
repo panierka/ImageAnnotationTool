@@ -17,7 +17,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public AnnotationClass Class { get; set; }
 
-        public ICollection<AnnotationDescriptor> Descriptors { get; set; }
+        public ICollection<Descriptor> Descriptors { get; set; }
 
         public AnnotatedImage Image { get; set; }
     }

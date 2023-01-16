@@ -1,0 +1,33 @@
+﻿@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+
+<div>
+    ------------------
+    @foreach(var item in List)
+    {
+        <div>
+            <ComboBox
+                Items="@Classes"
+                OnSelectedItemChanged="@(x => item.Class = x)"
+                CustomStringConverter="@(new ComboBox<AnnotationClass>
+                    .DelegatedCustomStringConverter(x => x.Name))"
+                />
+            ------------------
+        </div>
+    }
+    <br/>
+    <button @onclick="@AddElement">Dodaj nowy...</button>
+    <br/>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<AnnotationClass> Classes { get; set; } = null!;
+
+    private List<Annotation> List { get; set; } = new();
+
+    private void AddElement()
+    {
+        List.Add(new());
+        StateHasChanged();
+    }
+}

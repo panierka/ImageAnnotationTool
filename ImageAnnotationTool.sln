@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Security", "Hashing\Securit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanvasDisplayEngine", "CanvasDisplayEngine\CanvasDisplayEngine.csproj", "{5E13378F-B317-4640-BFE0-4FB8F590577B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnotationEditor", "AnnotationEditor\AnnotationEditor.csproj", "{B18CC945-53B5-4F52-9110-EBBC4BFF3262}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnnotationEditor", "AnnotationEditor\AnnotationEditor.csproj", "{B18CC945-53B5-4F52-9110-EBBC4BFF3262}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeEditor", "ShapeEditor\ShapeEditor.csproj", "{7D9065B4-627A-47CA-A8A0-0F0CC5A265F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeEditor", "ShapeEditor\ShapeEditor.csproj", "{7D9065B4-627A-47CA-A8A0-0F0CC5A265F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
