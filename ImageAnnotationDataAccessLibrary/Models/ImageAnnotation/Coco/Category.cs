@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 {
-    public class Category
+    public record Category
     {
-        public  string SuperCategory { get; set; }
+        public  string Supercategory { get; set; }
 
         public int Id { get; set; }
 

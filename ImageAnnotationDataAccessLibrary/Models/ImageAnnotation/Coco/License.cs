@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 {
-    public class License
+    public record License
     {
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         public int Id { get; set; }
 

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 {
-    public class Info
+    public record Info
     {
         public string Description { get; set; }
 
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         public string Version { get; set; }
 

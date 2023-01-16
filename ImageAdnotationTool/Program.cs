@@ -7,6 +7,8 @@ using Security.Hashing;
 using Security.Salting;
 using ImageAnnotationToolDataAccessLibrary.Services;
 using ImageAnnotationTool.Validation;
+using ImageAnnotationToolDataAccessLibrary.Serialization;
+using ImageAnnotationToolDataAccessLibrary.JsonFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,8 @@ builder.Services.AddTransient<IHashGenerator, SaltedHashGenerator>();
 
 builder.Services.AddTransient<IUserAccountsServiceProvider, UserAccountsServiceProvider>();
 builder.Services.AddTransient<IAnnotatedImagesProjectDatabaseServiceProvider, AnnotatedImagesProjectDatabaseServiceProvider>();
+builder.Services.AddScoped(typeof(ISerialization<>), typeof(JsonSerialization<>));
+builder.Services.AddScoped(typeof(IDeserialization<>), typeof(JsonDeserialization<>));
 
 builder.Services.AddTransient<SignUpFormDataValidation>();
 
