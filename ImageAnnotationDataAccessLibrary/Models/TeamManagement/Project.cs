@@ -23,5 +23,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
         public ICollection<Job>? Jobs { get; set; }
 
         public ICollection<AnnotatedImage> AnnotatedImages { get; set; }
+
+        public ICollection<AnnotationClass> DefinedAnnotationClasses { get; set; }
     }
 }
