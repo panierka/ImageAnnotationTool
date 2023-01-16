@@ -4,7 +4,10 @@
     <select @oninput=HandleSelectionChange>
         @foreach (var container in itemContainers)
         {
-            <option value="@container.Id">@container.Item.ToString()</option>
+            <option value="@container.Id">
+                @(CustomStringConverter?.GetString(container.Item)
+                    ?? container.Item.ToString())
+            </option>
         }
     </select>
 </div>
@@ -27,6 +30,9 @@
 
     [Parameter]
     public Action<T?>? OnSelectedItemChanged { get; set; }
+
+    [Parameter]
+    public ICustomStringConverter? CustomStringConverter { get; set; }
 
     protected override void OnInitialized()
     {
@@ -51,4 +57,24 @@
     private T? selectedItem;
 
     private record ItemContainer(string Id, T Item);
+
+    public interface ICustomStringConverter
+    {
+        public string GetString(T item);
+    }
+
+    public class DelegatedCustomStringConverter : ICustomStringConverter
+    {
+        private readonly Func<T, string> conversionFunction;
+
+        public DelegatedCustomStringConverter(Func<T, string> conversionFunction)
+        {
+            this.conversionFunction = conversionFunction;
+        }
+
+        public string GetString(T item)
+        {
+            return conversionFunction?.Invoke(item) ?? string.Empty;
+        }
+    }
 }

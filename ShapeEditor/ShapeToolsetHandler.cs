@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShapeEditor.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,13 +30,19 @@ namespace ShapeEditor
             if (toolsets.TryGetValue(type, out var toolset))
             {
                 currentToolset = toolset;
+                var defaultTool = currentToolset.GetDefaultTool();
+                EquipTool(defaultTool);
             }
         }
 
         public void EquipToolFromCurrentToolset(string key)
         {
             var tool = currentToolset.GetTool(key);
+            EquipTool(tool);
+        }
 
+        private void EquipTool(IShapeEditingTool? tool)
+        {
             if (tool is { })
             {
                 shapeEditor.EquipEditingTool(tool);

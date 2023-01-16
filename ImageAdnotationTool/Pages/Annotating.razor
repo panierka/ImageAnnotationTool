@@ -13,7 +13,19 @@
     Items="modes" 
     SelectedItem="currentMode" 
     OnSelectedItemChanged="@(async x => await SwitchToolset(x))"
-    T="ShapeEditionType" />
+    T="ShapeEditionType" 
+    CustomStringConverter="@(
+        new ComboBox<ShapeEditionType>
+            .DelegatedCustomStringConverter(x => 
+        {
+            return x switch
+            {
+                ShapeEditionType.Rectangle => "Prostokąt",
+                ShapeEditionType.Polygon => "Wielokąt",
+                _ => throw new NotImplementedException()
+            };
+        }
+    ))"/>
 
 <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
@@ -88,13 +100,13 @@ else if (currentMode == ShapeEditionType.Polygon)
 
         toolsetHandler = new(shapeEditor);
 
-        var rectangleToolset = new ShapeToolset();
+        var rectangleToolset = new ShapeToolset(defaultTool: "create");
         rectangleToolset.AddTool("create", new RectangleCreationTool());
         rectangleToolset.AddTool("reshape", new RectangularScalingTool());
         rectangleToolset.AddTool("move", new MovementTool());
         toolsetHandler.AddToolset(ShapeEditionType.Rectangle, rectangleToolset);
 
-        var polygonToolset = new ShapeToolset();
+        var polygonToolset = new ShapeToolset(defaultTool: "create");
         polygonToolset.AddTool("create", new CreationTool());
         polygonToolset.AddTool("reshape", new ReshapingTool());
         polygonToolset.AddTool("split", new SplittingTool());
