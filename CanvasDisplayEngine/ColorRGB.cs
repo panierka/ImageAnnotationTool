@@ -8,20 +8,27 @@ namespace CanvasDisplayEngine
 {
     public class ColorRGB
     {
-        public byte Red { get; set; }
-        public byte Green { get; set; }
-        public byte Blue { get; set; }
+        public byte R { get; set; }
+        public byte G { get; set; }
+        public byte B { get; set; }
 
-        public ColorRGB(byte red, byte green, byte blue)
+        public ColorRGB(byte r, byte g, byte b)
         {
-            Red = red;
-            Green = green;
-            Blue = blue;
+            R = r;
+            G = g;
+            B = b;
         }
 
         public override string ToString()
         {
-            return $"rgb({Red}, {Green}, {Blue})";
+            return $"rgb({R}, {G}, {B})";
         }
+
+        public static ColorRGB Red => new(255, 0, 0);
+        public static ColorRGB Green => new(0, 255, 0);
+        public static ColorRGB Blue => new(0, 0, 255);
+        public static ColorRGB Magenta => new(255, 0, 255);
+        public static ColorRGB Yellow => new(255, 255, 0);
+        public static ColorRGB Cyan => new(0, 255, 255);
     }
 }

@@ -7,6 +7,8 @@ using Security.Hashing;
 using Security.Salting;
 using ImageAnnotationToolDataAccessLibrary.Services;
 using ImageAnnotationTool.Validation;
+using AnnotationEditor;
+using CanvasDisplayEngine;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,19 @@ builder.Services.AddTransient<IUserAccountsServiceProvider, UserAccountsServiceP
 builder.Services.AddTransient<IAnnotatedImagesProjectDatabaseServiceProvider, AnnotatedImagesProjectDatabaseServiceProvider>();
 
 builder.Services.AddTransient<SignUpFormDataValidation>();
+
+builder.Services.AddTransient<IColorProvider, RotationalColorProvider>(_ =>
+{
+    return new RotationalColorProvider(new()
+    {
+        ColorRGB.Red,
+        ColorRGB.Green,
+        ColorRGB.Blue,
+        ColorRGB.Magenta,
+        ColorRGB.Yellow,
+        ColorRGB.Cyan,
+    });
+});
 
 const string CONNECTION_STRING_KEY = "Default";
 var connectionString = builder.Configuration.GetConnectionString(CONNECTION_STRING_KEY)

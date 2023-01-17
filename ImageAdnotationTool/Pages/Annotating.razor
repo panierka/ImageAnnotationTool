@@ -1,4 +1,5 @@
 ﻿@page "/annotate"
+@using AnnotationEditor;
 @using Blazor.Extensions.Canvas;
 @using Blazor.Extensions.Canvas.Canvas2D;
 @using Blazor.Extensions;
@@ -7,6 +8,7 @@
 @using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 @using ShapeEditing;
 @using ShapeEditing.Tools;
+@inject IColorProvider colorProvider;
 
 <h3>Annotating</h3>
 
@@ -103,7 +105,7 @@ else if (currentMode == ShapeEditionType.Polygon)
         context = await canvas.CreateCanvas2DAsync();
         drawingEngine = new(context, canvas!);
 
-        var polygon = new Shape(new(255, 0, 0));
+        var polygon = new Shape(colorProvider.GetNextColor());
 
         drawingEngine.Drawables.Add(polygon);
         drawingEngine.Drawables.Add(new SelectionIndicator() { Shape = polygon });
