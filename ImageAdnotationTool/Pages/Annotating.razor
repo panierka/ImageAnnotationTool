@@ -75,8 +75,7 @@ else if (currentMode == ShapeEditionType.Polygon)
     private Canvas2DContext? context;
     private BECanvasComponent? canvas;
     private CanvasDisplayEngine? drawingEngine;
-    private ShapeEditor? shapeEditor;
-    private ShapeToolsetHandler toolsetHandler = null!;
+    private AnnotationContext annotationContext = null!;
 
     private ShapeEditionType currentMode;
     private ShapeEditionType[] modes = new ShapeEditionType[] {
@@ -105,79 +104,58 @@ else if (currentMode == ShapeEditionType.Polygon)
         context = await canvas.CreateCanvas2DAsync();
         drawingEngine = new(context, canvas!);
 
-        var polygon = new Shape(colorProvider.GetNextColor());
+        annotationContext = new(new(), colorProvider);
 
-        drawingEngine.Drawables.Add(polygon);
-        drawingEngine.Drawables.Add(new SelectionIndicator() { Shape = polygon });
+        drawingEngine.Drawables.Add(annotationContext.Shape);
+        drawingEngine.Drawables.Add(new SelectionIndicator() { Shape = annotationContext.Shape });
         await drawingEngine.RenderFrame();
-
-        shapeEditor = new();
-        shapeEditor.AssignShape(polygon);
-
-        toolsetHandler = new(shapeEditor);
-
-        var rectangleToolset = new ShapeToolset(defaultTool: "create");
-        rectangleToolset.AddTool("create", new RectangleCreationTool());
-        rectangleToolset.AddTool("reshape", new RectangularScalingTool());
-        rectangleToolset.AddTool("move", new MovementTool());
-        toolsetHandler.AddToolset(ShapeEditionType.Rectangle, rectangleToolset);
-
-        var polygonToolset = new ShapeToolset(defaultTool: "create");
-        polygonToolset.AddTool("create", new CreationTool());
-        polygonToolset.AddTool("reshape", new ReshapingTool());
-        polygonToolset.AddTool("split", new SplittingTool());
-        polygonToolset.AddTool("remove", new RemovalTool());
-        polygonToolset.AddTool("move", new MovementTool());
-        toolsetHandler.AddToolset(ShapeEditionType.Polygon, polygonToolset);
-
-        toolsetHandler.EquipToolFromCurrentToolset("create");
     }
 
     private async Task RegisterMouseDownAsync(MouseEventArgs e)
-    {
+    {        
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        shapeEditor?.PressTool(data);
+        annotationContext.ShapeEditor?.PressTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task RegisterMouseUpdateAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        shapeEditor?.MoveTool(data);
+        annotationContext.ShapeEditor?.MoveTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task RegisterMouseUpAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        shapeEditor?.ReleaseTool(data);
+        annotationContext.ShapeEditor?.ReleaseTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task Undo()
     {
-        shapeEditor?.Undo();
+        annotationContext.ShapeEditor?.Undo();
         await drawingEngine!.RenderFrame();
     }
 
     private async Task ResetShape()
     {
-        shapeEditor?.ResetShape();
+        annotationContext.ShapeEditor?.ResetShape();
         await drawingEngine!.RenderFrame();
     }
 
     private async Task SwitchToolset(ShapeEditionType type)
     {
         await ResetShape();
-        shapeEditor?.ClearHistory();
+        annotationContext.ShapeEditor?.ClearHistory();
         currentMode = type;
-        toolsetHandler.EquipToolset(type);
+        annotationContext.ToolsetHandler.EquipToolset(type);
         StateHasChanged();
     }
 
     private void SwitchTool(string name)
     {
-        toolsetHandler.EquipToolFromCurrentToolset(name);
+        annotationContext.ToolsetHandler.EquipToolFromCurrentToolset(name);
         StateHasChanged();
     }
 }
