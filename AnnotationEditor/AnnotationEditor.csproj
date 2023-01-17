@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ImageAnnotationDataAccessLibrary\ImageAnnotationToolDataAccessLibrary.csproj" />
+    <ProjectReference Include="..\ShapeEditor\ShapeEditor.csproj" />
+  </ItemGroup>
+
 </Project>

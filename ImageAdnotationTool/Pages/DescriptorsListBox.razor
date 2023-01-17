@@ -1,0 +1,34 @@
+﻿@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+
+<div>
+    + ----------------
+    @foreach (var item in List)
+    {
+        <div class="square">
+            <ComboBox Items="@Blueprints"
+                  OnSelectedItemChanged="@(x => item.Blueprint = x)"
+                  CustomStringConverter="@(new ComboBox<DescriptorBlueprint>
+                    .DelegatedCustomStringConverter(x => x.Name))" />
+            <EditForm Model="item"> 
+                <InputText @bind-Value="@item.Value"/>
+            </EditForm>
+            + ----------------
+        </div>
+    }
+    <br />
+    <button @onclick="@AddElement">Dodaj nowy...</button>
+    <br />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<DescriptorBlueprint> Blueprints { get; set; } = null!;
+
+    private List<Descriptor> List { get; set; } = new();
+
+    private void AddElement()
+    {
+        List.Add(new());
+        StateHasChanged();
+    }
+}

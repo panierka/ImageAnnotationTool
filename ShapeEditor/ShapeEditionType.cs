@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeEditing.Actions
+namespace ShapeEditing
 {
-    public interface IEditorAction
+    public enum ShapeEditionType
     {
-        public void Execute();
-
-        public void Undo();
+        Rectangle,
+        Polygon
     }
 }

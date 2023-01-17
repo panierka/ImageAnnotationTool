@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeEditor
+namespace ShapeEditing
 {
     internal class ForgetfulStack<T>
     {
@@ -68,6 +68,11 @@ namespace ShapeEditor
 
             value = Peek();
             return true;
+        }
+        
+        public void Clear()
+        {
+            values.Clear();
         }
     }
 }

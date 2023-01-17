@@ -1,4 +1,4 @@
-﻿using ShapeEditor.Actions;
+﻿using ShapeEditing.Actions;
 using CanvasDisplayEngine;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeEditor.Tools
+namespace ShapeEditing.Tools
 {
     public class ReshapingTool : IShapeEditingTool
     {

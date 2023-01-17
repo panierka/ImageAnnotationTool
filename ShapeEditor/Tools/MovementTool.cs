@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MovementData = ShapeEditing.Actions.MultiPointMovementAction.MovementData;
+using static ShapeEditing.Actions.MultiPointMovementAction;
 
 namespace ShapeEditing.Tools
 {
-    public class RectangularScalingTool : IShapeEditingTool
+    public class MovementTool : IShapeEditingTool
     {
         private double startingX;
         private double startingY;
@@ -36,28 +36,13 @@ namespace ShapeEditing.Tools
 
             lastX = point.X;
             lastY = point.Y;
-            
-            var k = shape.Points.Count() - 1;
-            var shift = (k + 1) % 2;
 
-            var startIndex = shape
+
+            currentMovements = shape
                 .Points
-                .TakeWhile(p => p != point)
-                .Count();
-
-            var rearanged = shape
-                .Points
-                .Skip(startIndex + 1)
-                .Concat(shape.Points.Take(startIndex + 1));
-
-            var validPoints = rearanged
-                .Take(k / 2 - shift)
-                .Concat(rearanged.TakeLast(k / 2 + 1 - shift));
-            
-            currentMovements = validPoints
                 .Select(p => new MovementData(p, p.X, p.Y))
                 .ToList();
-            
+
             return null;
         }
 
@@ -79,16 +64,10 @@ namespace ShapeEditing.Tools
 
             currentMovements!.ForEach(data =>
             {
-                if (Math.Abs(data.StartingX - startingX) < 5)
-                {
-                    data.Point.X += dx;
-                }
-
-                if (Math.Abs(data.StartingY - startingY) < 5)
-                {
-                    data.Point.Y += dy;
-                }
+                data.Point.X += dx;
+                data.Point.Y += dy;
             });
+
             return null;
         }
 
@@ -98,7 +77,7 @@ namespace ShapeEditing.Tools
             {
                 return null;
             }
-            
+
             var action = new MultiPointMovementAction(currentMovements!);
             currentMovements = null;
             return action;

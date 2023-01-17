@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ShapeEditor.Actions.MultiPointMovementAction;
+using static ShapeEditing.Actions.MultiPointMovementAction;
 
-namespace ShapeEditor.Actions
+namespace ShapeEditing.Actions
 {
     internal class MultiPointAppendanceAction : IEditorAction
     {
