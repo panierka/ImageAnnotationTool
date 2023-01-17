@@ -36,11 +36,11 @@
 
     protected override void OnInitialized()
     {
-        itemContainers = Items
+        itemContainers = Items?
         .Zip(
             Enumerable.Range(1, Items.Count()), 
             (x, i) => new ItemContainer(i.ToString(), x)
-        );
+        ) ?? Enumerable.Empty<ItemContainer>();
     }
 
     private void HandleSelectionChange(ChangeEventArgs e)

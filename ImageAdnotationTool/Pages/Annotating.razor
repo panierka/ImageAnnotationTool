@@ -12,24 +12,7 @@
 
 <h3>Annotating</h3>
 
-<ComboBox 
-    Items="modes" 
-    SelectedItem="currentMode" 
-    OnSelectedItemChanged="@(async x => await SwitchToolset(x))"
-    T="ShapeEditionType" 
-    CustomStringConverter="@(
-        new ComboBox<ShapeEditionType>
-            .DelegatedCustomStringConverter(x => 
-        {
-            return x switch
-            {
-                ShapeEditionType.Rectangle => "Prostokąt",
-                ShapeEditionType.Polygon => "Wielokąt",
-                _ => throw new NotImplementedException()
-            };
-        }
-    ))"/>
-
+@*
 <AnnotationsListBox Classes="@(new()
 { 
     new() { Name = "Pies", DescriptorBlueprints = new List<DescriptorBlueprint>() 
@@ -42,7 +25,7 @@
             new() { Name = "Rodzaj", Type = DescriptorBlueprint.DataType.String }
         } } 
 })"/>
-
+*@
 <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
      @onmousemove=@RegisterMouseUpdateAsync
@@ -70,12 +53,29 @@ else if (currentMode == ShapeEditionType.Polygon)
 <button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
 <button class="btn btn-primary" @onclick="@ResetShape">Resetuj</button>
 
+<ComboBox Items="modes"
+          SelectedItem="currentMode"
+          OnSelectedItemChanged="@(async x => await SwitchToolset(x))"
+          T="ShapeEditionType"
+          CustomStringConverter="@(
+        new ComboBox<ShapeEditionType>
+            .DelegatedCustomStringConverter(x =>
+        {
+            return x switch
+            {
+                ShapeEditionType.Rectangle => "Prostokąt",
+                ShapeEditionType.Polygon => "Wielokąt",
+                _ => throw new NotImplementedException()
+            };
+        }
+    ))" />
+
 @code {
     private const string DOG = PlaceholderData.ExampleBase64s.DOG;
     private Canvas2DContext? context;
     private BECanvasComponent? canvas;
     private CanvasDisplayEngine? drawingEngine;
-    private AnnotationContext annotationContext = null!;
+    private AnnotationContext? annotationContext;
 
     private ShapeEditionType currentMode;
     private ShapeEditionType[] modes = new ShapeEditionType[] {
@@ -114,48 +114,48 @@ else if (currentMode == ShapeEditionType.Polygon)
     private async Task RegisterMouseDownAsync(MouseEventArgs e)
     {        
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        annotationContext.ShapeEditor?.PressTool(data);
+        annotationContext?.ShapeEditor?.PressTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task RegisterMouseUpdateAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        annotationContext.ShapeEditor?.MoveTool(data);
+        annotationContext?.ShapeEditor?.MoveTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task RegisterMouseUpAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        annotationContext.ShapeEditor?.ReleaseTool(data);
+        annotationContext?.ShapeEditor?.ReleaseTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task Undo()
     {
-        annotationContext.ShapeEditor?.Undo();
+        annotationContext?.ShapeEditor?.Undo();
         await drawingEngine!.RenderFrame();
     }
 
     private async Task ResetShape()
     {
-        annotationContext.ShapeEditor?.ResetShape();
+        annotationContext?.ShapeEditor?.ResetShape();
         await drawingEngine!.RenderFrame();
     }
 
     private async Task SwitchToolset(ShapeEditionType type)
     {
         await ResetShape();
-        annotationContext.ShapeEditor?.ClearHistory();
+        annotationContext?.ShapeEditor?.ClearHistory();
         currentMode = type;
-        annotationContext.ToolsetHandler.EquipToolset(type);
+        annotationContext?.ToolsetHandler.EquipToolset(type);
         StateHasChanged();
     }
 
     private void SwitchTool(string name)
     {
-        annotationContext.ToolsetHandler.EquipToolFromCurrentToolset(name);
+        annotationContext?.ToolsetHandler.EquipToolFromCurrentToolset(name);
         StateHasChanged();
     }
 }

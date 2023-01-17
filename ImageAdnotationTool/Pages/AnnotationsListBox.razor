@@ -4,13 +4,19 @@
     ------------------
     @foreach(var item in List)
     {
-        <div>
+        <div class="square" @onclick="@(() => OnSelectAnnotation?.Invoke(item))">
             <ComboBox
                 Items="@Classes"
-                OnSelectedItemChanged="@(x => item.Class = x)"
+                OnSelectedItemChanged="@(x => {
+                        item.Class = x;
+                        StateHasChanged();
+                    })"
                 CustomStringConverter="@(new ComboBox<AnnotationClass>
                     .DelegatedCustomStringConverter(x => x.Name))"
                 />
+
+            <DescriptorsListBox 
+                Blueprints="@(item.Class?.DescriptorBlueprints?.ToList())"/>
             ------------------
         </div>
     }
@@ -25,9 +31,17 @@
 
     private List<Annotation> List { get; set; } = new();
 
+    [Parameter]
+    public Action<Annotation> OnAddAnnotation { get; set; }
+
+    [Parameter]
+    public Action<Annotation> OnSelectAnnotation { get; set; }
+
     private void AddElement()
     {
-        List.Add(new());
+        var annotation = new Annotation();
+        List.Add(annotation);
+        OnAddAnnotation?.Invoke(annotation);
         StateHasChanged();
     }
 }
