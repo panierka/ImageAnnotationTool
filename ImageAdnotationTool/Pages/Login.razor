@@ -1,102 +1,77 @@
 ﻿@page "/login"
+@using Blazored.FluentValidation
+@using ImageAnnotationToolDataAccessLibrary.ModelCreationRequests;
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 @using System.ComponentModel.DataAnnotations;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using ImageAnnotationToolDataAccessLibrary.Services;
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Components.Forms;
+@inject ProtectedSessionStorage ProtectedSessionStore;
+@inject IUserAccountsServiceProvider userAccountsService;
+@inject NavigationManager NavigationManager;
+
 
 <PageTitle>Logowanie</PageTitle>
-<div class="alert alert-dismissible alert-warning">
-	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-	<h4 class="alert-heading">Drogi użytkowniku!</h4>
-	<p class="mb-0">Pamiętaj aby chronić swoje dane. Wypełniając login i hasło zadbaj o bezpieczeństwo środowiska swojej pracy</p>
-</div>
 
-<form>
-  <fieldset>
+<fieldset>
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+  
 	<h3>Zaloguj się</h3>
     <div class="form-group">
-      <label for="exampleInputEmail1" class="form-label mt-4">E-mail</label>
+      <label for="exampleInputEmail1" class="form-label mt-4">Login</label>
        
-<EditForm Model="@loginFormData">
-	<DataAnnotationsValidator />
-	<InputText type="email"
-			   class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Wprowadź e-mail"
-			   @bind-Value="@loginFormData.Email" />
-	<ValidationSummary />
-</EditForm>
+
+	@*<FluentValidationValidator Validator="validator"/>*@
+	<InputText 
+		type="text"
+			   class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Wprowadź login"
+			  autocomplete="off" @bind-Value="@loginModel.Username" />
+	 <ValidationMessage For="@(() => loginModel.Username)" />
+	
 
 	  
       </div>
     <div class="form-group">
       <label for="exampleInputPassword1" class="form-label mt-4">Hasło</label>
-<EditForm Model="@loginFormData">
-	<DataAnnotationsValidator />
+	 
 	<InputText type="password"
 			   class="form-control" id="exampleInputPassword1" placeholder="Hasło"
-			   @bind-Value="@loginFormData.Password" />
-	<ValidationSummary />
-</EditForm>
+			    @bind-Value="@loginModel.Password"/>
+	 <ValidationMessage For="@(() => loginModel.Password)" />
 
     </div>
-
+    <div class="alert alert-danger" style="visibility: @(string.IsNullOrEmpty(loginModel.ErrorMessage) ? "hidden" : "visible")">
+    @loginModel.ErrorMessage
+</div>
+	<button type="submit" class="btn btn-primary" >Zaloguj</button>
+		</EditForm>
 
     </fieldset>
 	<br/>
-    <button type="submit" class="btn btn-primary" @onclick="@LoginToAccount">Zaloguj</button>
+    
+@code{
+    private LogInFormData loginModel = new();
+    private int? currentUserID;
+    
+
+    private async Task HandleLogin()
+    {
+        var isAuthenticated = await userAccountsService.UserWithLoginAndPasswordExists(loginModel.Username,loginModel.Password);
+
+        if (isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/teams");
+            var currentUserID = await userAccountsService.GetUserAccountId(loginModel.Username);
+            await ProtectedSessionStore.SetAsync("userID",currentUserID);
+        }
+        else
+        {
+            loginModel.ErrorMessage = "Nieprawidłowe hasło lub login.";
+        }
+    }
+
+
 	
-
-
-	<a class="btn btn-primary" data-bs-toggle="offcanvas" href="/resetPassword" role="button" aria-controls="offcanvasExample">
-  Odzyskaj hasło</a>
-
-	
-
-	<a class="btn btn-primary" data-bs-toggle="offcanvas" href="/register" role="button" aria-controls="offcanvasExample">
-  Zarejestruj
-</a>
-</form>
-@*
-<EditForm Model="@loginFormData">
-	<DataAnnotationsValidator />
-	<InputText type="email"
-			   placeholder="Email"
-			   @bind-Value="@loginFormData.Email" />
-	<ValidationSummary />
-</EditForm>
-
-<EditForm Model="@loginFormData">
-	<DataAnnotationsValidator />
-	<InputText type="password"
-			   placeholder="Hasło"
-			   @bind-Value="@loginFormData.Password" />
-	<ValidationSummary />
-</EditForm>
-
-<br/>
-
-<button
-	type="submit"
-	class="btn btn-success form-"
-	@onclick="@LoginToAccount">
-
-	Zaloguj
-</button>*@
-
-@code {
-	private class LoginFormData
-	{
-		[Required(ErrorMessage = "Pole wymagane")]
-
-		public string Email { get; set; }
-
-		[Required(ErrorMessage = "Pole wymagane")]
-
-		public string Password { get; set; }
-	}
-
-	private LoginFormData loginFormData = new();
-
-	private async Task LoginToAccount()
-	{
-
-	}
 	
 }

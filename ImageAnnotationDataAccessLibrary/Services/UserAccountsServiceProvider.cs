@@ -99,8 +99,15 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 			var user = dbContext.UserAccounts.FirstOrDefault(x => x.Login == login);
 			return user;
 		}
+		public async Task<int?> GetUserAccountId(string login)
+        {
+			using var dbContext = await dbContextFactory.CreateDbContextAsync();
+			var userId = GetUserAccount(login).Id;
+			return userId;
+		}
 
-        public async Task<bool> UserWithLoginExists(string login)
+
+		public async Task<bool> UserWithLoginExists(string login)
 		{
 			return await GetUserAccount(login) is { };
 		}

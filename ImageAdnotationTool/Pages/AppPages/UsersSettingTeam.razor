@@ -1,5 +1,6 @@
-﻿@page "/czlonkowie1"
+﻿@page "/users"
 @using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 <div class="page-after-logon">
 <_leftMenu/>
 
@@ -9,7 +10,7 @@
 		<table>
 			<tr class="container-team-setting">
 				<th>Zespół Alpha</th>
-				<td>Edycja</td>
+				<td>Edycja</td> 
 				<td>Dodaj członków</td>
 			</tr>
 		</table>
@@ -84,19 +85,28 @@
 		</ul>
 		
 		<table class="table table-hover">
-
+		@*	@foreach(var user in users){*@
 			<tr class="table-active">
 			<th scope="row">Active</th>
 			<td>Column content</td>
 			<td>Column content</td>
 			<td>Column content</td>
 			</tr>
-
+			
 		</table>
 
 </div>
 
 </div>
 @code {
+	////TODO: Dodanie zespołu. Dodanie projektu.
+	//private const string COUNT_KEY = "currentLogInUser";
+	////var currentLogInUserId = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
 
-}
+	//private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
+	//protected override async Task OnInitializedAsync(){
+	//	teams = await teamServiceProvider.GetTeamsOfUserAccount(0);
+
+	//}
+
+	}

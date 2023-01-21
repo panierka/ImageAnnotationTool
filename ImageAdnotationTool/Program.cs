@@ -30,6 +30,7 @@ const string CONNECTION_STRING_KEY = "Default";
 var connectionString = builder.Configuration.GetConnectionString(CONNECTION_STRING_KEY)
 	?? throw new NullReferenceException($"No connection string with key={CONNECTION_STRING_KEY}");
 
+
 builder.Services.AddDbContextFactory<ImageAnnotationToolContext>(options =>
 {
     options.UseSqlServer(connectionString);

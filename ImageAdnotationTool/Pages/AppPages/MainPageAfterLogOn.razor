@@ -1,5 +1,15 @@
-﻿@page "/twojezespoly"
-@using ImageAnnotationTool.Pages.AppPages.Shared
+﻿@page "/teams"
+@using ImageAnnotationTool.Pages.AppPages.Shared;
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using ImageAnnotationToolDataAccessLibrary.Services;
+
+@inject ProtectedSessionStorage ProtectedSessionStore;
+@inject IProjectServiceProvider projectServiceProvider;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject IUserAccountsServiceProvider userAccountsService;
+
+
 <div class="page-after-logon">
 <_leftMenu/>
 
@@ -8,9 +18,22 @@
 				TWOJE ZESPOŁY
 				</h5>
 	<section class="container-teams">
+			@if (teams == null || !teams.Any())
+			{
+				<ul  class="container-projects">
+			<li>
+				<h5 class="project-name">
+					Dodaj zespół.
+				</h5>
+			</li>
+
+		</ul>
+			}
+			else{
+			@foreach (var itemTeam in teams){
 		<table>
 			<tr class="container-team-setting">
-				<th>Zespół Alpha</th>
+				<th>@itemTeam.Team.Name</th>
 				<td>Projekty</td>
 				<td>Członkowie</td>
 				<td>Ustawienia</td>
@@ -18,11 +41,15 @@
 		</table>
 		
 		<ul class="container-projects">
-			<li>
-				<h5 class="project-name">
-					Projekt_1
-				</h5>
-			</li>
+					@foreach (var itemProject in @itemTeam.Team.Projects)
+					{
+							<li>
+					<h5 class="project-name">
+						@itemProject.Name
+					</h5>
+					</li>
+					}
+					
 			<li>
 				<h5 class="project-name">
 					Projekt_2
@@ -39,6 +66,7 @@
 				</h5>
 			</li>
 		</ul>
+		}}
 	</section>
 
 	<section class="container-teams">
@@ -64,5 +92,20 @@
 
 </div>
 @code {
+	//TODO: Dodanie zespołu. Dodanie projektu.
+	//TODO: Działanie opiera się na przechowywwaniu informacji w protected session obecnie wybrany zespoł, projekt, zadanie i użytkownik
+	//
+	//HttpContext.Session.SetString("MyKey", "MyValue");
+	//var currentLogInUserId = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
 
-}
+	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
+	protected override async Task OnInitializedAsync(){
+		teams = await teamServiceProvider.GetTeamsOfUserAccount(0);
+
+	}
+
+	//private void asdasd(){
+	//	teamServiceProvider.CreateTeam()
+	//}
+
+	}

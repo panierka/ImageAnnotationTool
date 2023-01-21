@@ -127,7 +127,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public async Task<List<TeamMemberSeat>> GetTeamsOfUserAccount(int accountId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
-
+            //TODO: Czy taka wartość jest w bazie??
             return await dbContext
                 .TeamMemberSeats
                 .Where(t => t.AssignedUser.Id == accountId)

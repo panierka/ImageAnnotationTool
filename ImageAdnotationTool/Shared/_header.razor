@@ -8,8 +8,16 @@
        <div class="collapse navbar-collapse" id="navbarColor01">
        <ul class="navbar-nav me-auto">
         <li class="nav-item">
-            <a class="nav-link" href="Login" style="color:white;">Zaloguj się</a>
-               
+            @if (loggedIn)
+				{
+              <button class="nav-link" title="Logout" @onclick="Logout"><span class="oi oi-account-logout"></span></button>
+
+            <!--<a class="nav-link" href="" style="color:white;">Zaloguj się</a>
+               -->}
+               else
+				{
+					<a href="login" class="nav-link" title="Login"><span class="oi oi-account-login"></span></a>
+				}
         </li>
             
         </ul>
@@ -26,4 +34,23 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    private string? user;
+    private bool loggedIn;
+    private async Task Login()
+	{
+		if (!string.IsNullOrEmpty(user))
+		{
+			
+			loggedIn = true;
+			//await LocalStorage.SaveStringAsync("user", user);
+		}
+	}
+
+    public async Task Logout()
+	{
+		user = null;
+		loggedIn = false;
+		//await LocalStorage.RemoveAsync("user");
+	}
 }

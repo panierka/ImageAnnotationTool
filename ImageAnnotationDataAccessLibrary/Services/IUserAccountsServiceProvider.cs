@@ -1,4 +1,5 @@
 ﻿using ImageAnnotationToolDataAccessLibrary.ModelCreationRequests;
+using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 		public Task DeleteAccount(int accountId);
 
 		public Task UpdateAccount(int accountId, SignUpFormData signUpFormData);
+		public Task<int?> GetUserAccountId(string login);
 
 		public Task<bool> UserWithLoginExists(string login);
 
