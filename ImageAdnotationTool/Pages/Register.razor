@@ -6,6 +6,7 @@
 @using ImageAnnotationToolDataAccessLibrary.Exceptions;
 @using Blazored.FluentValidation;
 @using Validation;
+@using Microsoft.AspNetCore.Components.Forms;
 @inject IUserAccountsServiceProvider userAccountsService;
 @inject SignUpFormDataValidation validator;
 
@@ -16,8 +17,8 @@
 	Model="@signUpFormData"
 		  OnValidSubmit="@AddNewAccount">
 	<DataAnnotationsValidator />
-	<FluentValidationValidator Validator="validator"/>
-	<InputText 
+@*	<FluentValidationValidator Validator="validator"/>
+*@	<InputText 
 		type="text" 
 		placeholder="Login" 
 		@bind-Value="@signUpFormData.Login" />
@@ -39,7 +40,7 @@
 			   />
 	<ValidationSummary />
 
-	<br />		
+
 
 	<button type="submit"
 			class="btn btn-success form-"

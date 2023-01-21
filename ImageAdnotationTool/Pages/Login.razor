@@ -33,7 +33,7 @@
 	  
       </div>
     <div class="form-group">
-      <label for="exampleInputPassword1" class="form-label mt-4">Hasło</label>
+      <label for="Password1" class="form-label mt-4">Hasło</label>
 	 
 	<InputText type="password"
 			   class="form-control" id="exampleInputPassword1" placeholder="Hasło"
@@ -41,7 +41,7 @@
 	 <ValidationMessage For="@(() => loginModel.Password)" />
 
     </div>
-    <div class="alert alert-danger" style="visibility: @(string.IsNullOrEmpty(loginModel.ErrorMessage) ? "hidden" : "visible")">
+    <div class="form-group" style="visibility: @(string.IsNullOrEmpty(loginModel.ErrorMessage) ? "hidden" : "visible")">
     @loginModel.ErrorMessage
 </div>
 	<button type="submit" class="btn btn-primary" >Zaloguj</button>
@@ -63,7 +63,7 @@
         {
             NavigationManager.NavigateTo("/teams");
             var currentUserID = await userAccountsService.GetUserAccountId(loginModel.Username);
-            await ProtectedSessionStore.SetAsync("userID",currentUserID);
+            //await ProtectedSessionStore.SetAsync("userID",currentUserID);
         }
         else
         {
