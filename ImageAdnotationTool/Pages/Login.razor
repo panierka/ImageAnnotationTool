@@ -14,8 +14,7 @@
 
 <PageTitle>Logowanie</PageTitle>
 
-<fieldset>
-<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+<EditForm class="styleEditForm" Model="loginModel" OnValidSubmit="HandleLogin">
   
 	<h3>Zaloguj się</h3>
     <div class="form-group">
@@ -25,7 +24,7 @@
 	@*<FluentValidationValidator Validator="validator"/>*@
 	<InputText 
 		type="text"
-			   class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Wprowadź login"
+			   class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="login_1"
 			  autocomplete="off" @bind-Value="@loginModel.Username" />
 	 <ValidationMessage For="@(() => loginModel.Username)" />
 	
@@ -36,19 +35,17 @@
       <label for="Password1" class="form-label mt-4">Hasło</label>
 	 
 	<InputText type="password"
-			   class="form-control" id="exampleInputPassword1" placeholder="Hasło"
+			   class="form-control" id="exampleInputPassword1" placeholder="*******"
 			    @bind-Value="@loginModel.Password"/>
 	 <ValidationMessage For="@(() => loginModel.Password)" />
 
     </div>
-    <div class="form-group" style="visibility: @(string.IsNullOrEmpty(loginModel.ErrorMessage) ? "hidden" : "visible")">
+    <div class="form-group" style="visibility: @(string.IsNullOrEmpty(loginModel.ErrorMessage) ? "hidden" : "visible"); color:red;">
     @loginModel.ErrorMessage
 </div>
 	<button type="submit" class="btn btn-primary" >Zaloguj</button>
 		</EditForm>
 
-    </fieldset>
-	<br/>
     
 @code{
     private LogInFormData loginModel = new();
@@ -63,7 +60,7 @@
         {
             NavigationManager.NavigateTo("/teams");
             var currentUserID = await userAccountsService.GetUserAccountId(loginModel.Username);
-            //await ProtectedSessionStore.SetAsync("userID",currentUserID);
+            await ProtectedSessionStore.SetAsync("userID",currentUserID);
         }
         else
         {

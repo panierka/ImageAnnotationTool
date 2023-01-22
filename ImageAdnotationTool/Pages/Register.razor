@@ -11,33 +11,44 @@
 @inject SignUpFormDataValidation validator;
 
 <PageTitle>Rejestracja</PageTitle>
-<h3>Rejestracja</h3>
 
-<EditForm 
+
+<EditForm class="styleEditForm"
 	Model="@signUpFormData"
 		  OnValidSubmit="@AddNewAccount">
+		  <h3>Rejestracja</h3>
 	<DataAnnotationsValidator />
 @*	<FluentValidationValidator Validator="validator"/>
-*@	<InputText 
+*@	
+<div class="form-group">
+      <label for="Login" class="form-label mt-4">Login</label>
+<InputText class="form-control"
 		type="text" 
-		placeholder="Login" 
+		placeholder="login_1" 
 		@bind-Value="@signUpFormData.Login" />
-	<br />
-	<InputText 
+		</div>
+		<div class="form-group">
+      <label for="Login" class="form-label mt-4">Email</label>
+	<InputText class="form-control"
 		type="email" 
-		placeholder="Email" 
+		placeholder="example@mail.com" 
 		@bind-Value="@signUpFormData.Email" />
-	<br />
-	<InputText 
+		</div>
+		<div class="form-group">
+      <label for="Login" class="form-label mt-4">Hasło</label>
+	<InputText class="form-control"
 		type="password" 
-		placeholder="Hasło" 
+		placeholder="********"
 		@bind-Value="@signUpFormData.Password" 
 		/>
-	<br />
-	<InputText type="password"
-			   placeholder="Potwierdź hasło"
+	</div>
+	<div class="form-group">
+      <label for="Login" class="form-label mt-4">Potwierdź hasło</label>
+	<InputText class="form-control" type="password"
+			   placeholder="********"
 			   @bind-Value="@signUpFormData.ConfirmPassword"
 			   />
+			   </div>
 	<ValidationSummary />
 
 
