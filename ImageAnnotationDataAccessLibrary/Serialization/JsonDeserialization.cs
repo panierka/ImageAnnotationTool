@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ImageAnnotationToolDataAccessLibrary.Serialization;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
 
 namespace ImageAnnotationToolDataAccessLibrary.JsonFiles
 {
@@ -14,15 +15,15 @@ namespace ImageAnnotationToolDataAccessLibrary.JsonFiles
     {
         public T? Deserialize(string fileContent)
         {
-            DefaultContractResolver contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new PascalCaseNamingStrategy()
+            DefaultContractResolver contractResolver = new()
+			{
+                NamingStrategy = new SnakeCaseToPascalCaseNamingStrategy()
             };
 
             var settings = new JsonSerializerSettings
             {
-                ContractResolver = contractResolver
-            };
+                ContractResolver = contractResolver,
+			};
 
             T? obj = JsonConvert.DeserializeObject<T>(fileContent, settings);
 
