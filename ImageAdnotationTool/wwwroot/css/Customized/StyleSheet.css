@@ -156,6 +156,12 @@ ul {
   border-radius: 1;
   border: 0.3rem solid #00A3E1;
   padding: 1rem;
+  position: relative;
+  left: 35%;
+}
+
+.blazormodal > button {
+  margin-left: 25rem;
 }
 
 .blazormodal > .styleEditForm {
@@ -166,5 +172,5 @@ ul {
 }
 
 .blazormodal > h3 {
-  margin: 0 0 -4rem 8rem;
+  margin: 0 0 -3rem 8rem;
 }

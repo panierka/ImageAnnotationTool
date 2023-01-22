@@ -5,6 +5,7 @@
 @using ImageAnnotationToolDataAccessLibrary.Services;
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components;
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @inject ProtectedSessionStorage ProtectedSessionStore;
 @inject IProjectServiceProvider projectServiceProvider;
 @inject ITeamServiceProvider teamServiceProvider;
@@ -13,27 +14,22 @@
 @inject IJSRuntime JSRuntime;
 
 <div class="page-after-logon">
-<_leftMenu/>
-@*
-<AuthorizeView>
-    <Authorized>*@
-        @*<h1>Welcome, you are now logged in!</h1>
-        <p>This is a protected page, you need to be logged in to view it.</p>*@
-<div class="main-container">
-	@if (isConnected)
+
+
+@if (isConnected)
 {
     
 
 	@if (isModalOpen)
 		{
 			<BlazoredModal class="blazormodal">
-				
+				<button @onclick="HideModal">Zamknij</button>
 					<EditForm class="styleEditForm" Model="@formData" OnValidSubmit="SubmitForm">
 						<h3>Dodaj zespół</h3>
 						<InputText class="form-control" @bind-Value="formData.Team" placeholder="@currentUserID" />
 						<ValidationMessage For="@(() => formData.Team)" />
 						<button type="submit">Zatwierdź</button>
-						<button @onclick="HideModal">Zamknij</button>
+						
 					</EditForm>
 				
 					
@@ -42,6 +38,20 @@
 
 		}
 		else{
+	
+			<nav>
+			
+					<h5 class="muted-headers">
+						Zespoły
+						<button type="button" @onclick="@ShowModal">
+							+
+						</button>
+					</h5>
+
+				<_leftMenu/>
+
+		</nav>
+		<div class="main-container">
 	<h5 class="muted-headers">
 				TWOJE ZESPOŁY
 				</h5>
@@ -59,25 +69,14 @@
 			}
 			else{
 			@foreach (var itemTeam in teams){
-				<h5>
+				
+				<h5 @onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
 					@itemTeam.Team.Name
 				</h5>
-		@*<table>
-			<tr class="container-team-setting">
-				<th>@itemTeam.Team.Name</th>
-				<td>Projekty</td>
-				<td>Członkowie</td>
-				<td>Ustawienia</td>
-			</tr>
-		</table>*@
+	
 		@if (@itemTeam.Team.Projects == null || !@itemTeam.Team.Projects.Any()){
 			<ul class="container-projects">
-				
-							<li>
-					<h5 class="project-name">
-						Dodaj projekt.
-					</h5>
-					</li>
+				<p>Brak projektów.</p>
 				</ul>
 		}else{
 		<ul class="container-projects">
@@ -94,13 +93,14 @@
 		}
 		}}
 	</section>
+		</div>
 		}
 		}
 else
 {
     <p>Wczytywanie...</p>
 }
-	</div>
+
    @* </Authorized>
     <NotAuthorized>
         <h1>Access denied</h1>
@@ -111,11 +111,7 @@ else
 
 
 @code {
-	//TODO: Dodanie zespołu. Dodanie projektu.
-	//TODO: Działanie opiera się na przechowywwaniu informacji w protected session obecnie wybrany zespoł, projekt, zadanie i użytkownik
-	//
-	//HttpContext.Session.SetString("MyKey", "MyValue");
-	//var currentLogInUserId = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
+
 
 	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
 	private int currentUserID;
@@ -127,25 +123,21 @@ else
 		{
 			isConnected = true;
 			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
-			//TODO: Zczytanie prawidłwoego id
+
 			currentUserID = currentUser.Success?currentUser.Value:0;
 			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 			StateHasChanged();
-			//var result = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
-			//currentCount = result.Success ? result.Value : 0;
-			//StateHasChanged();
+
 		}       
 	}
 
 	protected override async Task OnInitializedAsync(){
 
-		//var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
-		////TODO: Zczytanie prawidłwoego id
-		//currentUserID = currentUser.Value;
+
 		teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 		StateHasChanged();
 	}
-
+	//For teams
 	private bool isModalOpen;
 	private class FormData
 	{
@@ -185,15 +177,14 @@ else
 			StateHasChanged();
 			isModalOpen = false;
 		}
-		
-	
 
-		
 	}
 
+	private void NavigateToProjectPage(int teamID)
+    {
+        NavigationManager.NavigateTo($"/project?id={teamID}");
+    }
 
-	//private void asdasd(){
-	//	teamServiceProvider.CreateTeam()
-	//}
+
 
 	}

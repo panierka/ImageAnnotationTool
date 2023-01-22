@@ -1,44 +1,103 @@
-﻿<nav>
-	<ul>
-		<li>
-			<h5 class="muted-headers">
-				Zespoły
-			<button type="button" >
-				+
-			</button>
-			</h5>
-			
-		</li>
+﻿@using ImageAnnotationTool.Pages.AppPages.Shared;
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using ImageAnnotationToolDataAccessLibrary.Services;
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components;
+@inject ProtectedSessionStorage ProtectedSessionStore;
+@inject IProjectServiceProvider projectServiceProvider;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject IUserAccountsServiceProvider userAccountsService;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JSRuntime;
+	@if (isConnected)
+{
 
-		<li>
-			<h5 class="headers-nav">
-				Zespół Alpha Beta Omega
-			
-			</h5>
-			<table>
-			<tr class="nav-team-setting">
-				
-				<td><a>Projekty</a></td>
-				<td><a>Członkowie</a></td>
-				<td><a>Ustawienia</a></td>
-			</tr>
-		</table>
-		</li>
 
-		<li>
-			<h5 class="headers-nav">
-				Zespół Alpha
+
 			
-			</h5>
-			<table>
-			<tr class="nav-team-setting">
+			<ul>
+
+				@if (teams == null || !teams.Any())
+			{
+				<li>
+					<h5 class="headers-nav">
+						Brak zespołów :(
+
+					</h5>
+					
+				</li>
 				
-				<td><a>Projekty</a></td>
-				<td><a>Członkowie</a></td>
-				<td><a>Ustawienia</a></td>
-			</tr>
-		</table>
-		</li>
-	</ul>
-	
-</nav>
+				}
+				else
+				{
+					@foreach (var itemTeam in teams){
+					<li @onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
+					<h5 class="headers-nav">
+						@itemTeam.Team.Name
+
+					</h5>
+					<table>
+						<tr class="nav-team-setting">
+
+							<td><a>Projekty</a></td>
+							<td><a>Członkowie</a></td>
+							<td><a>Ustawienia</a></td>
+						</tr>
+					</table>
+					</li>
+					}
+				
+				}
+			</ul>
+
+		
+
+
+}
+@code {
+	//TODO: Dodanie zespołu. Dodanie projektu.
+	//TODO: Działanie opiera się na przechowywwaniu informacji w protected session obecnie wybrany zespoł, projekt, zadanie i użytkownik
+	//
+	//HttpContext.Session.SetString("MyKey", "MyValue");
+	//var currentLogInUserId = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
+
+	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
+	private int currentUserID;
+	private bool isConnected = false;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			isConnected = true;
+			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
+			//TODO: Zczytanie prawidłwoego id
+			currentUserID = currentUser.Success?currentUser.Value:0;
+			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+			StateHasChanged();
+			//var result = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
+			//currentCount = result.Success ? result.Value : 0;
+			//StateHasChanged();
+		}       
+	}
+
+	protected override async Task OnInitializedAsync(){
+
+		//var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
+		////TODO: Zczytanie prawidłwoego id
+		//currentUserID = currentUser.Value;
+		teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+		StateHasChanged();
+	}
+
+
+	private void NavigateToProjectPage(int teamID)
+	{
+		NavigationManager.NavigateTo("/teams");
+		NavigationManager.NavigateTo($"/project?id={teamID}");
+		StateHasChanged();
+    }
+
+
+	}

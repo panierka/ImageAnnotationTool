@@ -1,52 +1,186 @@
-﻿@page "/projects"
+﻿@page "/project"
 @using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
+@using Microsoft.AspNetCore.WebUtilities;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using System.ComponentModel.DataAnnotations
+@inject ProtectedSessionStorage ProtectedSessionStore;
+@inject IProjectServiceProvider projectServiceProvider;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject IUserAccountsServiceProvider userAccountsService;
+@inject NavigationManager NavigationManager;
+
 <div class="page-after-logon">
-<_leftMenu/>
+	@if (isConnected)
+	{
 
-<div class="main-container">
-	
 
-		<table>
-			<tr class="container-team-setting">
-				<th>Zespół Alpha</th>
-				<td>Edycja</td>
-			</tr>
-		</table>
-		<h5 class="muted-headers">
-				TWOJE PROJEKTY
-				</h5>
-		<ul class="container-projects">
-			<li>
-				<h5 class="project-name">
-					Projekt_1
-				</h5>
-			</li>
-			<li>
-				<h5 class="project-name">
-					Projekt_2
-				</h5>
-			</li>
-			<li>
-				<h5 class="project-name">
-					Projekt_3
-				</h5>
-			</li>
-			<li>
-				<h5 class="project-name">
-					Projekt_4Projekt_4Projekt_4Projekt_4
-				</h5>
-			</li>
-			<li>
-				<h5 class="project-name">
-					Dodaj nowy projekt +
-				</h5>
-			</li>
-		</ul>
-	
+		@if (isModalOpen)
+		{
+			<BlazoredModal class="blazormodal">
+				<button @onclick="HideModal">Zamknij</button>
+				<EditForm class="styleEditForm" Model="@formData" OnValidSubmit="SubmitForm">
+					<h3>Dodaj projekt</h3>
+					<InputText class="form-control" @bind-Value="formData.Project" placeholder="@teamID" />
+					<ValidationMessage For="@(() => formData.Project)" />
+					<button type="submit">Zatwierdź</button>
 
+				</EditForm>
+
+
+
+			</BlazoredModal>
+
+		}
+		else
+		{
+
+			
+			<nav>
+			
+					<h5 class="muted-headers">
+						<a href="/teams">Wszystkie Zespoły</a>
+						
+					</h5>
+					<_leftMenu/>
+
+			</nav>
+
+			<div class="main-container">
+
+
+					<h3>
+						@teamName
+					</h3>
+					<h5 class="muted-headers">
+					TWOJE PROJEKTY
+				</h5>
+				
+				
+				<ul class="container-projects">
+					@foreach (var item in projects)
+			{
+					<li @onclick="@(() =>NavigateToJobPage(item.Id))">
+						<h5 class="project-name">
+							@item.Project.Name
+							
+						</h5>
+					</li>
+			}
+					<li @onclick="@ShowModal">
+						<h5 class="project-name">
+							Dodaj nowy projekt +
+						</h5>
+					</li>
+				</ul>
+
+
+			</div>
+		}
+
+	}
+	else
+{
+    <p>Wczytywanie...</p>
+}
 </div>
 
-</div>
+
 @code {
 
+	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
+
+	private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
+	private int currentUserID, teamID;
+	private bool isConnected = false;
+	private string? teamName;
+	protected override async Task OnInitializedAsync()
+	{
+		//var uri = new Uri(NavigationManager.Uri);
+		//string id = QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var value) ? value : "";
+		//teamID = int.Parse(id);
+		//var team = await teamServiceProvider.GetTeamById(teamID);
+		//teamName = team.Name;
+		projects = await projectServiceProvider.GetProjectsOfTeamMember(currentUserID);
+		teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+
+		StateHasChanged();
+		//jeśli teamid jest ok to zostaje a jak nie to przerzuca do zespołów
+    }
+
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			isConnected = true;
+			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
+
+			currentUserID = currentUser.Success?currentUser.Value:0;
+			//czy te teamID jest tu poprawne czy current userid
+				var uri = new Uri(NavigationManager.Uri);
+			string id = QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var value) ? value : "";
+			teamID = int.Parse(id);
+			var team = await teamServiceProvider.GetTeamById(teamID);
+			teamName = team.Name;
+			projects = await projectServiceProvider.GetProjectsOfTeamMember(currentUserID);
+			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+
+			StateHasChanged();
+
+		}       
+	}
+
+
+	//For projects
+	private bool isModalOpen;
+	private class FormData
+	{
+		[Required(ErrorMessage = "Nazwa projektu - Pole wymagane")]
+		public string Project { get; set; }
+		public string ErrorMessage{get; set; }	
+
+	}
+	private FormData formData = new FormData();
+
+	private void ShowModal()
+	{
+		isModalOpen = true;
+	}
+
+	private void HideModal()
+	{
+		isModalOpen = false;
+	}
+	private async Task SubmitForm()
+	{
+		var checkIfNameExists = await projectServiceProvider.GetProject(formData.Project);
+
+		if (checkIfNameExists is {})
+		{
+			formData.ErrorMessage = "Nazwa projektu jest już zajęta";
+		}
+		else
+		{
+			Project project = new();
+			project.Name = formData.Project;
+			await projectServiceProvider.CreateProject(project);
+			await projectServiceProvider.AddProjectMember(currentUserID, project.Id);
+
+			projects = await projectServiceProvider.GetProjectsOfTeamMember(currentUserID);
+			StateHasChanged();
+			isModalOpen = false;
+		}
+
+	}
+
+	private void NavigateToJobPage(int projectID)
+    {
+        NavigationManager.NavigateTo($"/job?id={projectID}");
+    }
+	private void NavigateToProjectPage(int teamID)
+    {
+        NavigationManager.NavigateTo($"/project?id={teamID}");
+    }
 }

@@ -76,7 +76,13 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             var team = dbContext.Teams.FirstOrDefault(x => x.Name == teamName);
             return team;
         }
+        public async Task<Team?> GetTeamById(int teamID)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
+            var team = dbContext.Teams.FirstOrDefault(x => x.Id == teamID);
+            return team;
+        }
         public async Task<List<Team>> GetAllTeams()
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
