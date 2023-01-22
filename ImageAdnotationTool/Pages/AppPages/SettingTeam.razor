@@ -1,102 +1,145 @@
-﻿@page "/settings"
+﻿@page "/settings/{Id:int}"
 @using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using System.ComponentModel.DataAnnotations;
+@inject ProtectedSessionStorage sessionStorage;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject NavigationManager NavigationManager;
+
 <div class="page-after-logon">
 <_leftMenu/>
 
-<div class="main-container">
-	
-	
-		<table>
-			<tr class="container-team-setting">
-				<th>Zespół Alpha</th>
-				<td>Edycja</td>
-				<td>Dodaj członków</td>
-			</tr>
-		</table>
-		<h5 class="muted-headers">
-				Członkowie Zespołu mogą przyjąć poszczególne role:
-				</h5>
-		<ul>
-			<li>
-				<strong>
-					Użytkownik
-				</strong>
-				<ul>
-					<li>
-						dziedziczy wszystkie uprawnienia po Administratorze,
-					</li>
-					<li>
-						modyfikacja uprawnień wszczystkich osób w zespole,
-					</li>
-					<li>
-						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
-					</li>
-				</ul>
-			</li>
-			<li>
-				<strong>
-					Menadżer Projektu
-				</strong>
-				<ul>
-					<li>
-						dziedziczy wszystkie uprawnienia po Administratorze,
-					</li>
-					<li>
-						modyfikacja uprawnień wszczystkich osób w zespole,
-					</li>
-					<li>
-						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
-					</li>
-				</ul>
-			</li>
-			<li>
-				<strong>
-					Administrator
-				</strong>
-				<ul>
-					<li>
-						dziedziczy wszystkie uprawnienia po Administratorze,
-					</li>
-					<li>
-						modyfikacja uprawnień wszczystkich osób w zespole,
-					</li>
-					<li>
-						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
-					</li>
-				</ul>
-			</li>
-			<li>
-				<strong>
-					Właściciel
-				</strong>
-				<ul>
-					<li>
-						dziedziczy wszystkie uprawnienia po Administratorze,
-					</li>
-					<li>
-						modyfikacja uprawnień wszczystkich osób w zespole,
-					</li>
-					<li>
-						przekazanie roli Właściciela i przyjęcie uprawnień Użytkownika. 
-					</li>
-				</ul>
-			</li>
-		</ul>
-		
-		<table class="table table-hover">
+	@if (isAuthorized)
+	{
+        <PageTitle>
+            @($"{@team.Name} - ustawienia")
+        </PageTitle>
 
-			<tr class="table-active">
-			<th scope="row">Active</th>
-			<td>Column content</td>
-			<td>Column content</td>
-			<td>Column content</td>
-			</tr>
-
-		</table>
-
-</div>
+		<div class="main-container">                
+			<EditForm 
+                Model="@teamRenameForm"
+                OnValidSubmit="@RenameTeam">
+                Tutaj możesz zmienić nazwę zespołu:
+                <DataAnnotationsValidator/>
+                <InputText 
+                    class="form-control"
+                    placeholder="@team.Name"
+                    @bind-Value="@teamRenameForm.NewName"></InputText>
+                <button 
+                    disabled="@(!context.Validate() || !context.IsModified())">
+                    Zmień nazwę
+                </button>
+			</EditForm>
+            
+			<br />
+			<EditForm 
+                Model="@teamDeletionForm" 
+                OnValidSubmit="@RemoveTeam">
+                Wpisz nazwę zespołu, aby umożliwić jego usunięcie.
+                <InputText 
+                    class="form-control"
+                    placeholder="nazwa Twojego zespołu"
+                    @bind-Value="@teamDeletionForm.ConfirmTeamName"></InputText>            
+                <button disabled="@(!teamDeletionForm.NamesMatch)">
+                    Usuń
+                </button>
+			</EditForm>
+		</div>
+	}
+	else
+	{
+        <PageTitle>
+            Błąd
+        </PageTitle>
+		<div>
+			Nie odnaleziono strony.
+		</div>
+	}
+    
 
 </div>
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    private bool isAuthorized = false;
+    private Team team = null!;
+    private TeamDeletionForm teamDeletionForm = null!;
+    private TeamRenameForm teamRenameForm = null!;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var userIdRequest = await sessionStorage.GetAsync<int>("userID");
+
+        if (!userIdRequest.Success)
+        {
+            isAuthorized = false;
+            StateHasChanged();
+            return;
+        }
+
+        var userId = userIdRequest.Value;
+        var teamMemberSeat = await teamServiceProvider.GetTeamMember(
+            accountId: userId,
+            teamId: Id
+        );
+
+        if (teamMemberSeat is {})
+        {
+            team = teamMemberSeat.Team;
+            teamDeletionForm = new(team);
+            teamRenameForm = new(team);
+            isAuthorized = true;
+        }
+
+        StateHasChanged();
+    }
+
+    public async Task RenameTeam()
+    {
+        team.Name = teamRenameForm.NewName;
+        await teamServiceProvider.UpdateTeam(Id, team);
+        StateHasChanged();
+    }
+
+    public async Task RemoveTeam()
+    {
+        await teamServiceProvider.DeleteTeam(Id);
+        NavigationManager.NavigateTo("/teams");
+    }
+
+    private class TeamDeletionForm
+    {
+        public string ConfirmTeamName { get; set; } = string.Empty;
+
+        private readonly Team team;
+
+        public bool NamesMatch => team.Name == ConfirmTeamName;
+
+        public TeamDeletionForm(Team team)
+        {
+            this.team = team;
+        }
+    }
+
+    private class TeamRenameForm
+    {
+        [Required]
+        public string NewName { get; set; }
+
+        private readonly Team team;
+
+        public TeamRenameForm(Team team)
+        {
+            this.team = team;
+
+            NewName = team.Name;
+        }
+    }
 }

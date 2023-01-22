@@ -32,8 +32,9 @@
 				else
 				{
 					@foreach (var itemTeam in teams){
-					<li @onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
-					<h5 class="headers-nav">
+					<li>
+					<h5 class="headers-nav"
+						@onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
 						@itemTeam.Team.Name
 
 					</h5>
