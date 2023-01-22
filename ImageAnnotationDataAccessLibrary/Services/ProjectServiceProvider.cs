@@ -126,5 +126,13 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .Include(t => t.Project)
                 .ToListAsync();
         }
+
+        public async Task<int> GetProjectMemberSeatId(int teamMemberSeatId, int projectId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            var projectMemeberSeat = dbContext.ProjectMemberSeats.FirstOrDefault(t => t.AssignedTeamMember.Id == teamMemberSeatId & t.Project.Id == projectId);
+            var projectMemberSeatId = projectMemeberSeat.Id;
+            return projectMemberSeatId;
+        }
     }
 }

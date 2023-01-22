@@ -27,5 +27,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public Task<List<TeamMemberSeat>> GetTeamMembers(int teamId);
 
         public Task<List<TeamMemberSeat>> GetTeamsOfUserAccount(int accountId);
+
+        public Task<int> GetTeamMemberSeatId(int accountId, int teamId);
     }
 }

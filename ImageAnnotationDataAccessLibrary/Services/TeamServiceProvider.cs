@@ -141,5 +141,13 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .Include(t => t.Team)
                 .ToListAsync();
         }
+
+        public async Task<int> GetTeamMemberSeatId(int accountId, int teamId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            var teamMemeberSeat = dbContext.TeamMemberSeats.FirstOrDefault(t => t.AssignedUser.Id == accountId & t.Team.Id == teamId);
+            var teamMemberSeatId = teamMemeberSeat.Id;
+            return teamMemberSeatId;
+        }
     }
 }
