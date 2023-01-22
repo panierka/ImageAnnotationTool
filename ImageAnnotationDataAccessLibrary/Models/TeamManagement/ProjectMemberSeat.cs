@@ -15,10 +15,18 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-        public TeamMemberSeat AssignedTeamMember { get; set; }
+        public virtual TeamMemberSeat AssignedTeamMember { get; set; }
 
-        public ICollection<Job> Jobs { get; set; }
+        public virtual Project Project { get; set; }
 
-        // rola
+        public virtual ICollection<Job> Jobs { get; set; }
+
+        public ProjectRole Role { get; set; }
+
+        public enum ProjectRole
+        {
+            User,
+            Admin
+        }
     }
 }
