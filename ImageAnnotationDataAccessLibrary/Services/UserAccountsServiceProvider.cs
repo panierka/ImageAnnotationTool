@@ -101,9 +101,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 		}
 		public async Task<int?> GetUserAccountId(string login)
         {
-			using var dbContext = await dbContextFactory.CreateDbContextAsync();
-			var userId = GetUserAccount(login).Id;
-			return userId;
+			var account = await GetUserAccount(login);
+			return account?.Id;
 		}
 
 

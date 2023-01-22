@@ -119,23 +119,23 @@ else
 
 	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
 	private int currentUserID;
-	 private bool isConnected = false;
+	private bool isConnected = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            isConnected = true;
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			isConnected = true;
 			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
 			//TODO: Zczytanie prawidłwoego id
 			currentUserID = currentUser.Success?currentUser.Value:0;
 			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 			StateHasChanged();
-            //var result = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
-            //currentCount = result.Success ? result.Value : 0;
-            //StateHasChanged();
-        }       
-    }
+			//var result = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
+			//currentCount = result.Success ? result.Value : 0;
+			//StateHasChanged();
+		}       
+	}
 
 	protected override async Task OnInitializedAsync(){
 
@@ -170,7 +170,7 @@ else
 	{
 		var checkIfTeamNameExists = await teamServiceProvider.GetTeam(formData.Team);
 
-		if (checkIfTeamNameExists==null)
+		if (checkIfTeamNameExists is {})
 		{
 			formData.ErrorMessage = "Nazwa grupy jest już zajęta";
 		}
@@ -179,8 +179,7 @@ else
 			Team team = new();
 			team.Name = formData.Team;
 			await teamServiceProvider.CreateTeam(team);
-
-			await teamServiceProvider.AddTeamMember(teamServiceProvider.GetTeam(formData.Team).Id,currentUserID);
+			await teamServiceProvider.AddTeamMember(currentUserID, team.Id);
 
 			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 			StateHasChanged();
