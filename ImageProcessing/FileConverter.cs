@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using System.Drawing;
 using System.IO;
 using System.Text;
 
@@ -37,5 +38,27 @@ namespace ImageProcessing
 
             return buffer;
         }
+
+        public static async Task<Image> BrowserFileToImageAsync(IBrowserFile file)
+        {
+            var buffer = await BrowserFileToByteArrayAsync(file);
+            MemoryStream ms = new MemoryStream(buffer);
+            Image returnImage = Image.FromStream(ms);
+            return returnImage;
+        }
+
+        public static Image ByteArrayToImage(byte[] byteArray)
+        {
+            MemoryStream ms = new MemoryStream(byteArray);
+            Image returnImage = Image.FromStream(ms);
+            return returnImage;
+        }
+
+        public static Stream ByteArrayToStream(byte[] byteArray)
+        {
+            Stream returnStream = new MemoryStream(byteArray);
+            return returnStream;
+        }
+
     }
 }
