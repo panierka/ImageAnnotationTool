@@ -166,6 +166,7 @@
 			Project project = new();
 			project.Name = formData.Project;
 			await projectServiceProvider.CreateProject(project);
+			//TODO: Dopytać czy tam jest current userid
 			await projectServiceProvider.AddProjectMember(currentUserID, project.Id);
 
 			projects = await projectServiceProvider.GetProjectsOfTeamMember(currentUserID);
