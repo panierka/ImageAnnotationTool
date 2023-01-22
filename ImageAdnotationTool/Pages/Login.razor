@@ -58,9 +58,11 @@
 
         if (isAuthenticated)
         {
-            NavigationManager.NavigateTo("/teams");
-            var currentUserID = await userAccountsService.GetUserAccountId(loginModel.Username);
+            
+            currentUserID = await userAccountsService.GetUserAccountId(loginModel.Username);
+     
             await ProtectedSessionStore.SetAsync("userID",currentUserID);
+            NavigationManager.NavigateTo("/teams");
         }
         else
         {

@@ -150,3 +150,21 @@ ul {
 .styleEditForm {
   margin: 5rem 8rem 0 8rem;
 }
+
+.blazormodal {
+  height: 20%;
+  border-radius: 1;
+  border: 0.3rem solid #00A3E1;
+  padding: 1rem;
+}
+
+.blazormodal > .styleEditForm {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  row-gap: 1rem;
+}
+
+.blazormodal > h3 {
+  margin: 0 0 -4rem 8rem;
+}

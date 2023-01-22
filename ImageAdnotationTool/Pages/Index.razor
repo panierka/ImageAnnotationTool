@@ -1,5 +1,7 @@
 ﻿@page "/"
 @namespace ImageAnnotationTool.Pages
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@inject ProtectedSessionStorage ProtectedSessionStore;
 
 <PageTitle>Fotograf</PageTitle>
 
@@ -60,3 +62,17 @@
     <h4 class="alert-heading">Na co czekasz?</h4>
     <p class="mb-0">Zacznij swoją przygodę już dziś i dołącz do nas!</p>
 </div>
+
+@*@code{
+    private bool UserLoggedIn=false;
+
+    private async Task checkIfUserLoggedIn()
+    {
+        var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
+        if (currentUser.Value!=null)
+        {
+            UserLoggedIn = true;
+        }
+        Console.WriteLine(UserLoggedIn);
+    }
+}*@

@@ -7,8 +7,13 @@
 @using Blazored.FluentValidation;
 @using Validation;
 @using Microsoft.AspNetCore.Components.Forms;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+
 @inject IUserAccountsServiceProvider userAccountsService;
+@inject ProtectedSessionStorage ProtectedSessionStore;
 @inject SignUpFormDataValidation validator;
+@inject NavigationManager NavigationManager;
+
 
 <PageTitle>Rejestracja</PageTitle>
 
@@ -64,6 +69,7 @@
 @code {
 
 	private SignUpFormData signUpFormData = new();
+	private int? currentUserID;
 
 	private async Task AddNewAccount(EditContext context)
 	{
@@ -80,6 +86,9 @@
 		try
 		{
 			await userAccountsService.RegisterAccount(sentSignUpFormData);
+			NavigationManager.NavigateTo("/teams");
+            var currentUserID = await userAccountsService.GetUserAccountId(signUpFormData.Login);
+            await ProtectedSessionStore.SetAsync("userID",currentUserID);
 		}
 		catch (LoginIsAlreadyTakenException) {}
 	}
