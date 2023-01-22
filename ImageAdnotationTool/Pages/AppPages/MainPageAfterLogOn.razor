@@ -10,7 +10,7 @@
 @inject ITeamServiceProvider teamServiceProvider;
 @inject IUserAccountsServiceProvider userAccountsService;
 @inject NavigationManager NavigationManager;
-
+@inject IJSRuntime JSRuntime;
 
 <div class="page-after-logon">
 <_leftMenu/>
@@ -20,6 +20,10 @@
         @*<h1>Welcome, you are now logged in!</h1>
         <p>This is a protected page, you need to be logged in to view it.</p>*@
 <div class="main-container">
+	@if (isConnected)
+{
+    
+
 	@if (isModalOpen)
 		{
 			<BlazoredModal class="blazormodal">
@@ -91,6 +95,11 @@
 		}}
 	</section>
 		}
+		}
+else
+{
+    <p>Wczytywanie...</p>
+}
 	</div>
    @* </Authorized>
     <NotAuthorized>
@@ -110,13 +119,29 @@
 
 	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
 	private int currentUserID;
+	 private bool isConnected = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isConnected = true;
+			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
+			//TODO: Zczytanie prawidłwoego id
+			currentUserID = currentUser.Success?currentUser.Value:0;
+			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+			StateHasChanged();
+            //var result = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
+            //currentCount = result.Success ? result.Value : 0;
+            //StateHasChanged();
+        }       
+    }
 
 	protected override async Task OnInitializedAsync(){
 
-		var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
-		//TODO: Zczytanie prawidłwoego id
-		currentUserID = currentUser.Value;
+		//var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
+		////TODO: Zczytanie prawidłwoego id
+		//currentUserID = currentUser.Value;
 		teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 		StateHasChanged();
 	}
@@ -154,7 +179,9 @@
 			Team team = new();
 			team.Name = formData.Team;
 			await teamServiceProvider.CreateTeam(team);
-			await teamServiceProvider.AddTeamMember(team.Id,currentUserID);
+
+			await teamServiceProvider.AddTeamMember(teamServiceProvider.GetTeam(formData.Team).Id,currentUserID);
+
 			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 			StateHasChanged();
 			isModalOpen = false;

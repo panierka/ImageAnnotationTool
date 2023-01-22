@@ -67,7 +67,7 @@
 
 
 @code {
-
+	//TODO: Nie pokazuje się Errormessage jak jest jużtaki użytkownik.
 	private SignUpFormData signUpFormData = new();
 	private int? currentUserID;
 
@@ -87,8 +87,10 @@
 		{
 			await userAccountsService.RegisterAccount(sentSignUpFormData);
 			NavigationManager.NavigateTo("/teams");
-            var currentUserID = await userAccountsService.GetUserAccountId(signUpFormData.Login);
+            var currentUserID = await userAccountsService.GetUserAccountId(sentSignUpFormData.Login);
+			
             await ProtectedSessionStore.SetAsync("userID",currentUserID);
+			
 		}
 		catch (LoginIsAlreadyTakenException) {}
 	}
