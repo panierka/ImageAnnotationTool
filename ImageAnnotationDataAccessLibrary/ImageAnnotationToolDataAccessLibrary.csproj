@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CanvasDisplayEngine\CanvasDisplayEngine.csproj" />
     <ProjectReference Include="..\Hashing\Security.csproj" />
   </ItemGroup>
 
