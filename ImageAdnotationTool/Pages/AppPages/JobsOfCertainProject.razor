@@ -22,9 +22,9 @@
 			<BlazoredModal class="blazormodal">
 				<button @onclick="HideModal">Zamknij</button>
 				<EditForm class="styleEditForm" Model="@formData" OnValidSubmit="SubmitForm">
-					<h3>Dodaj projekt</h3>
-					<InputText class="form-control" @bind-Value="formData.Job"/>
-					<ValidationMessage For="@(() => formData.Job)" />
+					<h3>Utwórz zadanie dla użytkownika:</h3>
+					<InputText class="form-control" placeholder="Nazwa użytkownika" @bind-Value="formData.Name"/>
+					<ValidationMessage For="@(() => formData.Name)" />
 					<button type="submit">Zatwierdź</button>
 
 				</EditForm>
@@ -60,11 +60,11 @@
 				
 				
 				<ul class="container-projects">
-					@foreach (var item in projects)
+					@foreach (var item in jobs)
 			{
-					<li @onclick="@(() =>NavigateToJobPage(item.Id))">
+					<li @onclick="@(() =>NavigateToAnnotatePage(item.Id))">
 						<h5 class="project-name">
-							@item.Project.Name
+							@item.Id.ToString()
 							
 						</h5>
 					</li>
@@ -132,7 +132,7 @@
 			projectId: Id
 		);
 
-	    jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
+		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
 
 		isAuthorized =true;
 		StateHasChanged();
@@ -143,8 +143,8 @@
 	private bool isModalOpen;
 	private class FormData
 	{
-		[Required(ErrorMessage = "Nazwa projektu - Pole wymagane")]
-		public string Job { get; set; }
+		[Required(ErrorMessage = "Nazwa użytkownika - Pole wymagane")]
+		public string Name { get; set; }
 		public string ErrorMessage{get; set; }	
 
 	}
@@ -161,6 +161,21 @@
 	}
 	private async Task SubmitForm()
 	{
+		var accountId = await userAccountsService.GetUserAccountId(formData.Name);
+		if (accountId == null)
+		{
+			formData.ErrorMessage="Brak takigo użytkownika";
+			return;
+		}
+		var userInProjectSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
+		//TODO: Nie jestem pewna czy to dobrze sie sprawdza
+		if (userInProjectSeat.Id != projectMemberSeat.Id)
+		{
+			formData.ErrorMessage="Brak takigo użytkownika w projekcie";
+			return;
+		}
+
+
 		Job job=new();
 
 		//Project project = new();
