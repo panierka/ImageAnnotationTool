@@ -1,0 +1,47 @@
+﻿@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+
+<div>
+    ------------------
+    @foreach(var item in List)
+    {
+        <div class="square" @onclick="@(() => OnSelectAnnotation?.Invoke(item))">
+            <ComboBox
+                Items="@Classes"
+                OnSelectedItemChanged="@(x => {
+                        item.Class = x;
+                        StateHasChanged();
+                    })"
+                CustomStringConverter="@(new ComboBox<AnnotationClass>
+                    .DelegatedCustomStringConverter(x => x.Name))"
+                />
+
+            <DescriptorsListBox 
+                Blueprints="@(item.Class?.DescriptorBlueprints?.ToList())"/>
+            ------------------
+        </div>
+    }
+    <br/>
+    <button @onclick="@AddElement">Dodaj nowy...</button>
+    <br/>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<AnnotationClass> Classes { get; set; } = null!;
+
+    private List<Annotation> List { get; set; } = new();
+
+    [Parameter]
+    public Action<Annotation> OnAddAnnotation { get; set; }
+
+    [Parameter]
+    public Action<Annotation> OnSelectAnnotation { get; set; }
+
+    private void AddElement()
+    {
+        var annotation = new Annotation();
+        List.Add(annotation);
+        OnAddAnnotation?.Invoke(annotation);
+        StateHasChanged();
+    }
+}

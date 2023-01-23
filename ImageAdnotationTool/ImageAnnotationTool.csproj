@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Shared\ListBox.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1" />
     <PackageReference Include="Blazored.FluentValidation" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
@@ -25,6 +29,18 @@
     <ProjectReference Include="..\ImageAnnotationDataAccessLibrary\ImageAnnotationToolDataAccessLibrary.csproj" />
     <ProjectReference Include="..\ImageProcessing\ImageProcessing.csproj" />
     <ProjectReference Include="..\ShapeEditor\ShapeEditor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\ListBox.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\ListBox.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\AnnotationsListBox.razor" />
   </ItemGroup>
 
 </Project>

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShapeEditor.Tools;
+using ShapeEditing.Tools;
 using CanvasDisplayEngine;
-using ShapeEditor.Actions;
+using ShapeEditing.Actions;
 
-namespace ShapeEditor
+namespace ShapeEditing
 {
     public class ShapeEditor
     {
@@ -88,6 +88,11 @@ namespace ShapeEditor
 
             var action = new ResetShapeAction(currentlyEditedShape);
             actionHistory.ExecuteAndRemember(action);
+        }
+
+        public void ClearHistory()
+        {
+            actionHistory.Clear();
         }
     }
 }

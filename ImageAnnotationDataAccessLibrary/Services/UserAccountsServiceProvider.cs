@@ -30,10 +30,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 			this.hashProvider = hashProvider;
 		}
 
-		public void RegisterAccount(SignUpFormData signUpFormData)
+		public async Task RegisterAccount(SignUpFormData signUpFormData)
 		{
 			var login = signUpFormData.Login;
-			if (GetUserAccount(login) is { })
+			if (await GetUserAccount(login) is { })
 			{
 				throw new LoginIsAlreadyTakenException(login);
 			}
@@ -49,27 +49,65 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 				Salt = salt,
 			};
 
-			using var dbContext = dbContextFactory.CreateDbContext();
-			dbContext.UserAccounts.AddAsync(account);
-			dbContext.SaveChanges();
+			using var dbContext = await dbContextFactory.CreateDbContextAsync();
+			await dbContext.UserAccounts.AddAsync(account);
+			await dbContext.SaveChangesAsync();
 		}
 
-		private UserAccount? GetUserAccount(string login)
+        public async Task DeleteAccount(int accountId)
 		{
-			using var dbContext = dbContextFactory.CreateDbContext();
+            var account = new UserAccount
+            {
+                Id = accountId,
+            };
+
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            dbContext.UserAccounts.Attach(account);
+            dbContext.UserAccounts.Remove(account);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateAccount(int accountId, SignUpFormData signUpFormData)
+		{
+            var login = signUpFormData.Login;
+            if (await GetUserAccount(login) is { })
+            {
+                throw new LoginIsAlreadyTakenException(login);
+            }
+
+            var salt = saltProvider.GetSalt(maxLength: SALT_SIZE);
+            var hashedPassword = HashPassword(signUpFormData.Password, salt);
+
+            var account = new UserAccount
+            {
+                Email = signUpFormData.Email,
+                Login = login,
+                Password = hashedPassword,
+                Salt = salt,
+            };
+
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            var updatedTeam = dbContext.UserAccounts.Where(t => t.Id == accountId).FirstOrDefault();
+			updatedTeam = account;
+            await dbContext.SaveChangesAsync();
+        }
+
+        private async Task<UserAccount?> GetUserAccount(string login)
+		{
+			using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
 			var user = dbContext.UserAccounts.FirstOrDefault(x => x.Login == login);
 			return user;
-		} 
-
-		public bool UserWithLoginExists(string login)
-		{
-			return GetUserAccount(login) is { };
 		}
 
-		public bool UserWithLoginAndPasswordExists(string loginToCheck, string passwordToCheck)
+        public async Task<bool> UserWithLoginExists(string login)
 		{
-			var userAccount = GetUserAccount(loginToCheck);
+			return await GetUserAccount(login) is { };
+		}
+
+        public async Task<bool> UserWithLoginAndPasswordExists(string loginToCheck, string passwordToCheck)
+		{
+			var userAccount = await GetUserAccount(loginToCheck);
 
 			if (userAccount is not { })
 			{

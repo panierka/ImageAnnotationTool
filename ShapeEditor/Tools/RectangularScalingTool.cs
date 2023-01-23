@@ -1,13 +1,13 @@
 ﻿using CanvasDisplayEngine;
-using ShapeEditor.Actions;
+using ShapeEditing.Actions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MovementData = ShapeEditor.Actions.MultiPointMovementAction.MovementData;
+using MovementData = ShapeEditing.Actions.MultiPointMovementAction.MovementData;
 
-namespace ShapeEditor.Tools
+namespace ShapeEditing.Tools
 {
     public class RectangularScalingTool : IShapeEditingTool
     {

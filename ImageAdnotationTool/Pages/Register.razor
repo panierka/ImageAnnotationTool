@@ -53,9 +53,9 @@
 
 	private SignUpFormData signUpFormData = new();
 
-	private void AddNewAccount(EditContext context)
+	private async Task AddNewAccount(EditContext context)
 	{
-		if (userAccountsService.UserWithLoginExists(signUpFormData.Login))
+		if (await userAccountsService.UserWithLoginExists(signUpFormData.Login))
 		{		
 			return;
 		}
@@ -67,7 +67,7 @@
 
 		try
 		{
-			userAccountsService.RegisterAccount(sentSignUpFormData);
+			await userAccountsService.RegisterAccount(sentSignUpFormData);
 		}
 		catch (LoginIsAlreadyTakenException) {}
 	}

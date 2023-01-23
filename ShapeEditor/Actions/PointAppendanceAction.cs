@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CanvasDisplayEngine;
 
-namespace ShapeEditor.Actions
+namespace ShapeEditing.Actions
 {
     public class PointAppendanceAction : IEditorAction
     {

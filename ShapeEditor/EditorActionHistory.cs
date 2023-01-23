@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ShapeEditor.Actions;
+using ShapeEditing.Actions;
 
-namespace ShapeEditor
+namespace ShapeEditing
 {
     internal class EditorActionHistory
     {
@@ -33,6 +33,11 @@ namespace ShapeEditor
             {
                 action!.Undo();
             }
+        }
+
+        public void Clear()
+        {
+            pastActions.Clear();
         }
     }
 }
