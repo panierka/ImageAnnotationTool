@@ -12,9 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
