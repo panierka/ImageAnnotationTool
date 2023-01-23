@@ -33,26 +33,21 @@
 				{
 					@foreach (var itemTeam in teams){
 					<li>
-<<<<<<< Updated upstream
+
 					<h5 class="headers-nav"
 						@onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
-=======
-					<h5 class="headers-nav" @onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
->>>>>>> Stashed changes
+
 						@itemTeam.Team.Name
 
 					</h5>
 					<table>
 						<tr class="nav-team-setting">
 
-<<<<<<< Updated upstream
+
 							<td><a>Projekty</a></td>
 							<td><a>Członkowie</a></td>
 							<td @onclick="(()=>NavigateToSettingTeamPage(itemTeam.Id))"><a>Ustawienia</a></td>
-=======
-							<td @onclick="@(() =>NavigateToMembers(itemTeam.Id))">Członkowie</td>
-							<td><a>Ustawienia</a></td>
->>>>>>> Stashed changes
+
 						</tr>
 					</table>
 					</li>
