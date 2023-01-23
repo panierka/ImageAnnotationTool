@@ -51,6 +51,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 throw new JobDoesNotExistException(jobId);
             }
 
+            updatedJob.AnnotatedImages = job.AnnotatedImages;
+            updatedJob.AssignedProjectMember = job.AssignedProjectMember;
             updatedJob.Project = job.Project;
             updatedJob.ProjectId = job.ProjectId;
             await dbContext.SaveChangesAsync();

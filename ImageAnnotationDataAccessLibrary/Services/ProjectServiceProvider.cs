@@ -66,7 +66,13 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             var project = dbContext.Projects.FirstOrDefault(x => x.Name == projectName);
             return project;
         }
+        public async Task<Project?> GetProjectById(int projectId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
+            var project = dbContext.Projects.FirstOrDefault(x => x.Id == projectId);
+            return project;
+        }
         public async Task<List<Project>> GetAllProjects()
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
@@ -133,6 +139,32 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             var projectMemeberSeat = dbContext.ProjectMemberSeats.FirstOrDefault(t => t.AssignedTeamMember.Id == teamMemberSeatId & t.Project.Id == projectId);
             var projectMemberSeatId = projectMemeberSeat.Id;
             return projectMemberSeatId;
+        }
+
+        public async Task<ProjectMemberSeat?> GetProjectMember(int teamMemberSeatId, int projectId)
+        {
+            var projects = await GetProjectsOfTeamMember(teamMemberSeatId);
+            return projects.FirstOrDefault(t => t.Project.Id == projectId);
+        }
+
+        public async Task SetProjectMembersRole(int teamMemberId, int projectId, ProjectMemberSeat.ProjectRole role)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            var projectseat = await dbContext
+                .ProjectMemberSeats
+                .Include(t => t.AssignedTeamMember)
+                .Include(t => t.Project)
+                .FirstOrDefaultAsync(
+                    tms => tms.Project.Id == projectId
+                    && tms.AssignedTeamMember.Id == teamMemberId
+                );
+
+            if (projectseat is { })
+            {
+                projectseat.Role = role;
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
