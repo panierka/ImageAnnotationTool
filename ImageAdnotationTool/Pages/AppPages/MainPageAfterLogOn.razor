@@ -70,7 +70,7 @@
 			else{
 			@foreach (var itemTeam in teams){
 				
-				<h5 @onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
+				<h5 @onclick="@(() =>NavigateToProjectPage(itemTeam.Team.Id))">
 					@itemTeam.Team.Name
 				</h5>
 	

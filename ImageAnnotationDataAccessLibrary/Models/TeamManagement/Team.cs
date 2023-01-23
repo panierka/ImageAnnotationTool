@@ -20,5 +20,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 		public virtual ICollection<Project> Projects { get; set; }
 
         public virtual ICollection<TeamMemberSeat> Members { get; set; }
+
+        public Team()
+        {
+            Projects = new List<Project>();
+            Members = new List<TeamMemberSeat>();
+            Name = string.Empty;
+		}
     }
 }

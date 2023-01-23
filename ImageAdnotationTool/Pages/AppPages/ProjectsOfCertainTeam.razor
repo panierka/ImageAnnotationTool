@@ -91,7 +91,7 @@
 	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
 
 	private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
-	private TeamMemberSeat teamMemberSeat = new TeamMemberSeat();
+	private TeamMemberSeat teamMemberSeat = null!;
 
 	private string? teamName;
 	[Parameter]
@@ -117,7 +117,7 @@
 		}
 
 		var userId = userIdRequest.Value;
-		var teamMemberSeat = await teamServiceProvider.GetTeamMember(
+		teamMemberSeat = await teamServiceProvider.GetTeamMember(
 			accountId: userId,
 			teamId: Id
 		);

@@ -26,8 +26,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public async Task CreateProject(Project project, Team team)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            project.Team = team;
-            await dbContext.Projects.AddAsync(project);
+
+            var retrievedTeam = await dbContext.Teams.FirstAsync(t => t.Id == team.Id);
+            retrievedTeam.Projects.Add(project);
+            //await dbContext.Projects.AddAsync(project);
             await dbContext.SaveChangesAsync();
         }
 
@@ -90,12 +92,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
             var projectMemberSeat = new ProjectMemberSeat
             {
-                AssignedTeamMember = newProjectMember,
                 Project = project
             };
 
-            await dbContext.ProjectMemberSeats.AddAsync(projectMemberSeat);
-
+            newProjectMember.ProjectMemberSeats.Add(projectMemberSeat);
             await dbContext.SaveChangesAsync();
         }
 

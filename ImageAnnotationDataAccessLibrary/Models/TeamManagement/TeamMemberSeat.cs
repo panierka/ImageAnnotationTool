@@ -27,5 +27,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 			User,
 			Admin
 		}
+
+		public TeamMemberSeat()
+		{
+			ProjectMemberSeats = new List<ProjectMemberSeat>();
+		}
 	}
 }
