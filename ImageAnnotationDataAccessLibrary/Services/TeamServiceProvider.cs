@@ -147,5 +147,25 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             var teams = await GetTeamsOfUserAccount(accountId);
             return teams.FirstOrDefault(t => t.Team.Id == teamId);
 		}
-	}
+
+        public async Task SetTeamMembersRole(int accountId, int teamId, TeamMemberSeat.TeamRole role)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            var teamseat = await dbContext
+                .TeamMemberSeats
+				.Include(t => t.AssignedUser)
+				.Include(t => t.Team)
+				.FirstOrDefaultAsync(
+                    tms => tms.Team.Id == teamId 
+                    && tms.AssignedUser.Id == accountId
+                );
+            
+            if (teamseat is { })
+            {
+                teamseat.Role = role;
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
 }

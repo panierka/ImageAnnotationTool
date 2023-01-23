@@ -172,7 +172,12 @@ else
 			team.Name = formData.Team;
 			await teamServiceProvider.CreateTeam(team);
 			await teamServiceProvider.AddTeamMember(currentUserID, team.Id);
-
+			await teamServiceProvider.SetTeamMembersRole(
+				accountId: currentUserID, 
+				teamId: team.Id, 
+				role: TeamMemberSeat.TeamRole.Admin
+			);
+			
 			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 			StateHasChanged();
 			isModalOpen = false;

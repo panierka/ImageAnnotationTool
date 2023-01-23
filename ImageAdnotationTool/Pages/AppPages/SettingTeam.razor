@@ -90,7 +90,7 @@
             teamId: Id
         );
 
-        if (teamMemberSeat is {})
+        if (teamMemberSeat is { Role: TeamMemberSeat.TeamRole.Admin })
         {
             team = teamMemberSeat.Team;
             teamDeletionForm = new(team);
