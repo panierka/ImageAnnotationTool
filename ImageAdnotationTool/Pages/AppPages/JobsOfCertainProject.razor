@@ -1,0 +1,187 @@
+﻿@page "/project/{Id:int}"
+@using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
+@using Microsoft.AspNetCore.WebUtilities;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using System.ComponentModel.DataAnnotations
+@inject ProtectedSessionStorage sessionStorage;
+@inject IProjectServiceProvider projectServiceProvider;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject IUserAccountsServiceProvider userAccountsService;
+@inject IJobsServiceProvider jobsServiceProvider;
+@inject NavigationManager NavigationManager;
+
+<div class="page-after-logon">
+	@if (isAuthorized)
+	{
+
+
+		@if (isModalOpen)
+		{
+			<BlazoredModal class="blazormodal">
+				<button @onclick="HideModal">Zamknij</button>
+				<EditForm class="styleEditForm" Model="@formData" OnValidSubmit="SubmitForm">
+					<h3>Dodaj projekt</h3>
+					<InputText class="form-control" @bind-Value="formData.Job"/>
+					<ValidationMessage For="@(() => formData.Job)" />
+					<button type="submit">Zatwierdź</button>
+
+				</EditForm>
+
+
+
+			</BlazoredModal>
+
+		}
+		else
+		{
+
+			
+			<nav>
+			
+					<h5 class="muted-headers">
+						<a href="/teams">Wszystkie Zespoły</a>
+						
+					</h5>
+					<_leftMenu/>
+
+			</nav>
+
+			<div class="main-container">
+
+
+					<h3>
+						@teamName
+					</h3>
+					<h5 class="muted-headers">
+					TWOJE PRACE
+				</h5>
+				
+				
+				<ul class="container-projects">
+					@foreach (var item in projects)
+			{
+					<li @onclick="@(() =>NavigateToJobPage(item.Id))">
+						<h5 class="project-name">
+							@item.Project.Name
+							
+						</h5>
+					</li>
+			}
+					<li @onclick="@ShowModal">
+						<h5 class="project-name">
+							Dodaj nową pracę +
+						</h5>
+					</li>
+				</ul>
+
+
+			</div>
+		}
+
+	}
+	else
+{
+    <p>Wczytywanie...</p>
+}
+</div>
+
+
+@code {
+
+	//private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
+
+	//private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
+	private List<Job> jobs = new List<Job>();
+	private TeamMemberSeat teamMemberSeat = null!;
+	private ProjectMemberSeat projectMemberSeat = null!;
+
+	private string? teamName;
+	[Parameter]
+	public int Id { get; set; }
+
+	private bool isAuthorized = false;
+	private Team team = null!;
+
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender)
+		{
+			return;
+		}
+
+		var userIdRequest = await sessionStorage.GetAsync<int>("userID");
+
+		if (!userIdRequest.Success)
+		{
+			isAuthorized = false;
+			StateHasChanged();
+			return;
+		}
+
+		var userId = userIdRequest.Value;
+
+		teamMemberSeat = await teamServiceProvider.GetTeamMember(
+			accountId: userId,
+			teamId: Id
+		);
+
+		projectMemberSeat = await projectServiceProvider.GetProjectMember(
+			teamMemberSeatId: teamMemberSeat.Id,
+			projectId: Id
+		);
+
+	    jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
+
+		isAuthorized =true;
+		StateHasChanged();
+	}
+
+
+	//For projects
+	private bool isModalOpen;
+	private class FormData
+	{
+		[Required(ErrorMessage = "Nazwa projektu - Pole wymagane")]
+		public string Job { get; set; }
+		public string ErrorMessage{get; set; }	
+
+	}
+	private FormData formData = new FormData();
+
+	private void ShowModal()
+	{
+		isModalOpen = true;
+	}
+
+	private void HideModal()
+	{
+		isModalOpen = false;
+	}
+	private async Task SubmitForm()
+	{
+		Job job=new();
+
+		//Project project = new();
+			//project.Name = formData.Project;
+		Project project = await projectServiceProvider.GetProjectById(Id);
+
+			await jobsServiceProvider.CreateJob(job, project!);
+
+
+			
+			jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
+			StateHasChanged();
+			isModalOpen = false;
+		
+
+	}
+
+	private void NavigateToAnnotatePage(int jobId)
+    {
+		//TODO: Dać dobry link
+        NavigationManager.NavigateTo($"/annotate/{jobId}");
+    }
+
+}
