@@ -101,7 +101,7 @@
 	private void NavigateToProjectPage(int teamID)
 	{
 		//NavigationManager.NavigateTo("/teams");
-		NavigationManager.NavigateTo($"/project?id={teamID}");
+		NavigationManager.NavigateTo($"/project/{teamID}");
 		StateHasChanged();
     }
 

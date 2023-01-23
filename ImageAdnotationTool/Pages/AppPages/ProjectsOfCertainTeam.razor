@@ -11,7 +11,7 @@
 @inject NavigationManager NavigationManager;
 
 <div class="page-after-logon">
-	@if (isConnected)
+	@if (isAuthorized)
 	{
 
 
@@ -21,7 +21,7 @@
 				<button @onclick="HideModal">Zamknij</button>
 				<EditForm class="styleEditForm" Model="@formData" OnValidSubmit="SubmitForm">
 					<h3>Dodaj projekt</h3>
-					<InputText class="form-control" @bind-Value="formData.Project" placeholder="@teamID" />
+					<InputText class="form-control" @bind-Value="formData.Project"/>
 					<ValidationMessage For="@(() => formData.Project)" />
 					<button type="submit">Zatwierdź</button>
 
@@ -93,9 +93,7 @@
 	private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
 	private TeamMemberSeat teamMemberSeat = new TeamMemberSeat();
 	
-	private bool isConnected = false;
 	private string? teamName;
-
 	[Parameter]
     public int Id { get; set; }
 
@@ -126,7 +124,7 @@
 
 		projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
 		teams = await teamServiceProvider.GetTeamsOfUserAccount(userId);
-
+		isAuthorized =true;
         StateHasChanged();
     }
 	
@@ -182,6 +180,6 @@
     }
 	private void NavigateToProjectPage(int teamID)
     {
-        NavigationManager.NavigateTo($"/project?id={teamID}");
+        NavigationManager.NavigateTo($"/project/{Id}");
     }
 }
