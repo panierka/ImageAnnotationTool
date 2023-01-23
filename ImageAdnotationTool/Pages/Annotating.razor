@@ -12,7 +12,7 @@
 
 <h3>Annotating</h3>
 
-@*
+
 <AnnotationsListBox Classes="@(new()
 { 
     new() { Name = "Pies", DescriptorBlueprints = new List<DescriptorBlueprint>() 
@@ -24,8 +24,9 @@
         {
             new() { Name = "Rodzaj", Type = DescriptorBlueprint.DataType.String }
         } } 
-})"/>
-*@
+})" OnAddAnnotation="@(async x => await AddAnnotationContext(x))"
+    OnSelectAnnotation="@(async x => await SelectAnnotationContext(x))"/>
+
 <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
      @onmousemove=@RegisterMouseUpdateAsync
@@ -75,7 +76,10 @@ else if (currentMode == ShapeEditionType.Polygon)
     private Canvas2DContext? context;
     private BECanvasComponent? canvas;
     private CanvasDisplayEngine? drawingEngine;
-    private AnnotationContext? annotationContext;
+    private AnnotationContext? currentAnnotationContext;
+
+    private List<AnnotationContext> annotationContexts = new();
+    private SelectionIndicator selectionIndicator = new();
 
     private ShapeEditionType currentMode;
     private ShapeEditionType[] modes = new ShapeEditionType[] {
@@ -104,58 +108,88 @@ else if (currentMode == ShapeEditionType.Polygon)
         context = await canvas.CreateCanvas2DAsync();
         drawingEngine = new(context, canvas!);
 
-        annotationContext = new(new(), colorProvider);
-
-        drawingEngine.Drawables.Add(annotationContext.Shape);
-        drawingEngine.Drawables.Add(new SelectionIndicator() { Shape = annotationContext.Shape });
+        drawingEngine.Drawables.Add(selectionIndicator);
         await drawingEngine.RenderFrame();
     }
 
     private async Task RegisterMouseDownAsync(MouseEventArgs e)
     {        
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        annotationContext?.ShapeEditor?.PressTool(data);
+        currentAnnotationContext?.ShapeEditor?.PressTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task RegisterMouseUpdateAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        annotationContext?.ShapeEditor?.MoveTool(data);
+        currentAnnotationContext?.ShapeEditor?.MoveTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task RegisterMouseUpAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
-        annotationContext?.ShapeEditor?.ReleaseTool(data);
+        currentAnnotationContext?.ShapeEditor?.ReleaseTool(data);
         await drawingEngine!.RenderFrame();
     }
 
     private async Task Undo()
     {
-        annotationContext?.ShapeEditor?.Undo();
+        currentAnnotationContext?.ShapeEditor?.Undo();
         await drawingEngine!.RenderFrame();
     }
 
     private async Task ResetShape()
     {
-        annotationContext?.ShapeEditor?.ResetShape();
+        currentAnnotationContext?.ShapeEditor?.ResetShape();
         await drawingEngine!.RenderFrame();
     }
 
     private async Task SwitchToolset(ShapeEditionType type)
     {
         await ResetShape();
-        annotationContext?.ShapeEditor?.ClearHistory();
+        currentAnnotationContext?.ShapeEditor?.ClearHistory();
         currentMode = type;
-        annotationContext?.ToolsetHandler.EquipToolset(type);
+
+        if (currentAnnotationContext is { })
+        {
+            currentAnnotationContext.Mode = type;
+        }
+
+        currentAnnotationContext?.ToolsetHandler.EquipToolset(type);
         StateHasChanged();
     }
 
     private void SwitchTool(string name)
     {
-        annotationContext?.ToolsetHandler.EquipToolFromCurrentToolset(name);
+        currentAnnotationContext?.ToolsetHandler.EquipToolFromCurrentToolset(name);
         StateHasChanged();
+    }
+
+    private async Task AddAnnotationContext(Annotation annotation)
+    {
+        var newContext = new AnnotationContext(annotation, colorProvider);
+        annotationContexts.Add(newContext);
+        drawingEngine!.Drawables.Add(newContext.Shape);
+        currentAnnotationContext = newContext;
+        selectionIndicator.Shape = currentAnnotationContext.Shape;
+
+        currentMode = ShapeEditionType.Rectangle;
+        newContext.Mode = ShapeEditionType.Rectangle;
+
+        StateHasChanged();
+        await drawingEngine.RenderFrame();
+    }
+    
+    private async Task SelectAnnotationContext(Annotation annotation)
+    {
+        currentAnnotationContext = annotationContexts
+            .First(x => x.Annotation == annotation);
+        selectionIndicator.Shape = currentAnnotationContext.Shape;
+
+        currentMode = currentAnnotationContext.Mode;
+
+        StateHasChanged();
+        await drawingEngine!.RenderFrame();
     }
 }

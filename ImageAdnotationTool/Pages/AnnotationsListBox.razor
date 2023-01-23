@@ -4,7 +4,7 @@
     ------------------
     @foreach(var item in List)
     {
-        <div class="square" @onclick="@(() => OnSelectAnnotation?.Invoke(item))">
+        <div class="square" @onclick=@(() => OnSelectAnnotation?.Invoke(item))>
             <ComboBox
                 Items="@Classes"
                 OnSelectedItemChanged="@(x => {
@@ -14,9 +14,8 @@
                 CustomStringConverter="@(new ComboBox<AnnotationClass>
                     .DelegatedCustomStringConverter(x => x.Name))"
                 />
-
-            <DescriptorsListBox 
-                Blueprints="@(item.Class?.DescriptorBlueprints?.ToList())"/>
+            @*<DescriptorsListBox 
+                Blueprints="@(item.Class?.DescriptorBlueprints?.ToList())"/>*@
             ------------------
         </div>
     }

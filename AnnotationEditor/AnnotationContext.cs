@@ -13,7 +13,6 @@ namespace AnnotationEditor
     public class AnnotationContext
     {
         private readonly Annotation annotation;
-        private readonly IColorProvider colorProvider;
 
         public ShapeEditor ShapeEditor { get; }
         public ShapeToolsetHandler ToolsetHandler { get; }
@@ -22,10 +21,13 @@ namespace AnnotationEditor
 
         private ColorRGB color = null!;
 
+        public Annotation Annotation => annotation;
+
+        public ShapeEditionType Mode { get; set; } = ShapeEditionType.Rectangle;
+
         public AnnotationContext(Annotation annotation, IColorProvider colorProvider)
         {
             this.annotation = annotation;
-            this.colorProvider = colorProvider;
 
             color = colorProvider.GetNextColor();
             Shape = new(color);
