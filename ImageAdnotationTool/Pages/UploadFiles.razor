@@ -4,6 +4,7 @@
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;                                                                         
 @using ImageProcessing;
 @inject IAnnotatedImagesProjectDatabaseServiceProvider databaseProvider;
+@inject IImageDetailsProvider imageDetailsProvider;
 
 <PageTitle>Test wczytywania plików</PageTitle>
 
@@ -78,11 +79,15 @@ Wczytaj folder
             var extension = Path.GetExtension(filename);
 
             var base64 = await FileConverter.BrowserFileToBase64Async(file);
+            var details = await imageDetailsProvider.GetImageDetails(file);
+
             var image = new ImageData
             {
                 Name = name,
                 SourceBase64 = base64,
                 Extension = extension,
+                Width = details.Width,
+                Height = details.Height,
             };
             images.Add(image);
         }

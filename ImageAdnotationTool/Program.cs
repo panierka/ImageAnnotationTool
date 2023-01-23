@@ -7,6 +7,7 @@ using Security.Hashing;
 using Security.Salting;
 using ImageAnnotationToolDataAccessLibrary.Services;
 using ImageAnnotationTool.Validation;
+using ImageProcessing;
 using AnnotationEditor;
 using CanvasDisplayEngine;
 
@@ -27,6 +28,8 @@ builder.Services.AddTransient<IProjectServiceProvider, ProjectServiceProvider>()
 builder.Services.AddTransient<IJobsServiceProvider, JobsServiceProvider>();
 
 builder.Services.AddTransient<SignUpFormDataValidation>();
+
+builder.Services.AddTransient<IImageDetailsProvider, SixLaborsImageDetailsProvider>();
 
 builder.Services.AddTransient<IColorProvider, RotationalColorProvider>(_ =>
 {

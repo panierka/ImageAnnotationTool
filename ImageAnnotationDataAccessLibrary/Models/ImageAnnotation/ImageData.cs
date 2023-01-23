@@ -15,6 +15,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public string SourceBase64 { get; set; }
 
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
         // exif (nullable)
     }
 }
