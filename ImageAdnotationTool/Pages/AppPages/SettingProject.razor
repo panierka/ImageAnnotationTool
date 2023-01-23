@@ -1,0 +1,144 @@
+﻿@page "/projectsettings/{Id:int}"
+@using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using System.ComponentModel.DataAnnotations;
+@inject ProtectedSessionStorage sessionStorage;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject IProjectServiceProvider projectServiceProvider;
+@inject NavigationManager NavigationManager;
+
+<div class="page-after-logon">
+    <_leftMenu />
+
+    @if (isAuthorized)
+    {
+        <PageTitle>
+            @($"{@project.Name} - ustawienia")
+        </PageTitle>
+
+        <div class="main-container">
+            <EditForm Model="@projectRenameForm"
+                  OnValidSubmit="@RenameProject">
+                Tutaj możesz zmienić nazwę projektu:
+                <DataAnnotationsValidator />
+                <InputText class="form-control"
+                       placeholder="@project.Name"
+                       @bind-Value="@projectRenameForm.NewName"></InputText>
+                <button disabled="@(!context.Validate() || !context.IsModified())">
+                    Zmień nazwę
+                </button>
+            </EditForm>
+
+            <br />
+            <EditForm Model="@projectDeletionForm"
+                  OnValidSubmit="@RemoveProject">
+                Wpisz nazwę projektu, aby umożliwić jego usunięcie.
+                <InputText class="form-control"
+                       placeholder="nazwa Twojego projektu"
+                       @bind-Value="@projectDeletionForm.ConfirmProjectName"></InputText>
+                <button disabled="@(!projectDeletionForm.NamesMatch)">
+                    Usuń
+                </button>
+            </EditForm>
+        </div>
+    }
+    else
+    {
+        <PageTitle>
+            Błąd
+        </PageTitle>
+        <div>
+            Nie odnaleziono strony.
+        </div>
+    }
+
+
+</div>
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private bool isAuthorized = false;
+    private Project project = null!;
+    private ProjectDeletionForm projectDeletionForm = null!;
+    private ProjectRenameForm projectRenameForm = null!;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var userIdRequest = await sessionStorage.GetAsync<int>("userID");
+
+        if (!userIdRequest.Success)
+        {
+            isAuthorized = false;
+            StateHasChanged();
+            return;
+        }
+
+        var userId = userIdRequest.Value;
+        var teamId = 1;
+        var teamMember = teamServiceProvider.GetTeamMember(userId, teamId);
+        var teamMemberId = teamMember.Id;
+        var projectMemberSeat = await projectServiceProvider.GetProjectMember(
+            teamMemberSeatId: teamMemberId,
+            projectId: Id
+        );
+
+        if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
+        {
+            project = projectMemberSeat.Project;
+            projectDeletionForm = new(project);
+            projectRenameForm = new(project);
+            isAuthorized = true;
+        }
+
+        StateHasChanged();
+    }
+
+    public async Task RenameProject()
+    {
+        project.Name = projectRenameForm.NewName;
+        await projectServiceProvider.UpdateProject(Id, project);
+        StateHasChanged();
+    }
+
+    public async Task RemoveProject()
+    {
+        await projectServiceProvider.DeleteProject(Id);
+        NavigationManager.NavigateTo("/projects");
+    }
+
+    private class ProjectDeletionForm
+    {
+        public string ConfirmProjectName { get; set; } = string.Empty;
+
+        private readonly Project project;
+
+        public bool NamesMatch => project.Name == ConfirmProjectName;
+
+        public ProjectDeletionForm(Project project)
+        {
+            this.project = project;
+        }
+    }
+
+    private class ProjectRenameForm
+    {
+        [Required]
+        public string NewName { get; set; }
+
+        private readonly Project project;
+
+        public ProjectRenameForm(Project project)
+        {
+            this.project = project;
+
+            NewName = project.Name;
+        }
+    }
+}
