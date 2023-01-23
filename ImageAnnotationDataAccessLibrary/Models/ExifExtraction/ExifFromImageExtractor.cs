@@ -11,9 +11,9 @@ using MetadataExtractor.Formats.Exif;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction
 {
-    public class ExifFromImageExtractor
+    public static class ExifFromImageExtractor
     {
-        public Exif ExifFromImage(Image image)//PropertyItem[]
+        public static Exif ExifFromImage(Image image)//PropertyItem[]
         {
             //PropertyItem[] propertyItems = image.PropertyItems;
 
@@ -43,7 +43,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction
             //return propertyItems;
         }
 
-        public Exif ExifFromStream(MemoryStream ms)
+        public static Exif ExifFromStream(MemoryStream ms)
         {
             var directories = ImageMetadataReader.ReadMetadata(ms);
             var directory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();

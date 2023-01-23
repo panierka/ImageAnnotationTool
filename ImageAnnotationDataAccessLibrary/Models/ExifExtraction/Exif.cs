@@ -1,14 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction
 {
     public class Exif
     {
-        public string? ExifVersion { get; set; }
+		[Key]
+        [JsonIgnore]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		public int Id { get; set; }
+
+        [JsonIgnore]
+        public int ImageDataForeignKey { get; set; }
+
+        [JsonIgnore]
+        public ImageData ImageData { get; set; }
+
+		public string? ExifVersion { get; set; }
 
         public DateTime? DateTime { get; set; } //0x0132 | DateTime
 

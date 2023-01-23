@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 {
@@ -9,7 +10,9 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
-        public string Name { get; set; }
+        public AnnotatedImage AnnotatedImage { get; set; }
+
+		public string Name { get; set; }
         
         public string Extension { get; set; }
 
@@ -19,6 +22,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public int Height { get; set; }
 
-        // exif (nullable)
-    }
+		public virtual Exif? Exif { get; set; }
+	}
 }

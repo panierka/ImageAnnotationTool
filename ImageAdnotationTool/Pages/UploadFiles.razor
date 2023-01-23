@@ -1,5 +1,6 @@
 ﻿@page "/upload"
 @using System.Text;
+@using ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction;
 @using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;                                                                         
 @using ImageProcessing;
@@ -81,6 +82,10 @@ Wczytaj folder
             var base64 = await FileConverter.BrowserFileToBase64Async(file);
             var details = await imageDetailsProvider.GetImageDetails(file);
 
+            var byteArray = await FileConverter.BrowserFileToByteArrayAsync(file);
+            var ms = new MemoryStream(byteArray);
+            var exif = ExifFromImageExtractor.ExifFromStream(ms);
+
             var image = new ImageData
             {
                 Name = name,
@@ -88,6 +93,7 @@ Wczytaj folder
                 Extension = extension,
                 Width = details.Width,
                 Height = details.Height,
+                Exif = exif,
             };
             images.Add(image);
         }
@@ -103,6 +109,7 @@ Wczytaj folder
         fakeTeam = new();
         fakeProject = new()
         {
+            Name = "śmierć.",
             Team = fakeTeam
         };
     }

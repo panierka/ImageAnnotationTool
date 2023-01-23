@@ -41,7 +41,7 @@ namespace JobServiceTest
 
             //test UpdateJob(int jobId, Job job)
 
-            await projectsServiceProvider.CreateProject(new() { Id = 1, Name = "Project1" });
+            await projectsServiceProvider.CreateProject(new() { Id = 1, Name = "Project1" }, new());
 
             var project1 = await projectsServiceProvider.GetProject("Project1");
 

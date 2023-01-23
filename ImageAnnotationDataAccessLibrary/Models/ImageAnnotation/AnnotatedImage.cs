@@ -12,6 +12,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public virtual ImageData ImageData { get; set; }
 
+        public int ImageDataForeignKey { get; set; }
+
         public virtual Job? Job { get; set; }
 
         public virtual Project Project { get; set; }

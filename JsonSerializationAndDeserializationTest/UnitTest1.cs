@@ -1,6 +1,5 @@
 using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco;
 using ImageAnnotationToolDataAccessLibrary.Serialization;
-using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 using ImageAnnotationToolDataAccessLibrary.JsonFiles;
 using NuGet.Frameworks;
 using System.Linq;

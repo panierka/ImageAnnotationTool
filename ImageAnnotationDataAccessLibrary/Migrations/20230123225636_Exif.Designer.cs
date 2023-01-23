@@ -4,6 +4,7 @@ using ImageAnnotationToolDataAccessLibrary.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageAnnotationToolDataAccessLibrary.Migrations
 {
     [DbContext(typeof(ImageAnnotationToolContext))]
-    partial class ImageAnnotationToolContextModelSnapshot : ModelSnapshot
+    [Migration("20230123225636_Exif")]
+    partial class Exif
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,7 +103,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ImageDataForeignKey")
+                    b.Property<int>("ImageDataId")
                         .HasColumnType("int");
 
                     b.Property<int?>("JobId")
@@ -111,8 +114,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageDataForeignKey")
-                        .IsUnique();
+                    b.HasIndex("ImageDataId");
 
                     b.HasIndex("JobId");
 
@@ -415,8 +417,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.AnnotatedImage", b =>
                 {
                     b.HasOne("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.ImageData", "ImageData")
-                        .WithOne("AnnotatedImage")
-                        .HasForeignKey("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.AnnotatedImage", "ImageDataForeignKey")
+                        .WithMany()
+                        .HasForeignKey("ImageDataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -588,9 +590,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.ImageData", b =>
                 {
-                    b.Navigation("AnnotatedImage")
-                        .IsRequired();
-
                     b.Navigation("Exif");
                 });
 

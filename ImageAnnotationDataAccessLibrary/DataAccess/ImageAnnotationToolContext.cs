@@ -1,6 +1,8 @@
-﻿using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+﻿using ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction;
+using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 {
@@ -22,6 +24,8 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 		public DbSet<AnnotationClass> AnnotationClasses { get; set; }
 		public DbSet<Descriptor> Descriptors { get; set; }
 		public DbSet<DescriptorBlueprint> DescriptorBlueprints { get; set; }
+
+		public DbSet<Exif> Exifs { get; set; }
 
    //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
    //     {
@@ -53,6 +57,16 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
                 .HasOne(x => x.Project)
                 .WithMany(x => x.Members)
                 .OnDelete(DeleteBehavior.NoAction);
-        }
+
+			modelBuilder.Entity<ImageData>()
+				.HasOne(i => i.Exif)
+				.WithOne(e => e.ImageData)
+				.HasForeignKey<Exif>(e => e.ImageDataForeignKey);
+
+			modelBuilder.Entity<ImageData>()
+				.HasOne(i => i.AnnotatedImage)
+				.WithOne(e => e.ImageData)
+				.HasForeignKey<AnnotatedImage>(e => e.ImageDataForeignKey);
+		}
 	}
 }
