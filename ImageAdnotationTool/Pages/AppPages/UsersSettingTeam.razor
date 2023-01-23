@@ -1,9 +1,24 @@
-﻿@page "/users"
+﻿@page "/members"
 @using ImageAnnotationTool.Pages.AppPages.Shared
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
-<div class="page-after-logon">
-<_leftMenu/>
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using Microsoft.AspNetCore.WebUtilities
+@inject ProtectedSessionStorage ProtectedSessionStore;
+@inject IProjectServiceProvider projectServiceProvider;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject IUserAccountsServiceProvider userAccountsService;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JSRuntime;
 
+<div class="page-after-logon">
+	<nav>
+			
+					<h5 class="muted-headers">
+						<a href="/teams">Wszystkie Zespoły</a>
+						
+					</h5>
+<_leftMenu/>
+</nav>
 <div class="main-container">
 	
 	
@@ -85,28 +100,68 @@
 		</ul>
 		
 		<table class="table table-hover">
-		@*	@foreach(var user in users){*@
-			<tr class="table-active">
-			<th scope="row">Active</th>
-			<td>Column content</td>
-			<td>Column content</td>
-			<td>Column content</td>
-			</tr>
-			
+		@foreach (var itemTeam in teams){
+			@foreach(var user in itemTeam.Team.Members){
+					<tr class="table-active">
+						<th scope="row">@user.AssignedUser.Login</th>
+						<td>Rola</td>
+						<td @onclick="DeleteUserFromTeam">Usuń</td>
+					</tr>
+			}
+			}
 		</table>
 
 </div>
 
 </div>
-@code {
-	////TODO: Dodanie zespołu. Dodanie projektu.
-	//private const string COUNT_KEY = "currentLogInUser";
-	////var currentLogInUserId = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
 
-	//private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
-	//protected override async Task OnInitializedAsync(){
-	//	teams = await teamServiceProvider.GetTeamsOfUserAccount(0);
+@code{
+	private int currentUserID, teamID;
+	private bool isConnected = false;
+	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
 
-	//}
+	protected override async Task OnInitializedAsync()
+	{
+		//var uri = new Uri(NavigationManager.Uri);
+		//string id = QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var value) ? value : "";
+		//teamID = int.Parse(id);
+		//var team = await teamServiceProvider.GetTeamById(teamID);
+		//teamName = team.Name;
+		teams = await teamServiceProvider.GetTeamMembers(teamID);
 
+		StateHasChanged();
+		//jeśli teamid jest ok to zostaje a jak nie to przerzuca do zespołów
+	}
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			isConnected = true;
+			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
+
+			currentUserID = currentUser.Success?currentUser.Value:0;
+			//czy te teamID jest tu poprawne czy current userid
+			var uri = new Uri(NavigationManager.Uri);
+			string id = QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var value) ? value : "";
+			teamID = int.Parse(id);
+
+			teams = await teamServiceProvider.GetTeamMembers(teamID);
+			StateHasChanged();
+
+		}       
+	}
+	private async Task addUserToTeam()
+	{
+		var teams = await teamServiceProvider.GetTeamMembers(teamID);
+		
+		if(currentUserID==i ){
+			
+		}
+		teamServiceProvider.AddTeamMember();
+	}
+	private void DeleteUserFromTeam(){
+		//projectServiceProvider.RemoveProjectMember();
+	}
 	}
