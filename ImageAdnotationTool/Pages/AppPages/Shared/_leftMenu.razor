@@ -33,17 +33,26 @@
 				{
 					@foreach (var itemTeam in teams){
 					<li>
+<<<<<<< Updated upstream
 					<h5 class="headers-nav"
 						@onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
+=======
+					<h5 class="headers-nav" @onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
+>>>>>>> Stashed changes
 						@itemTeam.Team.Name
 
 					</h5>
 					<table>
 						<tr class="nav-team-setting">
 
+<<<<<<< Updated upstream
 							<td><a>Projekty</a></td>
 							<td><a>Członkowie</a></td>
 							<td @onclick="(()=>NavigateToSettingTeamPage(itemTeam.Id))"><a>Ustawienia</a></td>
+=======
+							<td @onclick="@(() =>NavigateToMembers(itemTeam.Id))">Członkowie</td>
+							<td><a>Ustawienia</a></td>
+>>>>>>> Stashed changes
 						</tr>
 					</table>
 					</li>
@@ -100,16 +109,24 @@
 		StateHasChanged();
     }
 
-	
+
 	private void NavigateToSettingTeamPage(int teamID)
     {
         NavigationManager.NavigateTo($"/settings/{teamID}");
 		StateHasChanged();
     }
-	//TODO: Find place for that
+
 	private void NavigateToSettingProjectPage(int teamID)
     {
         NavigationManager.NavigateTo($"/projectsettings/{teamID}");
 		StateHasChanged();
     }
+
+	private void NavigateToMembers(int teamID)
+	{
+		
+		NavigationManager.NavigateTo($"/members?id={teamID}");
+		StateHasChanged();
+    }
+
 	}
