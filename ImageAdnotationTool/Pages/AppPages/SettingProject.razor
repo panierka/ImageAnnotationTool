@@ -83,7 +83,7 @@
         var userId = userIdRequest.Value;
         var tmp = await projectServiceProvider.GetProjectById(Id);
         var teamId = tmp.Team.Id;
-        var teamMemberId = teamServiceProvider.GetTeamMember(userId, teamId).Id;
+        var teamMemberId = (await teamServiceProvider.GetTeamMember(userId, teamId)).Id;
         var projectMemberSeat = await projectServiceProvider.GetProjectMember(
             teamMemberSeatId: teamMemberId,
             projectId: Id

@@ -130,7 +130,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .ToListAsync();
         }
 
-        public async Task<List<TeamMemberSeat>> GetTeamsOfUserAccount(int accountId)
+        public async Task<List<TeamMemberSeat>> GetTeamMemberSeatsOfUserAccount(int accountId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
             //TODO: Czy taka wartość jest w bazie??
@@ -138,13 +138,20 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .TeamMemberSeats
                 .Where(t => t.AssignedUser.Id == accountId)
                 .Include(t => t.AssignedUser)
-                .Include(t => t.Team)
+                .Include(t => t.Team.Projects)
                 .ToListAsync();
+        }
+
+		public async Task<List<Team>> GetTeamsOfUserAccount(int accountId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            return await dbContext.Teams.ToListAsync();
         }
 
 		public async Task<TeamMemberSeat?> GetTeamMember(int accountId, int teamId)
 		{
-            var teams = await GetTeamsOfUserAccount(accountId);
+            var teams = await GetTeamMemberSeatsOfUserAccount(accountId);
             return teams.FirstOrDefault(t => t.Team.Id == teamId);
 		}
 

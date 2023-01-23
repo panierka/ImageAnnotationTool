@@ -148,7 +148,7 @@ namespace TeamServiceTest
 
             string predicted6 = "Student1;Student2;StudentX";
 
-            var userTeams = await teamsServiceProvider.GetTeamsOfUserAccount(1);
+            var userTeams = await teamsServiceProvider.GetTeamMemberSeatsOfUserAccount(1);
             var actual6 = string.Join(';', userTeams.Select(x => x.Team.Name));
 
             Assert.AreEqual(predicted6, actual6);

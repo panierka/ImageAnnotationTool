@@ -123,7 +123,7 @@
 		);
 
 		projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
-		teams = await teamServiceProvider.GetTeamsOfUserAccount(userId);
+		teams = await teamServiceProvider.GetTeamMemberSeatsOfUserAccount(userId);
 		isAuthorized =true;
 		StateHasChanged();
 	}
@@ -167,7 +167,11 @@
 
 			//
 			await projectServiceProvider.AddProjectMember(teamMemberSeat.Id, project.Id);
-
+			await projectServiceProvider.SetProjectMembersRole(
+				teamMemberId: teamMemberSeat.Id,
+				projectId: project.Id,
+				role: ProjectMemberSeat.ProjectRole.Admin
+			);
 			projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
 			StateHasChanged();
 			isModalOpen = false;

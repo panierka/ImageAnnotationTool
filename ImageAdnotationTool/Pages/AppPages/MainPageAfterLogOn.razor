@@ -74,11 +74,7 @@
 					@itemTeam.Team.Name
 				</h5>
 	
-		@if (@itemTeam.Team.Projects == null || !@itemTeam.Team.Projects.Any()){
-			<ul class="container-projects">
-				<p>Brak projektów.</p>
-				</ul>
-		}else{
+		
 		<ul class="container-projects">
 					@foreach (var itemProject in @itemTeam.Team.Projects)
 					{
@@ -90,7 +86,7 @@
 					}
 							
 		</ul>
-		}
+		
 		}}
 	</section>
 		</div>
@@ -125,7 +121,7 @@ else
 			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
 
 			currentUserID = currentUser.Success?currentUser.Value:0;
-			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+			teams = await teamServiceProvider.GetTeamMemberSeatsOfUserAccount(currentUserID);
 			StateHasChanged();
 
 		}       
@@ -134,7 +130,7 @@ else
 	protected override async Task OnInitializedAsync(){
 
 
-		teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+		teams = await teamServiceProvider.GetTeamMemberSeatsOfUserAccount(currentUserID);
 		StateHasChanged();
 	}
 	//For teams
@@ -178,7 +174,7 @@ else
 				role: TeamMemberSeat.TeamRole.Admin
 			);
 			
-			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+			teams = await teamServiceProvider.GetTeamMemberSeatsOfUserAccount(currentUserID);
 			StateHasChanged();
 			isModalOpen = false;
 		}

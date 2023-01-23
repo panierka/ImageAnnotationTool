@@ -35,7 +35,7 @@
 					<li>
 
 					<h5 class="headers-nav"
-						@onclick="@(() =>NavigateToProjectPage(itemTeam.Id))">
+						@onclick="@(() =>NavigateToProjectPage(itemTeam.Team.Id))">
 
 						@itemTeam.Team.Name
 
@@ -79,7 +79,7 @@
 			var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
 			//TODO: Zczytanie prawidłwoego id
 			currentUserID = currentUser.Success?currentUser.Value:0;
-			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+			teams = await teamServiceProvider.GetTeamMemberSeatsOfUserAccount(currentUserID);
 			StateHasChanged();
 			//var result = await ProtectedSessionStore.GetAsync<int>(COUNT_KEY);
 			//currentCount = result.Success ? result.Value : 0;
@@ -92,7 +92,7 @@
 		//var currentUser = await ProtectedSessionStore.GetAsync<int>("userID");
 		////TODO: Zczytanie prawidłwoego id
 		//currentUserID = currentUser.Value;
-		teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
+		teams = await teamServiceProvider.GetTeamMemberSeatsOfUserAccount(currentUserID);
 		StateHasChanged();
 	}
 

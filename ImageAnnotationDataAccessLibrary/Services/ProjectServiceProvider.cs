@@ -73,7 +73,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            var project = dbContext.Projects.FirstOrDefault(x => x.Id == projectId);
+            var project = dbContext.Projects.Include(t => t.Team).FirstOrDefault(x => x.Id == projectId);
             return project;
         }
         public async Task<List<Project>> GetAllProjects()
