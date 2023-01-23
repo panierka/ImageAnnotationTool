@@ -21,6 +21,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 
         public virtual ICollection<Job> Jobs { get; set; }
 
-        // rola
+        public ProjectRole Role { get; set; }
+
+        public enum ProjectRole
+        {
+            User,
+            Admin
+        }
     }
 }

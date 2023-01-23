@@ -13,7 +13,7 @@ namespace CanvasDisplayEngine
         private readonly List<Point> points = new();
         public ColorRGB Color { get; set; }
         
-        public bool Closed { get; set; }
+        public bool IsClosed { get; set; }
         
         public Shape(ColorRGB color)
         {
@@ -27,8 +27,6 @@ namespace CanvasDisplayEngine
                 return;
             }
 
-            // do not change order -w
-            await DrawPoints(canvasContext);
             await DrawPolygon(canvasContext);
             await FillPolygon(canvasContext);
 
@@ -37,7 +35,7 @@ namespace CanvasDisplayEngine
         
         private async Task DrawPolygon(Canvas2DContext canvasContext)
         {
-            var lineWidth = ShapeStyle.Instance.LineWidth;
+            var lineWidth = ShapeStyleGlobalConfiguration.Instance.LineWidth;
             await canvasContext.SetLineWidthAsync(lineWidth);
             await canvasContext.SetStrokeStyleAsync(Color.ToString());
             await canvasContext.BeginPathAsync();
@@ -56,7 +54,7 @@ namespace CanvasDisplayEngine
                 );
             }
             
-            if (Closed)
+            if (IsClosed)
             {
                 await canvasContext.ClosePathAsync();
             }
@@ -64,30 +62,15 @@ namespace CanvasDisplayEngine
 
         private async Task FillPolygon(Canvas2DContext canvasContext)
         {
-            if (!Closed)
+            if (!IsClosed)
             {
                 return;
             }
 
-            var opacity = ShapeStyle.Instance.FillOpacity;
+            var opacity = ShapeStyleGlobalConfiguration.Instance.FillOpacity;
             var fillColor = new ColorRGBA(Color, opacity);
             await canvasContext.SetFillStyleAsync(fillColor.ToString());
             await canvasContext.FillAsync();
-        }
-
-        private async Task DrawPoints(Canvas2DContext canvasContext)
-        {
-            await canvasContext.SetFillStyleAsync(Color.ToString());
-
-            foreach (var point in points)
-            {
-                await canvasContext.BeginPathAsync();
-
-                var radius = ShapeStyle.Instance.PointRadius;
-                await canvasContext.ArcAsync(point.X, point.Y, radius, 0, 2 * Math.PI);
-                await canvasContext.FillAsync();
-                await canvasContext.ClosePathAsync();
-            }
         }
 
         public void AddPoint(Point point)
@@ -101,7 +84,7 @@ namespace CanvasDisplayEngine
 
             if (points.Count <= 2)
             {
-                Closed = false;
+                IsClosed = false;
             }
         }
         

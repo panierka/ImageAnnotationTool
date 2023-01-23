@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CanvasDisplayEngine
+namespace ShapeEditing
 {
-    public record InputEventData(double MouseX, double MouseY, long MouseButton);
+    public enum ShapeEditionType
+    {
+        Rectangle,
+        Polygon
+    }
 }

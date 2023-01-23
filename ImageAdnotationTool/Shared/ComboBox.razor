@@ -1,0 +1,80 @@
+﻿@typeparam T
+
+<div>
+    <select @oninput=HandleSelectionChange>
+        @foreach (var container in itemContainers)
+        {
+            <option value="@container.Id">
+                @(CustomStringConverter?.GetString(container.Item)
+                    ?? container.Item.ToString())
+            </option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter]
+    public T? SelectedItem 
+    { 
+        get => selectedItem; 
+        set
+        {
+            selectedItem = value;
+        }
+    }
+
+    [Parameter, EditorRequired]
+    public IEnumerable<T> Items { get; set; } = null!;
+
+    private IEnumerable<ItemContainer> itemContainers = null!;
+
+    [Parameter]
+    public Action<T?>? OnSelectedItemChanged { get; set; }
+
+    [Parameter]
+    public ICustomStringConverter? CustomStringConverter { get; set; }
+
+    protected override void OnInitialized()
+    {
+        itemContainers = Items?
+        .Zip(
+            Enumerable.Range(1, Items.Count()), 
+            (x, i) => new ItemContainer(i.ToString(), x)
+        ) ?? Enumerable.Empty<ItemContainer>();
+    }
+
+    private void HandleSelectionChange(ChangeEventArgs e)
+    {
+        if (e.Value is not string id)
+        {
+            return;
+        }
+
+        SelectedItem = itemContainers.First(x => x.Id == id).Item;
+        OnSelectedItemChanged?.Invoke(SelectedItem);
+    }
+
+    private T? selectedItem;
+
+    private record ItemContainer(string Id, T Item);
+
+    public interface ICustomStringConverter
+    {
+        public string GetString(T item);
+    }
+
+    public class DelegatedCustomStringConverter : ICustomStringConverter
+    {
+        private readonly Func<T, string> conversionFunction;
+
+        public DelegatedCustomStringConverter(Func<T, string> conversionFunction)
+        {
+            this.conversionFunction = conversionFunction;
+        }
+
+        public string GetString(T item)
+        {
+            return conversionFunction?.Invoke(item) ?? string.Empty;
+        }
+    }
+}

@@ -16,6 +16,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public virtual Project Project { get; set; }
 
-        // adnotacje
+        public ICollection<Annotation> Annotations { get; set; }
     }
 }

@@ -1,14 +1,16 @@
-﻿using System;
+﻿using ShapeEditing.Actions;
+using CanvasDisplayEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CanvasDisplayEngine
+namespace ShapeEditing.Tools
 {
     public class SplittingTool : IShapeEditingTool
     {
-        public void PressOnCoordinate(Shape shape, InputEventData inputEvent)
+        public IEditorAction? PressOnCoordinate(Shape shape, InputEventData inputEvent)
         {
             var x = inputEvent.MouseX;
             var y = inputEvent.MouseY;
@@ -17,7 +19,7 @@ namespace CanvasDisplayEngine
 
             if (tryGetLineResult is not LineData line)
             {
-                return;
+                return null;
             }
 
             var endPoint = line.EndPoint;
@@ -26,11 +28,11 @@ namespace CanvasDisplayEngine
                 .TakeWhile(point => endPoint != point)
                 .Count();
             
-            shape.InsertPoint(new(x, y), insertIndex);
+            return new PointInsertionAction(shape, new(x, y), insertIndex);
         }
 
-        public void MoveOnCoordinate(Shape shape, InputEventData inputEvent) { }
+        public IEditorAction? MoveOnCoordinate(Shape shape, InputEventData inputEvent) => null;
 
-        public void ReleaseOnCoordinate(Shape shape, InputEventData inputEvent) { }
+        public IEditorAction? ReleaseOnCoordinate(Shape shape, InputEventData inputEvent) => null;
     }
 }

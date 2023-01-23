@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    internal static class ShapeInterpreter
+    public static class ShapeInterpreter
     {
         public static Point? GetPointWithCoordinates(Shape shape, double x, double y)
         {
@@ -67,12 +67,12 @@ namespace CanvasDisplayEngine
             const double EPS = 3;
             return shape
                 .Points
-                .Zip(shape.Points
-                    .Skip(1).Concat(shape.Points.Take(1)), (a, b) => new LineData
-                    {
-                        StartPoint = a,
-                        EndPoint = b
-                    })
+                .Zip(shape
+                    .Points
+                    .Skip(1)
+                    .Concat(shape
+                        .Points
+                        .Take(1)), (a, b) => new LineData(a,b))
                 .Select(line => new 
                 { 
                     Line = line, 

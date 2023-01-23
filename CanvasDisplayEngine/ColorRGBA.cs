@@ -11,20 +11,20 @@ namespace CanvasDisplayEngine
     {
         public byte Red 
         { 
-            get => baseColor.Red; 
-            set => baseColor.Red = value; 
+            get => baseColor.R; 
+            set => baseColor.R = value; 
         }
 
         public byte Green
         {
-            get => baseColor.Green;
-            set => baseColor.Green = value;
+            get => baseColor.G;
+            set => baseColor.G = value;
         }
 
         public byte Blue
         {
-            get => baseColor.Blue;
-            set => baseColor.Blue = value;
+            get => baseColor.B;
+            set => baseColor.B = value;
         }
 
         public double Alpha { get; set; }

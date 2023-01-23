@@ -19,5 +19,13 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 		public virtual Team Team { get; set; }
 
 		public virtual ICollection<ProjectMemberSeat> ProjectMemberSeats { get; set; }
+
+		public TeamRole Role { get; set; }
+
+		public enum TeamRole
+		{
+			User,
+			Admin
+		}
 	}
 }
