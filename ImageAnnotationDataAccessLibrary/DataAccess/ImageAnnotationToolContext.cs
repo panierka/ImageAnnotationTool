@@ -24,6 +24,11 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 		public DbSet<TeamMemberSeat> TeamMemberSeats { get; set; }
         public DbSet<UserAccount> UserAccounts { get; set; }
 
+		public DbSet<Annotation> Annotations { get; set; }
+		public DbSet<AnnotationClass> AnnotationClasses { get; set; }
+		public DbSet<Descriptor> Descriptors { get; set; }
+		public DbSet<DescriptorBlueprint> DescriptorBlueprints { get; set; }
+
    //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
    //     {
 			//optionsBuilder.UseLazyLoadingProxies();
@@ -39,6 +44,21 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 			modelBuilder.Entity<UserAccount>()
 				.HasIndex(x => x.Login)
 				.IsUnique();
-		}
+
+            modelBuilder.Entity<Annotation>()
+                .HasOne(x => x.Class)
+                .WithMany(x => x.AnnotationsWithClass)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Descriptor>()
+                .HasOne(x => x.Blueprint)
+                .WithMany(x => x.CreatedDescriptors)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ProjectMemberSeat>()
+                .HasOne(x => x.Project)
+                .WithMany(x => x.Members)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
 	}
 }
