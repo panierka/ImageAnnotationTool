@@ -43,7 +43,7 @@
 
 							<td><a>Projekty</a></td>
 							<td><a>Członkowie</a></td>
-							<td><a>Ustawienia</a></td>
+							<td @onclick="(()=>NavigateToSettingTeamPage(itemTeam.Id))"><a>Ustawienia</a></td>
 						</tr>
 					</table>
 					</li>
@@ -95,10 +95,21 @@
 
 	private void NavigateToProjectPage(int teamID)
 	{
-		NavigationManager.NavigateTo("/teams");
+		//NavigationManager.NavigateTo("/teams");
 		NavigationManager.NavigateTo($"/project?id={teamID}");
 		StateHasChanged();
     }
 
-
+	
+	private void NavigateToSettingTeamPage(int teamID)
+    {
+        NavigationManager.NavigateTo($"/settings/{teamID}");
+		StateHasChanged();
+    }
+	//TODO: Find place for that
+	private void NavigateToSettingProjectPage(int teamID)
+    {
+        NavigationManager.NavigateTo($"/projectsettings/{teamID}");
+		StateHasChanged();
+    }
 	}

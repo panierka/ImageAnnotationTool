@@ -91,6 +91,7 @@
 	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
 
 	private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
+	private TeamMemberSeat teamMemberSeat = new TeamMemberSeat();
 	private int currentUserID, teamID;
 	private bool isConnected = false;
 	private string? teamName;
@@ -101,12 +102,14 @@
 		//teamID = int.Parse(id);
 		//var team = await teamServiceProvider.GetTeamById(teamID);
 		//teamName = team.Name;
-		projects = await projectServiceProvider.GetProjectsOfTeamMember(currentUserID);
+
+		teamMemberSeat = await teamServiceProvider.GetTeamMember(currentUserID,teamID);
+		projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
 		teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
 
 		StateHasChanged();
 		//jeśli teamid jest ok to zostaje a jak nie to przerzuca do zespołów
-    }
+	}
 
 
 
@@ -119,14 +122,15 @@
 
 			currentUserID = currentUser.Success?currentUser.Value:0;
 			//czy te teamID jest tu poprawne czy current userid
-				var uri = new Uri(NavigationManager.Uri);
+			var uri = new Uri(NavigationManager.Uri);
 			string id = QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var value) ? value : "";
 			teamID = int.Parse(id);
 			var team = await teamServiceProvider.GetTeamById(teamID);
-			teamName = team.Name;
-			projects = await projectServiceProvider.GetProjectsOfTeamMember(currentUserID);
+			teamName = teamMemberSeat.Team.Name;
+			teamMemberSeat = await teamServiceProvider.GetTeamMember(currentUserID,teamID);
+			projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
 			teams = await teamServiceProvider.GetTeamsOfUserAccount(currentUserID);
-
+			
 			StateHasChanged();
 
 		}       
@@ -167,9 +171,11 @@
 			project.Name = formData.Project;
 			await projectServiceProvider.CreateProject(project);
 			//TODO: Dopytać czy tam jest current userid
-			await projectServiceProvider.AddProjectMember(currentUserID, project.Id);
 
-			projects = await projectServiceProvider.GetProjectsOfTeamMember(currentUserID);
+			//
+			await projectServiceProvider.AddProjectMember(teamMemberSeat.Id, project.Id);
+
+			projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
 			StateHasChanged();
 			isModalOpen = false;
 		}

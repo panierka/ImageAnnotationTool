@@ -19,7 +19,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public Task<Project?> GetProjectById(int projectId);
         public Task<List<Project>> GetAllProjects();
 
-        public Task AddProjectMember(int projectMemberId, int projectId);
+        public Task AddProjectMember(int teamMemberSeatId, int projectId);
 
         public Task RemoveProjectMember(int projectMemberSeatId);
 
