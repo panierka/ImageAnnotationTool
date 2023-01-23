@@ -9,7 +9,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 {
     public interface IProjectServiceProvider
     {
-        public Task CreateProject(Project project);
+        public Task CreateProject(Project project, Team team);
 
         public Task DeleteProject(int projectId);
 

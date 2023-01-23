@@ -23,9 +23,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             this.dbContextFactory = dbContextFactory;
         }
 
-        public async Task CreateProject(Project project)
+        public async Task CreateProject(Project project, Team team)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            project.Team = team;
             await dbContext.Projects.AddAsync(project);
             await dbContext.SaveChangesAsync();
         }

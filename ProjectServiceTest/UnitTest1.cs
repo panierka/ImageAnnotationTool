@@ -36,10 +36,13 @@ namespace ProjectServiceTest
 
             //test CreateProject(Project project), GetAllProjectMembers(int projectId)
 
-            await projectsServiceProvider.CreateProject(new() { Id = 1, Name = "Project1"});
-            await projectsServiceProvider.CreateProject(new() { Id = 2, Name = "Project2"});
-            await projectsServiceProvider.CreateProject(new() { Id = 3, Name = "Project3"});
-            await projectsServiceProvider.CreateProject(new() { Id = 4, Name = "Project4"});
+            //await projectsServiceProvider.CreateProject(new() { Id = 1, Name = "Project1" }, 1);
+            //await projectsServiceProvider.CreateProject(new() { Id = 2, Name = "Project2" }, 1);
+            //await projectsServiceProvider.CreateProject(new() { Id = 3, Name = "Project3" }, 1);
+            //await projectsServiceProvider.CreateProject(new() { Id = 4, Name = "Project4" }, 1);
+
+
+
 
             const string predicted1 = "Project1;Project2;Project3;Project4";
             var projects1 = await projectsServiceProvider.GetAllProjects();

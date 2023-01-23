@@ -92,42 +92,42 @@
 
 	private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
 	private TeamMemberSeat teamMemberSeat = new TeamMemberSeat();
-	
+
 	private string? teamName;
 	[Parameter]
-    public int Id { get; set; }
+	public int Id { get; set; }
 
-    private bool isAuthorized = false;
-    private Team team = null!;
+	private bool isAuthorized = false;
+	private Team team = null!;
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            return;
-        }
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender)
+		{
+			return;
+		}
 
-        var userIdRequest = await sessionStorage.GetAsync<int>("userID");
+		var userIdRequest = await sessionStorage.GetAsync<int>("userID");
 
-        if (!userIdRequest.Success)
-        {
-            isAuthorized = false;
-            StateHasChanged();
-            return;
-        }
+		if (!userIdRequest.Success)
+		{
+			isAuthorized = false;
+			StateHasChanged();
+			return;
+		}
 
-        var userId = userIdRequest.Value;
-        var teamMemberSeat = await teamServiceProvider.GetTeamMember(
-            accountId: userId,
-            teamId: Id
-        );
+		var userId = userIdRequest.Value;
+		var teamMemberSeat = await teamServiceProvider.GetTeamMember(
+			accountId: userId,
+			teamId: Id
+		);
 
 		projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
 		teams = await teamServiceProvider.GetTeamsOfUserAccount(userId);
 		isAuthorized =true;
-        StateHasChanged();
-    }
-	
+		StateHasChanged();
+	}
+
 
 	//For projects
 	private bool isModalOpen;
@@ -161,7 +161,8 @@
 		{
 			Project project = new();
 			project.Name = formData.Project;
-			await projectServiceProvider.CreateProject(project);
+			Team team = await teamServiceProvider.GetTeamById(Id);
+			await projectServiceProvider.CreateProject(project, team!);
 			//TODO: Dopytać czy tam jest current userid
 
 			//
