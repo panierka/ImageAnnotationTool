@@ -10,6 +10,8 @@ using ImageAnnotationTool.Validation;
 using ImageProcessing;
 using AnnotationEditor;
 using CanvasDisplayEngine;
+using ImageAnnotationToolDataAccessLibrary.Serialization;
+using ImageAnnotationToolDataAccessLibrary.JsonFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,8 @@ builder.Services.AddTransient<IAnnotatedImagesProjectDatabaseServiceProvider, An
 builder.Services.AddTransient<ITeamServiceProvider, TeamServiceProvider>();
 builder.Services.AddTransient<IProjectServiceProvider, ProjectServiceProvider>();
 builder.Services.AddTransient<IJobsServiceProvider, JobsServiceProvider>();
+builder.Services.AddScoped(typeof(ISerialization<>), typeof(JsonSerialization<>));
+builder.Services.AddScoped(typeof(IDeserialization<>), typeof(JsonDeserialization<>));
 
 builder.Services.AddTransient<SignUpFormDataValidation>();
 
