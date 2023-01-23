@@ -1,5 +1,6 @@
-﻿@page "/project/{Id:int}"
+﻿@page "/job/{Id:int}"
 @using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 @using Microsoft.AspNetCore.WebUtilities;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -8,6 +9,7 @@
 @inject IProjectServiceProvider projectServiceProvider;
 @inject ITeamServiceProvider teamServiceProvider;
 @inject IUserAccountsServiceProvider userAccountsService;
+@inject IJobsServiceProvider jobsServiceProvider;
 @inject NavigationManager NavigationManager;
 
 <div class="page-after-logon">
@@ -20,9 +22,9 @@
 			<BlazoredModal class="blazormodal">
 				<button @onclick="HideModal">Zamknij</button>
 				<EditForm class="styleEditForm" Model="@formData" OnValidSubmit="SubmitForm">
-					<h3>Dodaj projekt</h3>
-					<InputText class="form-control" @bind-Value="formData.Project"/>
-					<ValidationMessage For="@(() => formData.Project)" />
+					<h3>Utwórz zadanie dla użytkownika:</h3>
+					<InputText class="form-control" placeholder="Nazwa użytkownika" @bind-Value="formData.Name"/>
+					<ValidationMessage For="@(() => formData.Name)" />
 					<button type="submit">Zatwierdź</button>
 
 				</EditForm>
@@ -53,23 +55,23 @@
 						@teamName
 					</h3>
 					<h5 class="muted-headers">
-					TWOJE PROJEKTY
+					TWOJE PRACE
 				</h5>
 				
 				
 				<ul class="container-projects">
-					@foreach (var item in projects)
+					@foreach (var item in jobs)
 			{
-					<li @onclick="@(() =>NavigateToJobPage(item.Id))">
+					<li @onclick="@(() =>NavigateToAnnotatePage(item.Id))">
 						<h5 class="project-name">
-							@item.Project.Name
+							@item.Id.ToString()
 							
 						</h5>
 					</li>
 			}
 					<li @onclick="@ShowModal">
 						<h5 class="project-name">
-							Dodaj nowy projekt +
+							Dodaj nową pracę +
 						</h5>
 					</li>
 				</ul>
@@ -88,10 +90,12 @@
 
 @code {
 
-	private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
+	//private List<TeamMemberSeat> teams = new List<TeamMemberSeat>();
 
-	private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
+	//private List<ProjectMemberSeat> projects = new List<ProjectMemberSeat>();
+	private List<Job> jobs = new List<Job>();
 	private TeamMemberSeat teamMemberSeat = null!;
+	private ProjectMemberSeat projectMemberSeat = null!;
 
 	private string? teamName;
 	[Parameter]
@@ -117,13 +121,19 @@
 		}
 
 		var userId = userIdRequest.Value;
+
 		teamMemberSeat = await teamServiceProvider.GetTeamMember(
 			accountId: userId,
 			teamId: Id
 		);
 
-		projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
-		teams = await teamServiceProvider.GetTeamMemberSeatsOfUserAccount(userId);
+		projectMemberSeat = await projectServiceProvider.GetProjectMember(
+			teamMemberSeatId: teamMemberSeat.Id,
+			projectId: Id
+		);
+
+		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
+
 		isAuthorized =true;
 		StateHasChanged();
 	}
@@ -133,8 +143,8 @@
 	private bool isModalOpen;
 	private class FormData
 	{
-		[Required(ErrorMessage = "Nazwa projektu - Pole wymagane")]
-		public string Project { get; set; }
+		[Required(ErrorMessage = "Nazwa użytkownika - Pole wymagane")]
+		public string Name { get; set; }
 		public string ErrorMessage{get; set; }	
 
 	}
@@ -151,40 +161,42 @@
 	}
 	private async Task SubmitForm()
 	{
-		var checkIfNameExists = await projectServiceProvider.GetProject(formData.Project);
-
-		if (checkIfNameExists is {})
+		var accountId = await userAccountsService.GetUserAccountId(formData.Name);
+		if (accountId == null)
 		{
-			formData.ErrorMessage = "Nazwa projektu jest już zajęta";
+			formData.ErrorMessage="Brak takigo użytkownika";
+			return;
 		}
-		else
+		var userInProjectSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
+		//TODO: Nie jestem pewna czy to dobrze sie sprawdza
+		if (userInProjectSeat.Id != projectMemberSeat.Id)
 		{
-			Project project = new();
-			project.Name = formData.Project;
-			Team team = await teamServiceProvider.GetTeamById(Id);
-			await projectServiceProvider.CreateProject(project, team!);
-			//TODO: Dopytać czy tam jest current userid
+			formData.ErrorMessage="Brak takigo użytkownika w projekcie";
+			return;
+		}
 
-			//
-			await projectServiceProvider.AddProjectMember(teamMemberSeat.Id, project.Id);
-			await projectServiceProvider.SetProjectMembersRole(
-				teamMemberId: teamMemberSeat.Id,
-				projectId: project.Id,
-				role: ProjectMemberSeat.ProjectRole.Admin
-			);
-			projects = await projectServiceProvider.GetProjectsOfTeamMember(teamMemberSeat.Id);
+
+		Job job=new();
+
+		//Project project = new();
+			//project.Name = formData.Project;
+		Project project = await projectServiceProvider.GetProjectById(Id);
+
+			await jobsServiceProvider.CreateJob(job, project!);
+
+
+			
+			jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
 			StateHasChanged();
 			isModalOpen = false;
-		}
+		
 
 	}
 
-	private void NavigateToJobPage(int projectID)
+	private void NavigateToAnnotatePage(int jobId)
     {
-        NavigationManager.NavigateTo($"/job/{projectID}");
+		//TODO: Dać dobry link
+        NavigationManager.NavigateTo($"/annotate/{jobId}");
     }
-	private void NavigateToProjectPage(int teamID)
-    {
-        NavigationManager.NavigateTo($"/project/{Id}");
-    }
+
 }
