@@ -1,5 +1,6 @@
 ﻿@page "/projectsettings/{Id:int}"
 @using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @using System.ComponentModel.DataAnnotations;
@@ -7,6 +8,7 @@
 @inject ITeamServiceProvider teamServiceProvider;
 @inject IProjectServiceProvider projectServiceProvider;
 @inject NavigationManager NavigationManager;
+@inject IAnnotationServiceProvider annotationServiceProvider;
 
 <div class="page-after-logon">
     <_leftMenu />
@@ -53,8 +55,14 @@
                     Dodaj
                 </button>
             </EditForm>
+            <h5 class="muted-headers">
+                Utworzone klasy adnotacji:
+            </h5>
             <ul>
-
+                @foreach(var item in listOfClasses)
+                {
+                    <li>@item.Name</li>
+                }
             </ul>
         </div>
     }
@@ -79,6 +87,7 @@
     private ProjectDeletionForm projectDeletionForm = null!;
     private ProjectRenameForm projectRenameForm = null!;
     private AdnotationClass adnotationClass = new AdnotationClass();
+    private List<AnnotationClass> listOfClasses=new List<AnnotationClass>();
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -110,9 +119,10 @@
             project = projectMemberSeat.Project;
             projectDeletionForm = new(project);
             projectRenameForm = new(project);
+            listOfClasses = await annotationServiceProvider.GetAnnotationClasses(Id);
             isAuthorized = true;
         }
-
+        
         StateHasChanged();
     }
 
@@ -159,10 +169,15 @@
     }
     public async Task AddAdnotationClass()
     {
-        //TODO: Miejsce na metodę od wojtka
-        
+
+        await annotationServiceProvider.CreateAnnotationClass(adnotationClass.Name, Id);
+        listOfClasses = await annotationServiceProvider.GetAnnotationClasses(Id);
+
+        StateHasChanged();
+
     }
-    
+
+
      private class AdnotationClass
     {
         [Required]
