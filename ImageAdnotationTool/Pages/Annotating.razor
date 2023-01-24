@@ -9,6 +9,7 @@
 @using ShapeEditing;
 @using ShapeEditing.Tools;
 @inject IColorProvider colorProvider;
+@inject IAnnotationServiceProvider annotationServiceProvider;
 
 
 
@@ -137,6 +138,7 @@ else if (currentMode == ShapeEditionType.Polygon)
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
         currentAnnotationContext?.ShapeEditor?.ReleaseTool(data);
         await drawingEngine!.RenderFrame();
+        currentAnnotationContext?.UpdateModel();
     }
 
     private async Task Undo()
@@ -186,7 +188,7 @@ else if (currentMode == ShapeEditionType.Polygon)
         StateHasChanged();
         await drawingEngine.RenderFrame();
     }
-    
+
     private async Task SelectAnnotationContext(Annotation annotation)
     {
         currentAnnotationContext = annotationContexts
@@ -197,5 +199,10 @@ else if (currentMode == ShapeEditionType.Polygon)
 
         StateHasChanged();
         await drawingEngine!.RenderFrame();
+    }
+
+    private async Task Save()
+    {
+        await annotationServiceProvider.SetAnnotations(0, annotationContexts.Select(x => x.Annotation).ToList());
     }
 }

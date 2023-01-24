@@ -59,5 +59,12 @@ namespace AnnotationEditor
             this.color = color;
             Shape.Color = color;
         }
+
+        public void UpdateModel()
+        {
+            annotation.PointsX = Shape.Points.Select(p => p.X).ToList();
+            annotation.PointsY = Shape.Points.Select(p => p.Y).ToList();
+            annotation.IsClosed = Shape.IsClosed;
+        }
     }
 }

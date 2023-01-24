@@ -1,0 +1,61 @@
+﻿@page "/charts/{Id:int}"
+
+@using ChartJs.Blazor.PieChart;
+@using ChartJs.Blazor;
+
+@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+@inject IAnnotatedImagesProjectDatabaseServiceProvider imagesProvider;
+
+@if (isConnected)
+{
+    <Chart Config="classesPieChartConfig" @ref="@classesPieChart"></Chart>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private List<AnnotatedImage> AnnotatedImages { get; set; }
+
+    private PieConfig classesPieChartConfig;
+    private Chart classesPieChart;
+
+    private bool isConnected;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var imageCount = await imagesProvider.GetAnnotatedImagesInProjectCount(Id);
+        AnnotatedImages = await imagesProvider.GetAnnotatedImagesFromProject(Id, 0, imageCount);
+
+        classesPieChartConfig = new PieConfig
+            {
+                Options = new PieOptions
+                {
+                    Responsive = true,
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = "ChartJs.Blazor Pie Chart"
+                    }
+                }
+            };
+
+        PieDataset<int> dataset = new PieDataset<int>();
+
+        classesPieChartConfig.Data.Datasets.Add(dataset);
+
+        foreach (var element in new string[] { "Red", "Orange", "Yellow", "Green", "Blue" })
+        {
+            classesPieChartConfig.Data.Labels.Add(element);
+        }
+
+        await classesPieChart.Update();
+        isConnected = true;
+    }
+}

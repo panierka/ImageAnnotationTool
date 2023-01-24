@@ -20,5 +20,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
         public ICollection<Descriptor> Descriptors { get; set; }
 
         public AnnotatedImage Image { get; set; }
+
+        public List<double> PointsX { get; set; }
+
+        public List<double> PointsY { get; set; }
+
+        public bool IsClosed { get; set; }
     }
 }

@@ -42,5 +42,17 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task SetAnnotations(int imageId, ICollection<Annotation> annotations)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            var image = await dbContext
+                .AnnotatedImages
+                .FirstAsync(i => i.Id == imageId);
+            
+            image.SetAnnotations(annotations.ToArray());
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -19,5 +19,15 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
         public virtual Project Project { get; set; }
 
         public ICollection<Annotation> Annotations { get; set; }
+
+        public void SetAnnotations(params Annotation[] annotations)
+        {
+            Annotations.Clear();
+
+            foreach (var a in annotations)
+            {
+                Annotations.Add(a);
+            }
+        }
     }
 }

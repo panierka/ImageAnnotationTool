@@ -39,7 +39,7 @@ namespace JsonSerializationAndDeserializationTest
                 Width = 426,
                 Height = 640,
                 FileName = "xxxxxxxxx.jpg",
-                License = 4,
+                //License = 4,
                 DateCaptured = "2013-11-15 02:41:42",
                 CocoUrl = "http://images.cocodataset.org/val2017/xxxxxxxxxxxx.jpg",
                 FlickrUrl = "http://farm3.staticflickr.com/2626/xxxxxxxxxxxx.jpg"
@@ -51,7 +51,7 @@ namespace JsonSerializationAndDeserializationTest
                 Width = 640,
                 Height = 480,
                 FileName = "nnnnnnnnnn.jpg",
-                License = 4,
+                //License = 4,
                 DateCaptured = "2013-11-18 02:53:27",
                 CocoUrl = "http://images.cocodataset.org/val2017/nnnnnnnnnnnn.jpg",
                 FlickrUrl = "http://farm1.staticflickr.com/88/xxxxxxxxxxxx.jpg"
@@ -107,7 +107,7 @@ namespace JsonSerializationAndDeserializationTest
             var coco = new Coco
             {
                 Info = info,
-                Licenses = new List<License> { license1 },
+                //Licenses = new List<License> { license1 },
                 Images = new List<Image> { image1, image2 },
                 Annotations = new List<Annotation> { annotation1, annotation2, annotation3 },
                 Categories = new List<Category> { catergory1, catergory2 }
