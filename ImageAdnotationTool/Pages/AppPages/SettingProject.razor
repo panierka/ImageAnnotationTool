@@ -41,6 +41,21 @@
                     Usuń
                 </button>
             </EditForm>
+
+            <br />
+            <EditForm Model="@adnotationClass"
+                  OnValidSubmit="@AddAdnotationClass">
+                Wpisz nazwę klasy:
+                <InputText class="form-control"
+                       placeholder="nazwa Twojego projektu"
+                       @bind-Value="@adnotationClass.Name"></InputText>
+                <button>
+                    Dodaj
+                </button>
+            </EditForm>
+            <ul>
+
+            </ul>
         </div>
     }
     else
@@ -63,6 +78,7 @@
     private Project project = null!;
     private ProjectDeletionForm projectDeletionForm = null!;
     private ProjectRenameForm projectRenameForm = null!;
+    private AdnotationClass adnotationClass = new AdnotationClass();
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -140,5 +156,18 @@
 
             NewName = project.Name;
         }
+    }
+    public async Task AddAdnotationClass()
+    {
+        //TODO: Miejsce na metodę od wojtka
+        
+    }
+    
+     private class AdnotationClass
+    {
+        [Required]
+        public string Name { get; set; }
+
+   
     }
 }
