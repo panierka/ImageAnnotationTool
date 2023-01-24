@@ -17,7 +17,7 @@
 @inject IAnnotationServiceProvider annotationServiceProvider;
 @inject IUserAccountsServiceProvider userServiceProvider;
 @inject ProtectedSessionStorage sessionStorage;
-
+@inject IJobsServiceProvider jobServiceProvider;
 
 <div class="annotate-main">
     <h3 class="muted-headers">ADNOTACJA</h3>
@@ -25,11 +25,20 @@
     @if (isAuthorized)
     {
         <button class="btn btn-primary" >Wrzuć zdjęcia</button>
+        <button class="btn btn-primary">Poprzednie</button>
+        <button class="btn btn-primary">Następne</button>
+        //Lub comobobox ze zdjęciami
+        <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
+        //ma iśc do jobów projektu
+        <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
     }
     else
     {
         <button class="btn btn-primary">Poprzednie</button>
         <button class="btn btn-primary">Następne</button>
+        <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
+
+        <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
     }
     </div>
     <div @onmousedown=@RegisterMouseDownAsync
@@ -110,9 +119,9 @@ else if (currentMode == ShapeEditionType.Polygon)
         ShapeEditionType.Polygon,
     };
 
-     private bool isAuthorized = false;
-     [Parameter]
-     public int Id { get; set; }
+    private bool isAuthorized = false;
+    [Parameter]
+    public int Id { get; set; }
 
     private class Test
     {
@@ -143,13 +152,14 @@ else if (currentMode == ShapeEditionType.Polygon)
         var userId = userIdRequest.Value;
         //Tutaj wywala null reference 
 
+        var job = await jobServiceProvider.GetJobById(Id);
 
-        var tmp = await projectServiceProvider.GetProjectById(Id);
-        var teamId = tmp.Team.Id;
-        var teamMemberId = (await teamServiceProvider.GetTeamMember(userId, teamId)).Id;
+
+        var teamMemberId = job.AssignedProjectMember.AssignedTeamMember.Id;
+        var projectId = job.Project.Id;
         var projectMemberSeat = await projectServiceProvider.GetProjectMemberLoaded(
             teamMemberSeatId: teamMemberId,
-            projectId: Id
+            projectId: projectId
         );
 
         if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
