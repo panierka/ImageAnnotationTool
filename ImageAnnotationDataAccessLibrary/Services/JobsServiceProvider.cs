@@ -22,12 +22,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             this.dbContextFactory = dbContextFactory;
         }
 
-        public async Task CreateJob(Job job, Project project)
+        public async Task CreateJob(Job job, int projectId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            var retrivedProject = await dbContext.Projects.FirstAsync(p => p.Id == project.Id);
-            dbContext.Jobs.Add(job);
+            var retrivedProject = await dbContext.Projects.FirstAsync(p => p.Id == projectId);
+            retrivedProject.Jobs.Add(job);
             await dbContext.SaveChangesAsync();
         }
 

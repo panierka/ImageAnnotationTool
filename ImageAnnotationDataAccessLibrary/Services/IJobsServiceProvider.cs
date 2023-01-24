@@ -12,7 +12,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 {
     public interface IJobsServiceProvider
     {
-        public Task CreateJob(Job job, Project project);
+        public Task CreateJob(Job job, int projectId);
 
         public Task DeleteJob(int jobId);
 

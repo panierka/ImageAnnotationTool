@@ -60,7 +60,7 @@
 				<ul class="container-projects">
 					@foreach (var item in projects)
 			{
-					<li @onclick="@(() =>NavigateToJobPage(item.Id))">
+					<li @onclick="@(() =>NavigateToJobPage(item.Project.Id))">
 						<h5 class="project-name">
 							@item.Project.Name
 							

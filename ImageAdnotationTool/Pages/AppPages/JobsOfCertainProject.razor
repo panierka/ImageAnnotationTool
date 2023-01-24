@@ -122,9 +122,11 @@
 
 		var userId = userIdRequest.Value;
 
+		int teamId = (await projectServiceProvider.GetProjectById(Id)).Team.Id;
+
 		teamMemberSeat = await teamServiceProvider.GetTeamMember(
 			accountId: userId,
-			teamId: Id
+			teamId: teamId
 		);
 
 		projectMemberSeat = await projectServiceProvider.GetProjectMember(
@@ -164,7 +166,7 @@
 		var accountId = await userAccountsService.GetUserAccountId(formData.Name);
 		if (accountId == null)
 		{
-			formData.ErrorMessage="Brak takigo użytkownika";
+			formData.ErrorMessage="Brak takiego użytkownika";
 			return;
 		}
 		var userInProjectSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
@@ -176,13 +178,13 @@
 		}
 
 
-		Job job=new();
+		Job job=new() { AssignedProjectMember = projectMemberSeat };
 
 		//Project project = new();
 			//project.Name = formData.Project;
-		Project project = await projectServiceProvider.GetProjectById(Id);
+		//Project project = await projectServiceProvider.GetProjectById(Id);
 
-			await jobsServiceProvider.CreateJob(job, project!);
+			await jobsServiceProvider.CreateJob(job, projectMemberSeat.Project.Id!);
 
 
 			
