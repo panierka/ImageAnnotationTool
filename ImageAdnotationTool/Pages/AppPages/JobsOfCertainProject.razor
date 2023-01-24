@@ -65,7 +65,7 @@
 				<ul class="container-projects">
 					@foreach (var item in jobs)
 			{
-					<li @onclick="@(() =>NavigateToAnnotatePage(item.Id))">
+					<li @onclick="@(() =>NavigateToAnnotatePage(item.Project.I))">
 						<h5 class="project-name">
 							@item.Id.ToString()
 							
@@ -200,10 +200,10 @@
 	StateHasChanged();
 
 }
-	private void NavigateToAnnotatePage(int jobId)
+	private void NavigateToAnnotatePage(int projectId)
     {
 		//TODO: Dać dobry link
-        NavigationManager.NavigateTo($"/annotate/{jobId}");
+        NavigationManager.NavigateTo($"/annotate/{projectId}");
 		StateHasChanged();
     }
 
