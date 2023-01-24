@@ -168,20 +168,15 @@
 	private async Task SubmitForm()
 	{
 		var accountIdRequest= await userAccountsService.GetUserAccountId(formData.Name);
-		if (accountIdRequest is not int accountId)
+		if (accountIdRequest is null)
 		{
 			formData.ErrorMessage="Brak takiego użytkownika";
 			return;
 		}
 
-		var invitedAnnotatorTeamSeat = await teamServiceProvider.GetTeamMember(accountId, teamId);
+		var invitedAnnotatorTeamSeat = await teamServiceProvider.GetTeamMember(accountIdRequest.Value, teamId);
 		var userInProjectSeat = await projectServiceProvider.GetProjectMember(invitedAnnotatorTeamSeat.Id, Id);
-		//TODO: Nie jestem pewna czy to dobrze sie sprawdza
-		if (userInProjectSeat.Id != projectMemberSeat.Id)
-		{
-			formData.ErrorMessage="Brak takigo użytkownika w projekcie";
-			return;
-		}
+
 		Job job = new() { AssignedProjectMember = userInProjectSeat };
 
 		await jobsServiceProvider.CreateJob(job, Id);
