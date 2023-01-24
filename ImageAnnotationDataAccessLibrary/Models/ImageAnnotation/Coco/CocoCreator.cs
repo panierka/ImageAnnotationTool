@@ -186,7 +186,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 			{
 				Info = CreateInfo(team),
 				Images = CreateImages(annotatedImages),
-
+				//Annotations = CreateAnnotations(),
 				Exifs = CreateExifs(annotatedImages)
 			};
 		}
