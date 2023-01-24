@@ -21,7 +21,7 @@
 
 <div class="annotate-main">
     <h3 class="muted-headers">ADNOTACJA</h3>
-    <div class="annotate-options">
+   @* <div class="annotate-options">
     @if (isAuthorized)
     {
         <button class="btn btn-primary" >Wrzuć zdjęcia</button>
@@ -40,7 +40,7 @@
 
         <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
     }
-    </div>
+    </div>*@
     <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
      @onmousemove=@RegisterMouseUpdateAsync
@@ -155,18 +155,18 @@ else if (currentMode == ShapeEditionType.Polygon)
         var job = await jobServiceProvider.GetJobById(Id);
 
 
-        var teamMemberId = job.AssignedProjectMember.AssignedTeamMember.Id;
-        var projectId = job.Project.Id;
-        var projectMemberSeat = await projectServiceProvider.GetProjectMemberLoaded(
-            teamMemberSeatId: teamMemberId,
-            projectId: projectId
-        );
+        //var teamMemberId = job.AssignedProjectMember.AssignedTeamMember.Id;
+        //var projectId = job.Project.Id;
+        //var projectMemberSeat = await projectServiceProvider.GetProjectMemberLoaded(
+        //    teamMemberSeatId: teamMemberId,
+        //    projectId: projectId
+        //);
 
-        if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
-        {
+        //if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
+        //{
            
-            isAuthorized = true;
-        }
+        //    isAuthorized = true;
+        //}
 
         StateHasChanged();
 
