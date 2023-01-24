@@ -9,6 +9,7 @@
 @inject IProjectServiceProvider projectServiceProvider;
 @inject NavigationManager NavigationManager;
 @inject IAnnotationServiceProvider annotationServiceProvider;
+@inject IUserAccountsServiceProvider userServiceProvider;
 
 <div class="page-after-logon">
     <_leftMenu />
@@ -37,13 +38,51 @@
                   OnValidSubmit="@RemoveProject">
                 Wpisz nazwę projektu, aby umożliwić jego usunięcie.
                 <InputText class="form-control"
-                       placeholder="nazwa Twojego projektu"
                        @bind-Value="@projectDeletionForm.ConfirmProjectName"></InputText>
                 <button disabled="@(!projectDeletionForm.NamesMatch)">
                     Usuń
                 </button>
             </EditForm>
 
+            
+		<br/>               
+			<EditForm 
+                Model="@userAddForm"
+                OnValidSubmit="@AddUser">
+                Dodaj użytkownika do zespołu:
+                <DataAnnotationsValidator/>
+                <InputText 
+                    class="form-control"
+                    placeholder="Login użytkownika"
+                    @bind-Value="@userAddForm.NewName"></InputText>
+                <button 
+                    disabled="@(!context.Validate() || !context.IsModified())">
+                    Dodaj
+                </button>
+			</EditForm>
+            
+			<br />
+			<EditForm 
+                Model="@userDeletionForm" 
+                OnValidSubmit="@RemoveUser">
+                Usuń użytkownika z zespołu:
+                <InputText 
+                    class="form-control"
+                    placeholder="Login użytkownika"
+                    @bind-Value="@userDeletionForm.ConfirmUserName"></InputText>            
+                <button >
+                    Usuń
+                </button>
+			</EditForm>
+            <h5 class="muted-headers">
+                Dodani użytkownicy do projektu:
+            </h5>
+            <ul>
+                @foreach(var item in membersOfProject)
+                {
+                    <li>@item.AssignedTeamMember.AssignedUser.Login</li>
+                }
+            </ul>
             <br />
             <EditForm Model="@adnotationClass"
                   OnValidSubmit="@AddAdnotationClass">
@@ -88,6 +127,9 @@
     private ProjectRenameForm projectRenameForm = null!;
     private AdnotationClass adnotationClass = new AdnotationClass();
     private List<AnnotationClass> listOfClasses=new List<AnnotationClass>();
+    private UserDeletionForm userDeletionForm = new UserDeletionForm()!;
+    private UserAddForm userAddForm = new UserAddForm()!;
+    private List<ProjectMemberSeat> membersOfProject =new List<ProjectMemberSeat>();
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -120,9 +162,10 @@
             projectDeletionForm = new(project);
             projectRenameForm = new(project);
             listOfClasses = await annotationServiceProvider.GetAnnotationClasses(Id);
+            membersOfProject = await projectServiceProvider.GetProjectMembers(Id);
             isAuthorized = true;
         }
-        
+
         StateHasChanged();
     }
 
@@ -178,11 +221,76 @@
     }
 
 
-     private class AdnotationClass
+    private class AdnotationClass
     {
         [Required]
         public string Name { get; set; }
 
-   
+
+    }
+
+    public async Task AddUser()
+    {
+
+        if(await userServiceProvider.UserWithLoginExists(userAddForm.NewName)){
+            var userAddId = await userServiceProvider.GetUserAccountId(userAddForm.NewName);
+            var teamId = (await projectServiceProvider.GetProjectById(Id)).Team.Id;
+            var teamMemberSeat = await teamServiceProvider.GetTeamMember(userAddId.Value,teamId );
+            var ifAlreadyInTeam = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
+
+            if(ifAlreadyInTeam is not { })
+            {
+                await projectServiceProvider.AddProjectMember(teamMemberSeat.Id, Id);
+                membersOfProject = await projectServiceProvider.GetProjectMembers(Id);
+                StateHasChanged();
+            }
+        }
+
+    }
+
+    public async Task RemoveUser()
+    {
+        if(await userServiceProvider.UserWithLoginExists(userDeletionForm.ConfirmUserName)){
+
+
+            var userRemoveId = await userServiceProvider.GetUserAccountId(userDeletionForm.ConfirmUserName);
+            var teamId = (await projectServiceProvider.GetProjectById(Id)).Team.Id;
+            var teamMemberSeat = await teamServiceProvider.GetTeamMember(userRemoveId.Value,teamId );
+            var projectMemberSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
+            await projectServiceProvider.RemoveProjectMember(projectMemberSeat.Id);
+            membersOfProject = await projectServiceProvider.GetProjectMembers(Id);
+			NavigationManager.NavigateTo("/teams");
+			StateHasChanged();
+		}
+		
+	}
+
+    private class UserDeletionForm
+    {
+        public string ConfirmUserName { get; set; } = string.Empty;
+
+        private readonly UserAccount user;
+
+        //public bool NamesMatch => user.Login == ConfirmUserName;
+
+        //public UserDeletionForm(UserAccount user)
+        //{
+        //    this.user = user;
+        //}
+    }
+
+    private class UserAddForm
+    {
+        [Required]
+        public string NewName { get; set; }
+
+        //private readonly UserAccount user;
+
+        //public UserAddForm(Team team)
+        //{
+        //    this.team = team;
+
+        //    NewName = team.Name;
+        //}
     }
 }
