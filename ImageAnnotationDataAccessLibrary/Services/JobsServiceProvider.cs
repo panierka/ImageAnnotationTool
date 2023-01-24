@@ -94,5 +94,14 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .AsNoTracking()
                 .ToListAsync();
         }
-    }
+
+		public async Task<Job> GetJobById(int jobId)
+        {
+			using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+			var job = dbContext.Jobs.Include(t => t.Project).AsNoTracking().FirstOrDefault(x => x.Id == jobId);
+
+			return job;
+        }
+	}
 }
