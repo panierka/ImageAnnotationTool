@@ -38,6 +38,7 @@ header {
 footer {
     height: 50px;
     flex-shrink: 0;
+    width:100%;
 }
 
 article {
@@ -65,7 +66,9 @@ article {
     height: 100%;
     border-right: 0.1rem solid $gray-300;
 }
-
+.page-after-logon > nav > h5{
+    margin-left:2rem;
+}
 
 
 ul {
@@ -188,3 +191,33 @@ ul {
 .blazormodal > h3 {
     margin: 0 0 -3rem 8rem;
 }
+
+//ANNOTATING
+.annotate-main {
+    margin-left: 2rem;
+}
+.annotate-options {
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 1rem;
+    column-gap: 0.3rem;
+
+}
+
+.annotate-options > button{
+    border-radius: 1pt;
+}
+
+.annotate-listbox {
+    margin-left: 2rem;
+}
+.square {
+    width: 80%;
+    background-color: $light-blue;
+    border-radius: 1pt;
+    margin: 0.5rem 0;
+    padding: 0.2rem 0.2rem;
+}
+
