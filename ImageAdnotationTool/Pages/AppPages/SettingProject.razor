@@ -84,7 +84,7 @@
         var tmp = await projectServiceProvider.GetProjectById(Id);
         var teamId = tmp.Team.Id;
         var teamMemberId = (await teamServiceProvider.GetTeamMember(userId, teamId)).Id;
-        var projectMemberSeat = await projectServiceProvider.GetProjectMember(
+        var projectMemberSeat = await projectServiceProvider.GetProjectMemberLoaded(
             teamMemberSeatId: teamMemberId,
             projectId: Id
         );

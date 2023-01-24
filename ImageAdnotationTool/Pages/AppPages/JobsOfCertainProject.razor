@@ -105,7 +105,7 @@
 	public int Id { get; set; }
 
 	private bool isAuthorized = false;
-	private Team team = null!;
+	private int teamId;
 
 	protected async override Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -125,7 +125,7 @@
 
 		var userId = userIdRequest.Value;
 
-		int teamId = (await projectServiceProvider.GetProjectById(Id)).Team.Id;
+		teamId = (await projectServiceProvider.GetProjectById(Id)).Team.Id;
 		projectName = (await projectServiceProvider.GetProjectById(Id)).Name;
 		teamMemberSeat = await teamServiceProvider.GetTeamMember(
 	accountId: userId,
@@ -137,7 +137,8 @@
 	projectId: Id
 		);
 
-		//jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
+		var userInProjectSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
+		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(userInProjectSeat.Id);
 
 		isAuthorized =true;
 		StateHasChanged();
@@ -166,24 +167,30 @@
 	}
 	private async Task SubmitForm()
 	{
-		var accountId = await userAccountsService.GetUserAccountId(formData.Name);
-		if (accountId == null)
+		var accountIdRequest= await userAccountsService.GetUserAccountId(formData.Name);
+		if (accountIdRequest is not int accountId)
 		{
-	formData.ErrorMessage="Brak takiego użytkownika";
-	return;
+			formData.ErrorMessage="Brak takiego użytkownika";
+			return;
 		}
-		var userInProjectSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
+
+		var invitedAnnotatorTeamSeat = await teamServiceProvider.GetTeamMember(accountId, teamId);
+		var userInProjectSeat = await projectServiceProvider.GetProjectMember(invitedAnnotatorTeamSeat.Id, Id);
 		//TODO: Nie jestem pewna czy to dobrze sie sprawdza
 		if (userInProjectSeat.Id != projectMemberSeat.Id)
 		{
-	formData.ErrorMessage="Brak takigo użytkownika w projekcie";
-	return;
+			formData.ErrorMessage="Brak takigo użytkownika w projekcie";
+			return;
 		}
-		Job job=new() { AssignedProjectMember = projectMemberSeat };
+		Job job = new() { AssignedProjectMember = userInProjectSeat };
 
 		await jobsServiceProvider.CreateJob(job, Id);
+
+		if (invitedAnnotatorTeamSeat.Id == teamMemberSeat.Id)
+		{
+			jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(userInProjectSeat.Id);
+		}
 		
-		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
 		StateHasChanged();
 		isModalOpen = false;
 	}

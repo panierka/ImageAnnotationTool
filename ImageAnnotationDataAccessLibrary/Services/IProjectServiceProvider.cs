@@ -32,6 +32,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public Task<int> GetProjectMemberSeatId(int teamMemberSeatId, int projectId);
 
         public Task<ProjectMemberSeat?> GetProjectMember(int teamMemberSeatId, int projectId);
+        public Task<ProjectMemberSeat?> GetProjectMemberLoaded(int teamMemberSeatId, int projectId);
 
         public Task SetProjectMembersRole(int teamMemberId, int projectId, ProjectMemberSeat.ProjectRole role);
 

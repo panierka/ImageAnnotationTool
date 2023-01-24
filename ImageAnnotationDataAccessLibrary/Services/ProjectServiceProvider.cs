@@ -147,10 +147,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public async Task<ProjectMemberSeat?> GetProjectMember(int teamMemberSeatId, int projectId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            return dbContext
+            return await dbContext
                 .ProjectMemberSeats
+                .Where(t => t.Project.Id == projectId && t.AssignedTeamMember.Id == teamMemberSeatId)
                 .AsNoTracking()
-                .FirstOrDefault(t => t.Project.Id == projectId && t.AssignedTeamMember.Id == teamMemberSeatId);
+                .FirstOrDefaultAsync();
         }
 
         public async Task SetProjectMembersRole(int teamMemberId, int projectId, ProjectMemberSeat.ProjectRole role)
@@ -173,6 +174,15 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             await dbContext.SaveChangesAsync();
         }
 
-
+		public async Task<ProjectMemberSeat?> GetProjectMemberLoaded(int teamMemberSeatId, int projectId)
+		{
+			using var dbContext = await dbContextFactory.CreateDbContextAsync();
+			return await dbContext
+				.ProjectMemberSeats
+				.Where(t => t.Project.Id == projectId && t.AssignedTeamMember.Id == teamMemberSeatId)
+				.Include(s => s.Project)
+				.AsNoTracking()
+				.FirstOrDefaultAsync();
+		}
 	}
 }
