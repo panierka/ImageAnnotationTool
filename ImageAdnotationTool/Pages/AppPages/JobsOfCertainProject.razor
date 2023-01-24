@@ -50,13 +50,16 @@
 
 			<div class="main-container">
 
-
 					<h3>
-						@teamName
+						@projectName
 					</h3>
+					
+					<p class="muted-headers" @onclick="(()=>NavigateToSettingProjectPage(Id))">
+					Edycja Projektu 
+					</p>
 					<h5 class="muted-headers">
 					TWOJE PRACE
-				</h5>
+					</h5>
 				
 				
 				<ul class="container-projects">
@@ -97,7 +100,7 @@
 	private TeamMemberSeat teamMemberSeat = null!;
 	private ProjectMemberSeat projectMemberSeat = null!;
 
-	private string? teamName;
+	private string? projectName;
 	[Parameter]
 	public int Id { get; set; }
 
@@ -123,15 +126,15 @@
 		var userId = userIdRequest.Value;
 
 		int teamId = (await projectServiceProvider.GetProjectById(Id)).Team.Id;
-
+		projectName = (await projectServiceProvider.GetProjectById(Id)).Name;
 		teamMemberSeat = await teamServiceProvider.GetTeamMember(
-			accountId: userId,
-			teamId: teamId
+	accountId: userId,
+	teamId: teamId
 		);
 
 		projectMemberSeat = await projectServiceProvider.GetProjectMember(
-			teamMemberSeatId: teamMemberSeat.Id,
-			projectId: Id
+	teamMemberSeatId: teamMemberSeat.Id,
+	projectId: Id
 		);
 
 		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
@@ -166,15 +169,15 @@
 		var accountId = await userAccountsService.GetUserAccountId(formData.Name);
 		if (accountId == null)
 		{
-			formData.ErrorMessage="Brak takiego użytkownika";
-			return;
+	formData.ErrorMessage="Brak takiego użytkownika";
+	return;
 		}
 		var userInProjectSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
 		//TODO: Nie jestem pewna czy to dobrze sie sprawdza
 		if (userInProjectSeat.Id != projectMemberSeat.Id)
 		{
-			formData.ErrorMessage="Brak takigo użytkownika w projekcie";
-			return;
+	formData.ErrorMessage="Brak takigo użytkownika w projekcie";
+	return;
 		}
 
 
@@ -187,18 +190,24 @@
 			await jobsServiceProvider.CreateJob(job, projectMemberSeat.Project.Id!);
 
 
-			
+
 			jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
 			StateHasChanged();
 			isModalOpen = false;
-		
+
 
 	}
+	private void NavigateToSettingProjectPage(int projectId)
+{
+	NavigationManager.NavigateTo($"/projectsettings/{projectId}");
+	StateHasChanged();
 
+}
 	private void NavigateToAnnotatePage(int jobId)
     {
 		//TODO: Dać dobry link
         NavigationManager.NavigateTo($"/annotate/{jobId}");
+		StateHasChanged();
     }
 
 }
