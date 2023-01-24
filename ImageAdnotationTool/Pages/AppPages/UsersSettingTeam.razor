@@ -29,7 +29,7 @@
                     @bind-Value="@userAddForm.NewName"></InputText>
                 <button 
                     disabled="@(!context.Validate() || !context.IsModified())">
-                    Zmień nazwę
+                    Dodaj
                 </button>
 			</EditForm>
             
@@ -66,8 +66,8 @@
 	private int userId;
 	private bool isAuthorized = false;
 	private Team team = null!;
-	private UserDeletionForm userDeletionForm = null!;
-	private UserAddForm userAddForm = null!;
+	private UserDeletionForm userDeletionForm = new UserDeletionForm()!;
+	private UserAddForm userAddForm = new UserAddForm()!;
 
 	protected async override Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -105,7 +105,7 @@
 
 		if(await userServiceProvider.UserWithLoginExists(userAddForm.NewName)){
 			var userAddId = await userServiceProvider.GetUserAccountId(userAddForm.NewName);
-			var ifAlreadyInTeam = teamServiceProvider.GetTeamMember(userAddId.Value, Id);
+			var ifAlreadyInTeam = await teamServiceProvider.GetTeamMember(userAddId.Value, Id);
 			if(ifAlreadyInTeam is not { })
 			{
 				await teamServiceProvider.AddTeamMember(userAddId.Value, Id);
