@@ -105,7 +105,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 		//GetImageId
 		public static double GetArea(List<Point> points)
 		{
-
 			var area = Math.Abs(points.Take(points.Count - 1)
 					   .Select((p, i) => (points[i + 1].X - p.X) * (points[i + 1].Y + p.Y))
 					   .Sum() / 2);
@@ -126,27 +125,39 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 
 			return returnBbox;
 		}
-		public static Annotation CreateAnnotation(AnnotatedImage annotatedImage, List<Point> points)
+		public static List<Annotation> CreateAnnotationsOfImage(AnnotatedImage annotatedImage)
 		{
-			var segmentation = new List<List<double>> { CreateSegmentation(points) };
-			var annotation = new Annotation()
-			{
-				Id = annotatedImage.Id,
-				CategoryId = 1,
-				Iscrowd = 0,
-				Segmentation = segmentation,
-				ImageId = GetImageId(annotatedImage),
-				Area = GetArea(points),
-				Bbox = CreateBbox(points)
-			};
-			return annotation;
-		}
-		public static List<Annotation> CreateAnnotations(List<AnnotatedImage> annotatedImages, List<List<Point>> points)
-		{
+			var annotationsOfImage = annotatedImage.Annotations;
 			var annotations = new List<Annotation>();
 
+			foreach (var annotation in annotationsOfImage)
+			{
+				var points = annotation.PointsX.Zip(annotation.PointsY, (x, y) => new Point(x, y)).ToList();
+				var segmentation = new List<List<double>> { CreateSegmentation(points) };
+				var returnAnnotation = new Annotation()
+				{
+					Id = annotatedImage.Id,
+					CategoryId = annotation.Class.Id,
+					Iscrowd = 0,
+					Segmentation = segmentation,
+					ImageId = GetImageId(annotatedImage),
+					Area = GetArea(points),
+					Bbox = CreateBbox(points)
+				};
+				annotations.Add(returnAnnotation);
+			}
+			return annotations;
+		}
+		public static List<Annotation> CreateAnnotations(List<AnnotatedImage> annotatedImages)
+		{
+			var annotations = new List<Annotation>();
+			var images = annotatedImages;
+			foreach (var image in images)
+			{
+				var imageAnnotations = CreateAnnotationsOfImage(image);
 
-
+				annotations.AddRange(imageAnnotations);
+			}
 			return annotations;
 		}
 
@@ -186,7 +197,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 			{
 				Info = CreateInfo(team),
 				Images = CreateImages(annotatedImages),
-				//Annotations = CreateAnnotations(),
+				Annotations = CreateAnnotations(annotatedImages),
 				Exifs = CreateExifs(annotatedImages)
 			};
 		}
