@@ -15,12 +15,12 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 		{
 			return DateTime.Now.Year;
 		}
-		public static string GetContributor(Team team)
-		{
-			var contributor = team.Name;
+		//public static string GetContributor(Team team)
+		//{
+		//	var contributor = team.Name;
 
-			return contributor;
-		}
+		//	return contributor;
+		//}
 		public static string GetDate()
         {
             return DateTime.Now.ToString();
@@ -29,8 +29,10 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 		{
 			var info = new Info()
 			{
+				Description = team.Name,
+				Version = "1.0",
 				Year = GetYear(),
-				Contributor = GetContributor(team),
+				Contributor = team.Name,
 				DateCreated = GetDate()
 			};
 			return info;
@@ -113,16 +115,17 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 		}
 		public static Annotation CreateAnnotation(AnnotatedImage annotatedImage, Point[] points)
 		{
+			var segmentation = new List<List<double>> { CreateSegmentation(points) };
 			var annotation = new Annotation()
 			{
+				Id = annotatedImage.Id,
+				Iscrowd = 0,
+				Segmentation = segmentation,
 				ImageId = GetImageId(annotatedImage),
 				Area = GetArea(points),
 				Bbox = CreateBbox(points)
 			};
-
 			return annotation;
 		}
-		
-
 	}
 }
