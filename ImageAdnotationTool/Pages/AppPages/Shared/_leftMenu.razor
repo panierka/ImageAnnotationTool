@@ -45,8 +45,8 @@
 
 
 							
-							<td><a>Członkowie</a></td>
-							<td @onclick="(()=>NavigateToSettingTeamPage(itemTeam.Id))"><a>Ustawienia</a></td>
+							<td @onclick="(()=>NavigateToMembers(itemTeam.Team.Id))"><a>Członkowie</a></td>
+							<td @onclick="(()=>NavigateToSettingTeamPage(itemTeam.Team.Id))"><a>Ustawienia</a></td>
 
 						</tr>
 					</table>
@@ -121,7 +121,7 @@
 	private void NavigateToMembers(int teamID)
 	{
 		
-		NavigationManager.NavigateTo($"/members?id={teamID}");
+		NavigationManager.NavigateTo($"/usersettingsteams/{teamID}");
 		StateHasChanged();
     }
 
