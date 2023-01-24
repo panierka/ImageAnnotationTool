@@ -1,4 +1,4 @@
-﻿@page "/annotate"
+﻿@page "/annotate/{Id:int}"
 @using AnnotationEditor;
 @using Blazor.Extensions.Canvas;
 @using Blazor.Extensions.Canvas.Canvas2D;
@@ -6,17 +6,33 @@
 @using System.Numerics;
 @using CanvasDisplayEngine;
 @using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 @using ShapeEditing;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @using ShapeEditing.Tools;
 @inject IColorProvider colorProvider;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject IProjectServiceProvider projectServiceProvider;
+@inject NavigationManager NavigationManager;
 @inject IAnnotationServiceProvider annotationServiceProvider;
-
-
+@inject IUserAccountsServiceProvider userServiceProvider;
+@inject ProtectedSessionStorage sessionStorage;
 
 
 <div class="annotate-main">
     <h3 class="muted-headers">ADNOTACJA</h3>
-<div @onmousedown=@RegisterMouseDownAsync
+    <div class="annotate-options">
+    @if (isAuthorized)
+    {
+        <button class="btn btn-primary" >Wrzuć zdjęcia</button>
+    }
+    else
+    {
+        <button class="btn btn-primary">Poprzednie</button>
+        <button class="btn btn-primary">Następne</button>
+    }
+    </div>
+    <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
      @onmousemove=@RegisterMouseUpdateAsync
      style="background-image: url('@DOG'); 
@@ -94,6 +110,9 @@ else if (currentMode == ShapeEditionType.Polygon)
         ShapeEditionType.Polygon,
     };
 
+     private bool isAuthorized = false;
+     [Parameter]
+     public int Id { get; set; }
 
     private class Test
     {
@@ -111,6 +130,35 @@ else if (currentMode == ShapeEditionType.Polygon)
         {
             return;
         }
+
+        var userIdRequest = await sessionStorage.GetAsync<int>("userID");
+
+        if (!userIdRequest.Success)
+        {
+            isAuthorized = false;
+            StateHasChanged();
+            return;
+        }
+
+        var userId = userIdRequest.Value;
+        //Tutaj wywala null reference 
+
+
+        var tmp = await projectServiceProvider.GetProjectById(Id);
+        var teamId = tmp.Team.Id;
+        var teamMemberId = (await teamServiceProvider.GetTeamMember(userId, teamId)).Id;
+        var projectMemberSeat = await projectServiceProvider.GetProjectMemberLoaded(
+            teamMemberSeatId: teamMemberId,
+            projectId: Id
+        );
+
+        if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
+        {
+           
+            isAuthorized = true;
+        }
+
+        StateHasChanged();
 
         context = await canvas.CreateCanvas2DAsync();
         drawingEngine = new(context, canvas!);
