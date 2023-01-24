@@ -176,23 +176,13 @@
 			formData.ErrorMessage="Brak takigo użytkownika w projekcie";
 			return;
 		}
-
-
 		Job job=new() { AssignedProjectMember = projectMemberSeat };
 
-		//Project project = new();
-			//project.Name = formData.Project;
-		//Project project = await projectServiceProvider.GetProjectById(Id);
-
-			await jobsServiceProvider.CreateJob(job, projectMemberSeat.Project.Id!);
-
-
-			
-			jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
-			StateHasChanged();
-			isModalOpen = false;
+		await jobsServiceProvider.CreateJob(job, Id);
 		
-
+		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
+		StateHasChanged();
+		isModalOpen = false;
 	}
 
 	private void NavigateToAnnotatePage(int jobId)

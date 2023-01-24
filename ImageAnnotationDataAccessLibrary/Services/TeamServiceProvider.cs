@@ -139,7 +139,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .Where(t => t.AssignedUser.Id == accountId)
                 .Include(t => t.AssignedUser)
                 .Include(t => t.Team.Projects)
-                .ToListAsync();
+				.AsNoTracking()
+				.ToListAsync();
         }
 
 		public async Task<List<Team>> GetTeamsOfUserAccount(int accountId)

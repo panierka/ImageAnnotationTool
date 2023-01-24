@@ -89,7 +89,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
                     b.HasIndex("ImageDataForeignKey")
                         .IsUnique();
 
-                    b.ToTable("Exifs");
+                    b.ToTable("Exifs", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.AnnotatedImage", b =>
@@ -118,7 +118,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("AnnotatedImages");
+                    b.ToTable("AnnotatedImages", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Annotation", b =>
@@ -141,7 +141,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Annotations");
+                    b.ToTable("Annotations", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.AnnotationClass", b =>
@@ -163,7 +163,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("ParentProjectId");
 
-                    b.ToTable("AnnotationClasses");
+                    b.ToTable("AnnotationClasses", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Descriptor", b =>
@@ -190,7 +190,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("BlueprintId");
 
-                    b.ToTable("Descriptors");
+                    b.ToTable("Descriptors", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.DescriptorBlueprint", b =>
@@ -215,7 +215,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("ParentClassId");
 
-                    b.ToTable("DescriptorBlueprints");
+                    b.ToTable("DescriptorBlueprints", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.ImageData", b =>
@@ -246,7 +246,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ImageDatas");
+                    b.ToTable("ImageDatas", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Job", b =>
@@ -269,7 +269,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.TeamManagement.Project", b =>
@@ -291,7 +291,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.TeamManagement.ProjectMemberSeat", b =>
@@ -317,7 +317,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectMemberSeats");
+                    b.ToTable("ProjectMemberSeats", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.TeamManagement.Team", b =>
@@ -334,7 +334,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams");
+                    b.ToTable("Teams", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.TeamManagement.TeamMemberSeat", b =>
@@ -360,7 +360,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("TeamMemberSeats");
+                    b.ToTable("TeamMemberSeats", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.TeamManagement.UserAccount", b =>
@@ -398,7 +398,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Migrations
                     b.HasIndex("Login")
                         .IsUnique();
 
-                    b.ToTable("UserAccounts");
+                    b.ToTable("UserAccounts", (string)null);
                 });
 
             modelBuilder.Entity("ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction.Exif", b =>

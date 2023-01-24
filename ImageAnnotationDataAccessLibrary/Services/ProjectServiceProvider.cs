@@ -66,21 +66,21 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            var project = dbContext.Projects.FirstOrDefault(x => x.Name == projectName);
+            var project = dbContext.Projects.AsNoTracking().FirstOrDefault(x => x.Name == projectName);
             return project;
         }
         public async Task<Project?> GetProjectById(int projectId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            var project = dbContext.Projects.Include(t => t.Team).FirstOrDefault(x => x.Id == projectId);
+            var project = dbContext.Projects.Include(t => t.Team).AsNoTracking().FirstOrDefault(x => x.Id == projectId);
             return project;
         }
         public async Task<List<Project>> GetAllProjects()
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-            return await dbContext.Projects.ToListAsync();
+            return await dbContext.Projects.AsNoTracking().ToListAsync();
         }
 
         public async Task AddProjectMember(int teamMemberSeatId, int projectId)
@@ -88,7 +88,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
             var newProjectMember = dbContext.TeamMemberSeats.Where(t => t.Id == teamMemberSeatId).FirstOrDefault();
-            var project = dbContext.Projects.Where(t => t.Id == projectId).FirstOrDefault();
+            var project = dbContext.Projects.AsNoTracking().Where(t => t.Id == projectId).FirstOrDefault();
 
             var projectMemberSeat = new ProjectMemberSeat
             {
@@ -119,7 +119,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .Where(t => t.Project.Id == projectId)
                 .Include(t => t.AssignedTeamMember.AssignedUser)
                 .Include(t => t.Project)
-                .ToListAsync();
+				.AsNoTracking()
+				.ToListAsync();
         }
 
         public async Task<List<ProjectMemberSeat>> GetProjectsOfTeamMember(int teamMemberId)
@@ -131,21 +132,25 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .Where(t => t.AssignedTeamMember.Id == teamMemberId)
                 .Include(t => t.AssignedTeamMember)
                 .Include(t => t.Project)
-                .ToListAsync();
+				.AsNoTracking()
+				.ToListAsync();
         }
 
         public async Task<int> GetProjectMemberSeatId(int teamMemberSeatId, int projectId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            var projectMemeberSeat = dbContext.ProjectMemberSeats.FirstOrDefault(t => t.AssignedTeamMember.Id == teamMemberSeatId & t.Project.Id == projectId);
+            var projectMemeberSeat = dbContext.ProjectMemberSeats.AsNoTracking().FirstOrDefault(t => t.AssignedTeamMember.Id == teamMemberSeatId & t.Project.Id == projectId);
             var projectMemberSeatId = projectMemeberSeat.Id;
             return projectMemberSeatId;
         }
 
         public async Task<ProjectMemberSeat?> GetProjectMember(int teamMemberSeatId, int projectId)
         {
-            var projects = await GetProjectsOfTeamMember(teamMemberSeatId);
-            return projects.FirstOrDefault(t => t.Project.Id == projectId);
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            return dbContext
+                .ProjectMemberSeats
+                .AsNoTracking()
+                .FirstOrDefault(t => t.Project.Id == projectId && t.AssignedTeamMember.Id == teamMemberSeatId);
         }
 
         public async Task SetProjectMembersRole(int teamMemberId, int projectId, ProjectMemberSeat.ProjectRole role)
@@ -167,5 +172,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
             await dbContext.SaveChangesAsync();
         }
-    }
+
+
+	}
 }

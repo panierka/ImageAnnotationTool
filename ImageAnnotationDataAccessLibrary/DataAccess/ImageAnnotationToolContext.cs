@@ -27,12 +27,12 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
 
 		public DbSet<Exif> Exifs { get; set; }
 
-   //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-   //     {
-			//optionsBuilder.UseLazyLoadingProxies();
-   //     }
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			optionsBuilder.EnableSensitiveDataLogging();
+		}
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Job>()
 				.HasOne(x => x.Project)

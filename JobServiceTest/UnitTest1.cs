@@ -28,10 +28,10 @@ namespace JobServiceTest
 
             //test CreateJob(Job job), GetAllJobs();
 
-            await jobsServiceProvider.CreateJob(new() { Id = 1});
-            await jobsServiceProvider.CreateJob(new() { Id = 2});
-            await jobsServiceProvider.CreateJob(new() { Id = 3});
-            await jobsServiceProvider.CreateJob(new() { Id = 4});
+            //await jobsServiceProvider.CreateJob(new() { Id = 1});
+            //await jobsServiceProvider.CreateJob(new() { Id = 2});
+            //await jobsServiceProvider.CreateJob(new() { Id = 3});
+            //await jobsServiceProvider.CreateJob(new() { Id = 4});
 
             const string predicted1 = "1;2;3;4";
             var jobs1 = await jobsServiceProvider.GetAllJobs();

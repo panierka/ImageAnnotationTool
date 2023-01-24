@@ -22,7 +22,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 
         public virtual ICollection<ProjectMemberSeat> Members { get; set; }
 
-        public virtual ICollection<Job>? Jobs { get; set; }
+        public virtual ICollection<Job> Jobs { get; set; }
 
         public ICollection<AnnotatedImage> AnnotatedImages { get; set; }
 

@@ -28,7 +28,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
             var retrivedProject = await dbContext.Projects.FirstAsync(p => p.Id == projectId);
             retrivedProject.Jobs.Add(job);
-            await dbContext.SaveChangesAsync();
+			await dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteJob(int jobId)
@@ -67,7 +67,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             return await dbContext
                 .Jobs
                 .Include(t => t.Project)
-                .ToListAsync();
+				.AsNoTracking()
+				.ToListAsync();
         }
 
         public async Task<List<Job>> GetJobsOfProjectMemeber(int projectMemberId)
@@ -85,6 +86,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .Jobs
                 .Where(t => t.Project.Id == projectId)
                 .Include(t => t.Project)
+                .AsNoTracking()
                 .ToListAsync();
         }
     }
