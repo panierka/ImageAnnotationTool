@@ -65,7 +65,7 @@
 				<ul class="container-projects">
 					@foreach (var item in jobs)
 			{
-					<li @onclick="@(() =>NavigateToAnnotatePage(item.Project.I))">
+					<li @onclick="@(() =>NavigateToAnnotatePage(item.Id))">
 						<h5 class="project-name">
 							@item.Id.ToString()
 							
