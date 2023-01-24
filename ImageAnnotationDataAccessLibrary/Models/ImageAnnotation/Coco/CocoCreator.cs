@@ -92,7 +92,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 		{
 			return annotatedImage.Id;
 		}
-		public static List<double> CreateSegmentation(Point[] points)
+		public static List<double> CreateSegmentation(List<Point> points)
 		{
 			var segmenationList = new List<double>();
 			foreach (var point in points)
@@ -103,16 +103,16 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 			return segmenationList;
 		}
 		//GetImageId
-		public static double GetArea(Point[] points)
+		public static double GetArea(List<Point> points)
 		{
 
-			var area = Math.Abs(points.Take(points.Length - 1)
+			var area = Math.Abs(points.Take(points.Count - 1)
 					   .Select((p, i) => (points[i + 1].X - p.X) * (points[i + 1].Y + p.Y))
 					   .Sum() / 2);
 
 			return area;
 		}
-		public static List<double> CreateBbox(Point[] points)
+		public static List<double> CreateBbox(List<Point> points)
 		{
 			var minX = points.Min(p => p.X);
 			var minY = points.Min(p => p.Y);
@@ -126,7 +126,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 
 			return returnBbox;
 		}
-		public static Annotation CreateAnnotation(AnnotatedImage annotatedImage, Point[] points)
+		public static Annotation CreateAnnotation(AnnotatedImage annotatedImage, List<Point> points)
 		{
 			var segmentation = new List<List<double>> { CreateSegmentation(points) };
 			var annotation = new Annotation()
@@ -141,7 +141,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 			};
 			return annotation;
 		}
-		public static List<Annotation> CreateAnnotations(AnnotatedImage annotatedImage, Point[] points)
+		public static List<Annotation> CreateAnnotations(List<AnnotatedImage> annotatedImages, List<List<Point>> points)
 		{
 			var annotations = new List<Annotation>();
 
