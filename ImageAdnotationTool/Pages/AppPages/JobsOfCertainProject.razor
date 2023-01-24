@@ -137,7 +137,7 @@
 	projectId: Id
 		);
 
-		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
+		//jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(projectMemberSeat.Id);
 
 		isAuthorized =true;
 		StateHasChanged();
@@ -209,5 +209,7 @@
         NavigationManager.NavigateTo($"/annotate/{jobId}");
 		StateHasChanged();
     }
+
+	//TODO: Przy usuwaniu projektu jest aktywne odwołanie do niego może jakoś autoamtycznie odświeżyć stornę, zeby z tego wyjść
 
 }
