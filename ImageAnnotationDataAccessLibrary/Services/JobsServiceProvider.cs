@@ -99,7 +99,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         {
 			using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-			var job = dbContext.Jobs.Include(t => t.Project).AsNoTracking().FirstOrDefault(x => x.Id == jobId);
+			var job = dbContext.Jobs.Include(t => t.AssignedProjectMember.AssignedTeamMember).AsNoTracking().FirstOrDefault(x => x.Id == jobId);
 
 			return job;
         }
