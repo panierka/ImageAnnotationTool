@@ -30,6 +30,7 @@ builder.Services.AddTransient<IProjectServiceProvider, ProjectServiceProvider>()
 builder.Services.AddTransient<IJobsServiceProvider, JobsServiceProvider>();
 builder.Services.AddScoped(typeof(ISerialization<>), typeof(JsonSerialization<>));
 builder.Services.AddScoped(typeof(IDeserialization<>), typeof(JsonDeserialization<>));
+builder.Services.AddTransient<IAnnotationServiceProvider, AnnotationServiceProvider>();
 
 builder.Services.AddTransient<SignUpFormDataValidation>();
 
