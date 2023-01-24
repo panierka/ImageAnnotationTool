@@ -162,6 +162,7 @@
 			Project project = new();
 			project.Name = formData.Project;
 			Team team = await teamServiceProvider.GetTeamById(Id);
+			teamName = team.Name;
 			await projectServiceProvider.CreateProject(project, team!);
 			//TODO: Dopytać czy tam jest current userid
 

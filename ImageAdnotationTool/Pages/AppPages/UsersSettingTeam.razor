@@ -1,4 +1,169 @@
-﻿@*@page "/members"
+﻿@page "/usersettingsteams/{Id:int}"
+@using ImageAnnotationTool.Pages.AppPages.Shared
+@using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@using System.ComponentModel.DataAnnotations;
+@inject ProtectedSessionStorage sessionStorage;
+@inject ITeamServiceProvider teamServiceProvider;
+@inject NavigationManager NavigationManager;
+@inject IUserAccountsServiceProvider userServiceProvider;
+<div class="page-after-logon">
+<_leftMenu/>
+
+	@if (isAuthorized)
+	{
+        <PageTitle>
+            @($"{@team.Name} - ustawienia")
+        </PageTitle>
+
+
+		<div class="main-container">                
+			<EditForm 
+                Model="@userAddForm"
+                OnValidSubmit="@AddUser">
+                Dodaj użytkownika do zespołu:
+                <DataAnnotationsValidator/>
+                <InputText 
+                    class="form-control"
+                    placeholder="Login użytkonwika"
+                    @bind-Value="@userAddForm.NewName"></InputText>
+                <button 
+                    disabled="@(!context.Validate() || !context.IsModified())">
+                    Dodaj
+                </button>
+			</EditForm>
+            
+			<br />
+			<EditForm 
+                Model="@userDeletionForm" 
+                OnValidSubmit="@RemoveUser">
+                Usuń użytkownika z zespołu:
+                <InputText 
+                    class="form-control"
+                    placeholder="nazwa Twojego zespołu"
+                    @bind-Value="@userDeletionForm.ConfirmUserName"></InputText>            
+                <button >
+                    Usuń
+                </button>
+			</EditForm>
+		</div>
+	}
+	else
+	{
+        <PageTitle>
+            Błąd
+        </PageTitle>
+		<div>
+			Nie odnaleziono strony.
+		</div>
+	}
+    
+
+</div>
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	private int userId;
+	private bool isAuthorized = false;
+	private Team team = null!;
+	private UserDeletionForm userDeletionForm = new UserDeletionForm()!;
+	private UserAddForm userAddForm = new UserAddForm()!;
+
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender)
+		{
+			return;
+		}
+
+		var userIdRequest = await sessionStorage.GetAsync<int>("userID");
+
+		if (!userIdRequest.Success)
+		{
+			isAuthorized = false;
+			StateHasChanged();
+			return;
+		}
+
+		userId = userIdRequest.Value;
+		var teamMemberSeat = await teamServiceProvider.GetTeamMember(
+			accountId: userId,
+			teamId: Id
+		);
+
+		if (teamMemberSeat is { Role: TeamMemberSeat.TeamRole.Admin })
+		{
+			team = teamMemberSeat.Team;
+			isAuthorized = true;
+		}
+
+		StateHasChanged();
+	}
+
+	public async Task AddUser()
+	{
+
+		if(await userServiceProvider.UserWithLoginExists(userAddForm.NewName)){
+			var userAddId = await userServiceProvider.GetUserAccountId(userAddForm.NewName);
+			var ifAlreadyInTeam = await teamServiceProvider.GetTeamMember(userAddId.Value, Id);
+			if(ifAlreadyInTeam is not { })
+			{
+				await teamServiceProvider.AddTeamMember(userAddId.Value, Id);
+				StateHasChanged();
+			}
+
+			
+
+		}
+		
+	}
+
+	public async Task RemoveUser()
+	{
+		if(await userServiceProvider.UserWithLoginExists(userDeletionForm.ConfirmUserName)){
+
+
+			var userRemoveId = await userServiceProvider.GetUserAccountId(userDeletionForm.ConfirmUserName);
+			var teamMemberSeat = await teamServiceProvider.GetTeamMember(userRemoveId.Value, Id);
+			await teamServiceProvider.RemoveTeamMember(teamMemberSeat.Id);
+			NavigationManager.NavigateTo("/teams");
+			StateHasChanged();
+		}
+		
+	}
+
+    private class UserDeletionForm
+    {
+        public string ConfirmUserName { get; set; } = string.Empty;
+
+        private readonly UserAccount user;
+
+        //public bool NamesMatch => user.Login == ConfirmUserName;
+
+        //public UserDeletionForm(UserAccount user)
+        //{
+        //    this.user = user;
+        //}
+    }
+
+    private class UserAddForm
+    {
+        [Required]
+        public string NewName { get; set; }
+
+        //private readonly UserAccount user;
+
+        //public UserAddForm(Team team)
+        //{
+        //    this.team = team;
+
+        //    NewName = team.Name;
+        //}
+    }
+}
+
+
+@*@page "/members"
 @using ImageAnnotationTool.Pages.AppPages.Shared
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
