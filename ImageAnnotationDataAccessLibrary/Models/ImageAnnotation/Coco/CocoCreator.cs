@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CanvasDisplayEngine;
+using ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction;
 using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
@@ -74,6 +75,18 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 			return image;
 		}
 
+		public static List<Image> CreateImages(List<AnnotatedImage> annotatedImages)
+		{
+			var images = new List<Image>();
+
+			foreach (var annotatedImage in annotatedImages)
+			{
+				var image = CreateImage(annotatedImage);
+				images.Add(image);
+			}
+			return images;
+		}
+
 		//Annotation
 		public static int GetAnnotationId(AnnotatedImage annotatedImage)
 		{
@@ -119,6 +132,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 			var annotation = new Annotation()
 			{
 				Id = annotatedImage.Id,
+				CategoryId = 1,
 				Iscrowd = 0,
 				Segmentation = segmentation,
 				ImageId = GetImageId(annotatedImage),
@@ -126,6 +140,55 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 				Bbox = CreateBbox(points)
 			};
 			return annotation;
+		}
+		public static List<Annotation> CreateAnnotations(AnnotatedImage annotatedImage, Point[] points)
+		{
+			var annotations = new List<Annotation>();
+
+
+
+			return annotations;
+		}
+
+		//Category
+		public static List<Category> CreateCategories(AnnotatedImage annotatedImage)
+		{
+			var annotationClasses = annotatedImage.Annotations;
+			var categories = new List<Category>();
+			foreach (var annotationClass in annotationClasses)
+			{
+				var category = new Category()
+				{
+					Supercategory = "",
+					Id = annotationClass.Class.Id,
+					Name = annotationClass.Class.Name
+				};
+				categories.Add(category);
+			}
+			return categories;
+		}
+
+		//Exif
+		public static List<Exif> CreateExifs(List<AnnotatedImage> annotatedImages)
+		{
+			var exifs = new List<Exif>();
+			foreach (var annotatedImage in annotatedImages)
+			{
+				exifs.Add(annotatedImage.ImageData.Exif);
+			}
+			return exifs;
+		}
+
+		//Coco
+		public static void CreateCoco(Team team, List<AnnotatedImage> annotatedImages)
+		{
+			var coco = new Coco()
+			{
+				Info = CreateInfo(team),
+				Images = CreateImages(annotatedImages),
+
+				Exifs = CreateExifs(annotatedImages)
+			};
 		}
 	}
 }

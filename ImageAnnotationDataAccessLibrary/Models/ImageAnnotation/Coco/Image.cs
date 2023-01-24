@@ -10,7 +10,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
     {
         public int Id { get; set; }
 
-        public int License { get; set; }
+        //public int License { get; set; }
 
         public string? CocoUrl { get; set; }
 
