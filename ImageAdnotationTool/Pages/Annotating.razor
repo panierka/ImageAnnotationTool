@@ -10,23 +10,11 @@
 @using ShapeEditing.Tools;
 @inject IColorProvider colorProvider;
 
-<h3>Annotating</h3>
 
 
-<AnnotationsListBox Classes="@(new()
-{ 
-    new() { Name = "Pies", DescriptorBlueprints = new List<DescriptorBlueprint>() 
-        {
-            new() { Name = "Rasa", Type = DescriptorBlueprint.DataType.String },
-            new() { Name = "Kolor", Type = DescriptorBlueprint.DataType.String },
-        } },
-    new() { Name = "Broń", DescriptorBlueprints = new List<DescriptorBlueprint>() 
-        {
-            new() { Name = "Rodzaj", Type = DescriptorBlueprint.DataType.String }
-        } } 
-})" OnAddAnnotation="@(async x => await AddAnnotationContext(x))"
-    OnSelectAnnotation="@(async x => await SelectAnnotationContext(x))"/>
 
+<div class="annotate-main">
+    <h3 class="muted-headers">ADNOTACJA</h3>
 <div @onmousedown=@RegisterMouseDownAsync
      @onmouseup=@RegisterMouseUpAsync
      @onmousemove=@RegisterMouseUpdateAsync
@@ -35,6 +23,7 @@
     <BECanvas Width="460" Height="292" @ref="@canvas"></BECanvas>
 </div>
 
+<div class="annotate-options">
 @if (currentMode == ShapeEditionType.Rectangle)
 {
     <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("create"))">Twórz</button>
@@ -50,7 +39,7 @@ else if (currentMode == ShapeEditionType.Polygon)
 
 <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("move"))">Rusz</button>
 
-<br />
+
 <button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
 <button class="btn btn-primary" @onclick="@ResetShape">Resetuj</button>
 
@@ -70,7 +59,24 @@ else if (currentMode == ShapeEditionType.Polygon)
             };
         }
     ))" />
+    </div>
+    </div>
+    <div class="annotate-listbox">
+    <AnnotationsListBox Classes="@(new()
+{ 
+    new() { Name = "Pies", DescriptorBlueprints = new List<DescriptorBlueprint>() 
+        {
+            new() { Name = "Rasa", Type = DescriptorBlueprint.DataType.String },
+            new() { Name = "Kolor", Type = DescriptorBlueprint.DataType.String },
+        } },
+    new() { Name = "Broń", DescriptorBlueprints = new List<DescriptorBlueprint>() 
+        {
+            new() { Name = "Rodzaj", Type = DescriptorBlueprint.DataType.String }
+        } } 
+})" OnAddAnnotation="@(async x => await AddAnnotationContext(x))"
+    OnSelectAnnotation="@(async x => await SelectAnnotationContext(x))"/>
 
+    </div>
 @code {
     private const string DOG = PlaceholderData.ExampleBase64s.DOG;
     private Canvas2DContext? context;
