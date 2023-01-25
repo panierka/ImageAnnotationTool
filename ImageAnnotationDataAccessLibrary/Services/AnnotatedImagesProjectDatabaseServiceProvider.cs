@@ -31,25 +31,25 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<AnnotatedImage>> GetAnnotatedImagesFromProject(int projectId, int startIndex, int amount)
+        public async Task<List<AnnotatedImage>> GetAnnotatedImagesFromProject(int jobId, int startIndex, int amount)
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
             return await dbContext.AnnotatedImages
-                .Where(x => x.Project.Id == projectId)
+                .Where(x => x.Job.Id == jobId)
                 .AsNoTracking()
                 .Skip(startIndex)
                 .Take(amount)
                 .ToListAsync();
         }
 
-        public async Task<int> GetAnnotatedImagesInProjectCount(int projectId)
+        public async Task<int> GetAnnotatedImagesInProjectCount(int jobId)
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
             return await dbContext
                 .AnnotatedImages
-                .Where(x => x.Project.Id == projectId)
+                .Where(x => x.Job.Id == jobId)
                 .AsNoTracking()
                 .CountAsync();
         }

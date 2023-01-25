@@ -12,8 +12,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
     {
         public Task AddAnnotatedImagesAsync(IEnumerable<AnnotatedImage> images);
 
-        public Task<List<AnnotatedImage>> GetAnnotatedImagesFromProject(int projectId, int startIndex, int amount);
+        public Task<List<AnnotatedImage>> GetAnnotatedImagesFromProject(int jobId, int startIndex, int amount);
 
-        public Task<int> GetAnnotatedImagesInProjectCount(int projectId);
+        public Task<int> GetAnnotatedImagesInProjectCount(int jobId);
     }
 }

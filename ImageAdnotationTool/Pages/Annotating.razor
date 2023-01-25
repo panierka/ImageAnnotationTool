@@ -19,61 +19,62 @@
 @inject ProtectedSessionStorage sessionStorage;
 @inject IJobsServiceProvider jobServiceProvider;
 
-<div class="annotate-main">
-    <h3 class="muted-headers">ADNOTACJA</h3>
-   @* <div class="annotate-options">
+
+    <div class="annotate-main">
+        <h3 class="muted-headers">ADNOTACJA</h3>
+        @* <div class="annotate-options">
     @if (isAuthorized)
     {
-        <button class="btn btn-primary" >Wrzuć zdjęcia</button>
-        <button class="btn btn-primary">Poprzednie</button>
-        <button class="btn btn-primary">Następne</button>
-        //Lub comobobox ze zdjęciami
-        <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
-        //ma iśc do jobów projektu
-        <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
+    <button class="btn btn-primary" >Wrzuć zdjęcia</button>
+    <button class="btn btn-primary">Poprzednie</button>
+    <button class="btn btn-primary">Następne</button>
+    //Lub comobobox ze zdjęciami
+    <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
+    //ma iśc do jobów projektu
+    <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
     }
     else
     {
-        <button class="btn btn-primary">Poprzednie</button>
-        <button class="btn btn-primary">Następne</button>
-        <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
+    <button class="btn btn-primary">Poprzednie</button>
+    <button class="btn btn-primary">Następne</button>
+    <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
 
-        <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
+    <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
     }
     </div>*@
-    <div @onmousedown=@RegisterMouseDownAsync
-     @onmouseup=@RegisterMouseUpAsync
-     @onmousemove=@RegisterMouseUpdateAsync
-     style="background-image: url('@DOG'); 
+        <div @onmousedown=@RegisterMouseDownAsync
+         @onmouseup=@RegisterMouseUpAsync
+         @onmousemove=@RegisterMouseUpdateAsync
+         style="background-image: url('@DOG');
      background-repeat: no-repeat">
-    <BECanvas Width="460" Height="292" @ref="@canvas"></BECanvas>
-</div>
+            <BECanvas Width="460" Height="292" @ref="@canvas"></BECanvas>
+        </div>
 
-<div class="annotate-options">
-@if (currentMode == ShapeEditionType.Rectangle)
-{
-    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("create"))">Twórz</button>
-    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("reshape"))">Formuj</button>
-}
-else if (currentMode == ShapeEditionType.Polygon)
-{
-    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("create"))">Twórz</button>
-    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("reshape"))">Formuj</button>
-    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("split"))">Dziel</button>
-    <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("remove"))">Usuwaj</button>
-}
+        <div class="annotate-options">
+            @if (currentMode == ShapeEditionType.Rectangle)
+            {
+                <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("create"))">Twórz</button>
+                <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("reshape"))">Formuj</button>
+            }
+            else if (currentMode == ShapeEditionType.Polygon)
+            {
+                <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("create"))">Twórz</button>
+                <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("reshape"))">Formuj</button>
+                <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("split"))">Dziel</button>
+                <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("remove"))">Usuwaj</button>
+            }
 
-<button class="btn btn-primary" @onclick="@(_ =>SwitchTool("move"))">Rusz</button>
+            <button class="btn btn-primary" @onclick="@(_ =>SwitchTool("move"))">Rusz</button>
 
 
-<button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
-<button class="btn btn-primary" @onclick="@ResetShape">Resetuj</button>
+            <button class="btn btn-primary" @onclick="@Undo">Cofnij</button>
+            <button class="btn btn-primary" @onclick="@ResetShape">Resetuj</button>
 
-<ComboBox Items="modes"
-          SelectedItem="currentMode"
-          OnSelectedItemChanged="@(async x => await SwitchToolset(x))"
-          T="ShapeEditionType"
-          CustomStringConverter="@(
+            <ComboBox Items="modes"
+                  SelectedItem="currentMode"
+                  OnSelectedItemChanged="@(async x => await SwitchToolset(x))"
+                  T="ShapeEditionType"
+                  CustomStringConverter="@(
         new ComboBox<ShapeEditionType>
             .DelegatedCustomStringConverter(x =>
         {
@@ -85,24 +86,23 @@ else if (currentMode == ShapeEditionType.Polygon)
             };
         }
     ))" />
+        </div>
     </div>
-    </div>
+@if (isLoaded)
+{
     <div class="annotate-listbox">
-    <AnnotationsListBox Classes="@(new()
-{ 
-    new() { Name = "Pies", DescriptorBlueprints = new List<DescriptorBlueprint>() 
-        {
-            new() { Name = "Rasa", Type = DescriptorBlueprint.DataType.String },
-            new() { Name = "Kolor", Type = DescriptorBlueprint.DataType.String },
-        } },
-    new() { Name = "Broń", DescriptorBlueprints = new List<DescriptorBlueprint>() 
-        {
-            new() { Name = "Rodzaj", Type = DescriptorBlueprint.DataType.String }
-        } } 
-})" OnAddAnnotation="@(async x => await AddAnnotationContext(x))"
-    OnSelectAnnotation="@(async x => await SelectAnnotationContext(x))"/>
+        <AnnotationsListBox Classes="@annotationClasses" OnAddAnnotation="@(async x => await AddAnnotationContext(x))"
+                        OnSelectAnnotation="@(async x => await SelectAnnotationContext(x))" />
 
     </div>
+}
+else
+{
+    <div>
+        Wczytywanie...
+    </div>
+}
+
 @code {
     private const string DOG = PlaceholderData.ExampleBase64s.DOG;
     private Canvas2DContext? context;
@@ -110,6 +110,7 @@ else if (currentMode == ShapeEditionType.Polygon)
     private CanvasDisplayEngine? drawingEngine;
     private AnnotationContext? currentAnnotationContext;
 
+    private List<AnnotationClass> annotationClasses = new();
     private List<AnnotationContext> annotationContexts = new();
     private SelectionIndicator selectionIndicator = new();
 
@@ -120,6 +121,7 @@ else if (currentMode == ShapeEditionType.Polygon)
     };
 
     private bool isAuthorized = false;
+    private bool isLoaded = false;
     [Parameter]
     public int Id { get; set; }
 
@@ -164,17 +166,22 @@ else if (currentMode == ShapeEditionType.Polygon)
 
         //if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
         //{
-           
+
         //    isAuthorized = true;
         //}
 
-        StateHasChanged();
+
 
         context = await canvas.CreateCanvas2DAsync();
         drawingEngine = new(context, canvas!);
 
         drawingEngine.Drawables.Add(selectionIndicator);
         await drawingEngine.RenderFrame();
+
+        annotationClasses = await LoadAnnotationClassesFromProject();
+
+        isLoaded = true;
+        StateHasChanged();
     }
 
     private async Task RegisterMouseDownAsync(MouseEventArgs e)
@@ -262,5 +269,12 @@ else if (currentMode == ShapeEditionType.Polygon)
     private async Task Save()
     {
         await annotationServiceProvider.SetAnnotations(0, annotationContexts.Select(x => x.Annotation).ToList());
+    }
+    
+    private async Task<List<AnnotationClass>> LoadAnnotationClassesFromProject()
+    {
+        var jobId = Id;
+        var projectId = await jobServiceProvider.GetProjectIdOfJob(jobId);
+        return await annotationServiceProvider.GetAnnotationClasses(projectId);
     }
 }
