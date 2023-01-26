@@ -361,8 +361,8 @@ else
         var annotationsToSave = annotationContexts
             .Select(x => x.Annotation)
             .Where(x => x.IsClosed);
-        annotationContexts.Clear();
         await annotationServiceProvider.SetAnnotations(imageId, annotationsToSave.ToList());
+        annotationContexts.Clear();
     }
     
     private async Task<List<AnnotationClass>> LoadAnnotationClassesFromProject()
