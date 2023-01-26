@@ -57,7 +57,7 @@ namespace JsonSerializationAndDeserializationTest
                 FlickrUrl = "http://farm1.staticflickr.com/88/xxxxxxxxxxxx.jpg"
             };
 
-            var annotation1 = new Annotation
+            var annotation1 = new AnnotationCoco
             {
                 Id = 125686,
                 ImageId = 242287,
@@ -68,7 +68,7 @@ namespace JsonSerializationAndDeserializationTest
                 Bbox = new List<double> { 19.23, 383.18, 314.5, 244.46 }
             };
 
-            var annotation2 = new Annotation
+            var annotation2 = new AnnotationCoco
             {
                 Id = 1409619,
                 ImageId = 245915,
@@ -79,7 +79,7 @@ namespace JsonSerializationAndDeserializationTest
                 Bbox = new List<double> { 399, 251, 155, 101 }
             };
 
-            var annotation3 = new Annotation
+            var annotation3 = new AnnotationCoco
             {
                 Id = 1410165,
                 ImageId = 245915,
@@ -109,7 +109,7 @@ namespace JsonSerializationAndDeserializationTest
                 Info = info,
                 //Licenses = new List<License> { license1 },
                 Images = new List<Image> { image1, image2 },
-                Annotations = new List<Annotation> { annotation1, annotation2, annotation3 },
+                Annotations = new List<AnnotationCoco> { annotation1, annotation2, annotation3 },
                 Categories = new List<Category> { catergory1, catergory2 }
             };
 

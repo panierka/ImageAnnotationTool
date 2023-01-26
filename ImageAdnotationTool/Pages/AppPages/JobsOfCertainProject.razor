@@ -10,6 +10,7 @@
 @inject ITeamServiceProvider teamServiceProvider;
 @inject IUserAccountsServiceProvider userAccountsService;
 @inject IJobsServiceProvider jobsServiceProvider;
+@inject IAnnotatedImagesServiceProvider imagesServiceProvider;
 @inject NavigationManager NavigationManager;
 
 <div class="page-after-logon">
@@ -65,7 +66,7 @@
 				<ul class="container-projects">
 					@foreach (var item in jobs)
 			{
-					<li @onclick="@(() =>NavigateToAnnotatePage(item.Id))">
+					<li @onclick="@(async () => await NavigateToAnnotatePage(item.Id))">
 						<h5 class="project-name">
 							@item.Id.ToString()
 							
@@ -185,20 +186,30 @@
 		{
 			jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(userInProjectSeat.Id);
 		}
-		
+
 		StateHasChanged();
 		isModalOpen = false;
 	}
 	private void NavigateToSettingProjectPage(int projectId)
-{
-	NavigationManager.NavigateTo($"/projectsettings/{projectId}");
-	StateHasChanged();
+	{
+		NavigationManager.NavigateTo($"/projectsettings/{projectId}");
+		StateHasChanged();
 
-}
-	private void NavigateToAnnotatePage(int jobId)
-    {
+	}
+	private async Task NavigateToAnnotatePage(int jobId)
+	{
 		//TODO: Dać dobry link
-        NavigationManager.NavigateTo($"/annotate/{jobId}");
+
+		var count = await imagesServiceProvider.GetAnnotatedImagesInProjectCount(jobId);
+
+		if (count > 0)
+		{
+			NavigationManager.NavigateTo($"/annotate/{jobId}/{0}");
+			return;
+		}
+
+		NavigationManager.NavigateTo($"upload");
+
 		StateHasChanged();
     }
 

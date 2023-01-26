@@ -1,16 +1,18 @@
 ﻿@using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 
 <div>
-
+    
     @foreach(var item in List)
     {
         <div class="square" @onclick=@(() => OnSelectAnnotation?.Invoke(item))>
             <ComboBox
                 Items="@Classes"
+                InitialSelection="@item.Class"
                 OnSelectedItemChanged="@(x => {
                         item.Class = x;
                         StateHasChanged();
                     })"
+                CustomSelectionEqualityCheck="@((a, b) => a.Id == b.Id)"
                 CustomStringConverter="@(new ComboBox<AnnotationClass>
                     .DelegatedCustomStringConverter(x => x.Name))"
                 />
@@ -28,7 +30,8 @@
     [Parameter, EditorRequired]
     public List<AnnotationClass> Classes { get; set; } = null!;
 
-    private List<Annotation> List { get; set; } = new();
+    [Parameter]
+    public List<Annotation> List { get; set; } = new();
 
     [Parameter]
     public Action<Annotation> OnAddAnnotation { get; set; }
@@ -36,9 +39,13 @@
     [Parameter]
     public Action<Annotation> OnSelectAnnotation { get; set; }
 
+    
     private void AddElement()
     {
-        var annotation = new Annotation();
+        var annotation = new Annotation()
+        {
+            Class = Classes[0]
+        };
         List.Add(annotation);
         OnAddAnnotation?.Invoke(annotation);
         StateHasChanged();

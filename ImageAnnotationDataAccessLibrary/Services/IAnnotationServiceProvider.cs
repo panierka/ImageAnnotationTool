@@ -14,5 +14,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
         public Task<List<AnnotationClass>> GetAnnotationClasses(int projectId);
 
         public Task SetAnnotations(int imageId, ICollection<Annotation> annotations);
+
+        public Task<List<Annotation>> GetAnnotations(int imageId);
     }
 }

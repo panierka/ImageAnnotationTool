@@ -11,23 +11,28 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Services
 {
-    public class AnnotatedImagesProjectDatabaseServiceProvider : IAnnotatedImagesProjectDatabaseServiceProvider
+    public class AnnotatedImagesServiceProvider : IAnnotatedImagesServiceProvider
     {
         private readonly IDbContextFactory<ImageAnnotationToolContext> dbContextFactory;
 
-        public AnnotatedImagesProjectDatabaseServiceProvider(IDbContextFactory<ImageAnnotationToolContext> dbContextFactory)
+        public AnnotatedImagesServiceProvider(IDbContextFactory<ImageAnnotationToolContext> dbContextFactory)
         {
             this.dbContextFactory = dbContextFactory;
         }
 
-        public async Task AddAnnotatedImagesAsync(IEnumerable<AnnotatedImage> images)
+        public async Task AddAnnotatedImagesAsync(IEnumerable<AnnotatedImage> images, int jobId)
         {
             using var dbContext = dbContextFactory.CreateDbContext();
 
+            var job = await dbContext.Jobs
+                .Include(x => x.AnnotatedImages)
+                .FirstOrDefaultAsync(x => x.Id == jobId);
+
             foreach(var image in images)
             {
-                await dbContext.AnnotatedImages.AddAsync(image);
+                job?.AnnotatedImages.Add(image);
             }
+            
             await dbContext.SaveChangesAsync();
         }
 
@@ -52,6 +57,20 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .Where(x => x.Job.Id == jobId)
                 .AsNoTracking()
                 .CountAsync();
+        }
+
+        public async Task<ImageData> GetImageData(int annotatedImageId)
+        {
+            using var dbContext = dbContextFactory.CreateDbContext();
+
+            var annotatedImage = await dbContext
+                .AnnotatedImages
+                .Where(x => x.Id == annotatedImageId)
+                .Include(x => x.ImageData)
+                .AsNoTracking()
+                .FirstAsync();
+
+            return annotatedImage.ImageData;
         }
     }
 }

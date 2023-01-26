@@ -4,6 +4,15 @@
     <select @oninput=HandleSelectionChange>
         @foreach (var container in itemContainers)
         {
+            if (container.Selected)
+            {
+                 <option value="@container.Id" selected>
+                    @(CustomStringConverter?.GetString(container.Item)
+                        ?? container.Item.ToString())
+                </option>
+                continue;
+            }
+
             <option value="@container.Id">
                 @(CustomStringConverter?.GetString(container.Item)
                     ?? container.Item.ToString())
@@ -14,7 +23,9 @@
 
 @code {
     [Parameter]
-    public T? SelectedItem 
+    public T? InitialSelection { get; set; }
+
+    private T? SelectedItem 
     { 
         get => selectedItem; 
         set
@@ -34,13 +45,21 @@
     [Parameter]
     public ICustomStringConverter? CustomStringConverter { get; set; }
 
+    [Parameter]
+    public Func<T, T, bool>? CustomSelectionEqualityCheck { get; set; }
+
     protected override void OnInitialized()
     {
         itemContainers = Items?
         .Zip(
             Enumerable.Range(1, Items.Count()), 
-            (x, i) => new ItemContainer(i.ToString(), x)
+            (x, i) => new ItemContainer(i.ToString(), x, InitialSelection == null 
+                ? false : CustomSelectionEqualityCheck?.Invoke(x, InitialSelection) 
+                    ?? x.Equals(InitialSelection))
         ) ?? Enumerable.Empty<ItemContainer>();
+
+        SelectedItem = InitialSelection;
+        OnSelectedItemChanged?.Invoke(SelectedItem);
     }
 
     private void HandleSelectionChange(ChangeEventArgs e)
@@ -56,7 +75,7 @@
 
     private T? selectedItem;
 
-    private record ItemContainer(string Id, T Item);
+    private record ItemContainer(string Id, T Item, bool Selected);
 
     public interface ICustomStringConverter
     {

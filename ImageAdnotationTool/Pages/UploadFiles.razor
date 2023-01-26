@@ -1,10 +1,10 @@
-﻿@page "/upload"
+﻿@page "/upload/{JobId:int}"
 @using System.Text;
 @using ImageAnnotationToolDataAccessLibrary.Models.ExifExtraction;
 @using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
 @using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;                                                                         
 @using ImageProcessing;
-@inject IAnnotatedImagesProjectDatabaseServiceProvider databaseProvider;
+@inject IAnnotatedImagesServiceProvider databaseProvider;
 @inject IImageDetailsProvider imageDetailsProvider;
 
 <PageTitle>Test wczytywania plików</PageTitle>
@@ -67,6 +67,9 @@ Wczytaj folder
         "image/jpeg"
     };
 
+    [Parameter]
+    public int JobId { get; set; }
+
     private async Task LoadFilesAsync(InputFileChangeEventArgs e)
     {
         var maxFiles = e.FileCount;
@@ -101,19 +104,6 @@ Wczytaj folder
         StateHasChanged();
     }
 
-    private Team fakeTeam;
-    private Project fakeProject;
-
-    protected override void OnInitialized()
-    {
-        fakeTeam = new();
-        fakeProject = new()
-        {
-            Name = "śmierć.",
-            Team = fakeTeam
-        };
-    }
-
     private async Task AddFilesToProjectAsync()
     {
         var annotatedImages = images.Select(i =>
@@ -121,12 +111,11 @@ Wczytaj folder
             return new AnnotatedImage
                 {
                     ImageData = i,
-                    Project = fakeProject,
                 };
         }).ToList();
 
         images.Clear();
 
-        await databaseProvider.AddAnnotatedImagesAsync(annotatedImages);
+        await databaseProvider.AddAnnotatedImagesAsync(annotatedImages, JobId);
     }
 }

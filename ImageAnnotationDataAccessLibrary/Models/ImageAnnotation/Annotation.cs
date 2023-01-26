@@ -26,5 +26,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
         public List<double> PointsY { get; set; }
 
         public bool IsClosed { get; set; }
+
+        public Annotation()
+        {
+            PointsX = new();
+            PointsY = new();
+        }
     }
 }

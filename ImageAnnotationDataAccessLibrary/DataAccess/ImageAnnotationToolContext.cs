@@ -71,14 +71,14 @@ namespace ImageAnnotationToolDataAccessLibrary.DataAccess
             modelBuilder.Entity<Annotation>()
 				.Property(e => e.PointsX)
 				.HasConversion(
-					v => string.Join(',', v),
-					v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => double.Parse(x)).ToList());
+					v => string.Join(';', v),
+					v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(x => double.Parse(x)).ToList());
 
             modelBuilder.Entity<Annotation>()
 				 .Property(e => e.PointsY)
 				 .HasConversion(
-				  v => string.Join(',', v),
-			      v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => double.Parse(x)).ToList());
+				  v => string.Join(';', v),
+			      v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(x => double.Parse(x)).ToList());
         }
 	}
 }

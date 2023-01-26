@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 {
-    public record Annotation
+    public record AnnotationCoco
     {
         public int Id { get; set; }
 

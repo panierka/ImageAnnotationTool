@@ -16,8 +16,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public virtual Job? Job { get; set; }
 
-        public virtual Project Project { get; set; }
-
         public ICollection<Annotation> Annotations { get; set; }
 
         public void SetAnnotations(params Annotation[] annotations)
@@ -28,6 +26,11 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
             {
                 Annotations.Add(a);
             }
+        }
+
+        public AnnotatedImage()
+        {
+            Annotations = new List<Annotation>();
         }
     }
 }

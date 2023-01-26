@@ -43,6 +43,21 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .ToListAsync();
         }
 
+        public async Task<List<Annotation>> GetAnnotations(int imageId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            var annotatedImage = await dbContext
+                .AnnotatedImages
+                .Include(x => x.Annotations)
+                .AsNoTracking()
+                .FirstAsync(x => x.Id == imageId);
+            
+            return annotatedImage
+                .Annotations
+                .ToList();
+        }
+
         public async Task SetAnnotations(int imageId, ICollection<Annotation> annotations)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
@@ -51,7 +66,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .AnnotatedImages
                 .FirstAsync(i => i.Id == imageId);
             
-            image.SetAnnotations(annotations.ToArray());
+            image.Annotations = annotations;
+            dbContext.Update(image);
             await dbContext.SaveChangesAsync();
         }
     }

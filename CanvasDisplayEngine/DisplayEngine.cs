@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace CanvasDisplayEngine
 {
-    public class CanvasDisplayEngine
+    public class DisplayEngine
     {
         private readonly Canvas2DContext canvasContext;
         private readonly BECanvasComponent canvas;
 
         public List<ICanvasDrawable> Drawables { get; } = new();
 
-        public CanvasDisplayEngine(Canvas2DContext canvasContext, BECanvasComponent canvas)
+        public DisplayEngine(Canvas2DContext canvasContext, BECanvasComponent canvas)
         {
             this.canvasContext = canvasContext;
             this.canvas = canvas;

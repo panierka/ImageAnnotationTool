@@ -1,4 +1,4 @@
-﻿@page "/annotate/{Id:int}"
+﻿@page "/annotate/{Id:int}/{ImageIndex:int}"
 @using AnnotationEditor;
 @using Blazor.Extensions.Canvas;
 @using Blazor.Extensions.Canvas.Canvas2D;
@@ -10,6 +10,7 @@
 @using ShapeEditing;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @using ShapeEditing.Tools;
+@using CanvasDisplayEngine;
 @inject IColorProvider colorProvider;
 @inject ITeamServiceProvider teamServiceProvider;
 @inject IProjectServiceProvider projectServiceProvider;
@@ -18,36 +19,41 @@
 @inject IUserAccountsServiceProvider userServiceProvider;
 @inject ProtectedSessionStorage sessionStorage;
 @inject IJobsServiceProvider jobServiceProvider;
+@inject IAnnotatedImagesServiceProvider imagesServiceProvider;
 
+<div class="annotate-main">
 
-    <div class="annotate-main">
         <h3 class="muted-headers">ADNOTACJA</h3>
-        @* <div class="annotate-options">
-    @if (isAuthorized)
-    {
-    <button class="btn btn-primary" >Wrzuć zdjęcia</button>
-    <button class="btn btn-primary">Poprzednie</button>
-    <button class="btn btn-primary">Następne</button>
-    //Lub comobobox ze zdjęciami
-    <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
-    //ma iśc do jobów projektu
-    <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
-    }
-    else
-    {
-    <button class="btn btn-primary">Poprzednie</button>
-    <button class="btn btn-primary">Następne</button>
-    <button class="btn btn-primary"  @onclick="@Save">Zapisz</button>
+        <div class="annotate-options">
+        @if (isAuthorized)
+        {
+            <button class="btn btn-primary">Wrzuć zdjęcia</button>
+        }
 
-    <button class="btn btn-primary"  @onclick="@Save">Wyjdź</button>
-    }
-    </div>*@
+            <button class="btn btn-primary"
+                disabled="@(IsTooLow(ImageIndex - 1))"
+                onclick="@(async () => await Navigate(ImageIndex - 1))">
+                Poprzednie
+            </button>
+            <button class="btn btn-primary"
+                disabled="@(!canGoNext)"
+                onclick="@(async () => await Navigate(ImageIndex + 1))">
+                Następne
+            </button>
+            <button class="btn btn-primary" @onclick="@Save">Zapisz</button>
+            @*<button class="btn btn-primary" @onclick="@Save">Wyjdź</button>*@
+        
+        </div>
+
         <div @onmousedown=@RegisterMouseDownAsync
          @onmouseup=@RegisterMouseUpAsync
          @onmousemove=@RegisterMouseUpdateAsync
-         style="background-image: url('@DOG');
+         style="background-image: url('@imageData.SourceBase64');
      background-repeat: no-repeat">
-            <BECanvas Width="460" Height="292" @ref="@canvas"></BECanvas>
+            <BECanvas 
+                Width="@imageData.Width" 
+                Height="@imageData.Height" 
+                @ref="@canvas"></BECanvas>
         </div>
 
         <div class="annotate-options">
@@ -71,7 +77,7 @@
             <button class="btn btn-primary" @onclick="@ResetShape">Resetuj</button>
 
             <ComboBox Items="modes"
-                  SelectedItem="currentMode"
+                  InitialSelection="currentMode"
                   OnSelectedItemChanged="@(async x => await SwitchToolset(x))"
                   T="ShapeEditionType"
                   CustomStringConverter="@(
@@ -87,12 +93,14 @@
         }
     ))" />
         </div>
-    </div>
 @if (isLoaded)
 {
     <div class="annotate-listbox">
-        <AnnotationsListBox Classes="@annotationClasses" OnAddAnnotation="@(async x => await AddAnnotationContext(x))"
-                        OnSelectAnnotation="@(async x => await SelectAnnotationContext(x))" />
+        <AnnotationsListBox 
+            Classes="@annotationClasses" 
+            List="@(annotationContexts.Select(x => x.Annotation).ToList())"
+            OnAddAnnotation="@(async x => await AddAnnotationContext(x))"
+            OnSelectAnnotation="@(async x => await SelectAnnotationContext(x))" />
 
     </div>
 }
@@ -102,12 +110,19 @@ else
         Wczytywanie...
     </div>
 }
+</div>
+
 
 @code {
-    private const string DOG = PlaceholderData.ExampleBase64s.DOG;
+    private ImageData imageData = new()
+    {
+        Width = 1,
+        Height = 1,
+    };
+    private string DOG = PlaceholderData.ExampleBase64s.DOG;
     private Canvas2DContext? context;
-    private BECanvasComponent? canvas;
-    private CanvasDisplayEngine? drawingEngine;
+    private BECanvasComponent canvas;
+    private DisplayEngine? drawingEngine;
     private AnnotationContext? currentAnnotationContext;
 
     private List<AnnotationClass> annotationClasses = new();
@@ -122,8 +137,15 @@ else
 
     private bool isAuthorized = false;
     private bool isLoaded = false;
+    private int imageId;
+
+    private bool canGoNext = false;
+
     [Parameter]
     public int Id { get; set; }
+
+    [Parameter]
+    public int ImageIndex { get; set; }
 
     private class Test
     {
@@ -152,25 +174,27 @@ else
         }
 
         var userId = userIdRequest.Value;
-        //Tutaj wywala null reference 
 
         var job = await jobServiceProvider.GetJobById(Id);
+        var teamMemberId = job.AssignedProjectMember.AssignedTeamMember.Id;
+        var projectId = await jobServiceProvider.GetProjectIdOfJob(Id);
+        var projectMemberSeat = await projectServiceProvider.GetProjectMemberLoaded(
+            teamMemberSeatId: teamMemberId,
+            projectId: projectId
+        );
 
+        if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
+        {
 
-        //var teamMemberId = job.AssignedProjectMember.AssignedTeamMember.Id;
-        //var projectId = job.Project.Id;
-        //var projectMemberSeat = await projectServiceProvider.GetProjectMemberLoaded(
-        //    teamMemberSeatId: teamMemberId,
-        //    projectId: projectId
-        //);
+            isAuthorized = true;
+        }
 
-        //if (projectMemberSeat is { Role: ProjectMemberSeat.ProjectRole.Admin })
-        //{
+        annotationClasses = await LoadAnnotationClassesFromProject();
+        var images = await imagesServiceProvider.GetAnnotatedImagesFromProject(Id, ImageIndex, 1);
+        imageId = images[0].Id;
+        imageData = await imagesServiceProvider.GetImageData(imageId);
 
-        //    isAuthorized = true;
-        //}
-
-
+        canGoNext = !(await IsTooHigh(ImageIndex + 1));
 
         context = await canvas.CreateCanvas2DAsync();
         drawingEngine = new(context, canvas!);
@@ -178,7 +202,12 @@ else
         drawingEngine.Drawables.Add(selectionIndicator);
         await drawingEngine.RenderFrame();
 
-        annotationClasses = await LoadAnnotationClassesFromProject();
+        var annotations = await annotationServiceProvider.GetAnnotations(imageId);
+
+        foreach (var annotation in annotations)
+        {
+            await AddAnnotationContext(annotation);
+        }
 
         isLoaded = true;
         StateHasChanged();
@@ -188,34 +217,54 @@ else
     {        
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
         currentAnnotationContext?.ShapeEditor?.PressTool(data);
-        await drawingEngine!.RenderFrame();
+
+        if (drawingEngine is { })
+        {
+            await drawingEngine.RenderFrame();
+        }
     }
 
     private async Task RegisterMouseUpdateAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
         currentAnnotationContext?.ShapeEditor?.MoveTool(data);
-        await drawingEngine!.RenderFrame();
+
+        if (drawingEngine is { })
+        {
+            await drawingEngine.RenderFrame();
+        }    
     }
 
     private async Task RegisterMouseUpAsync(MouseEventArgs e)
     {
         var data = new InputEventData(e.OffsetX, e.OffsetY, e.Button);
         currentAnnotationContext?.ShapeEditor?.ReleaseTool(data);
-        await drawingEngine!.RenderFrame();
+
+        if (drawingEngine is { })
+        {
+            await drawingEngine.RenderFrame();
+        }
         currentAnnotationContext?.UpdateModel();
     }
 
     private async Task Undo()
     {
         currentAnnotationContext?.ShapeEditor?.Undo();
-        await drawingEngine!.RenderFrame();
+
+        if (drawingEngine is { })
+        {
+            await drawingEngine.RenderFrame();
+        }
     }
 
     private async Task ResetShape()
     {
         currentAnnotationContext?.ShapeEditor?.ResetShape();
-        await drawingEngine!.RenderFrame();
+
+        if (drawingEngine is { })
+        {
+            await drawingEngine.RenderFrame();
+        }
     }
 
     private async Task SwitchToolset(ShapeEditionType type)
@@ -244,6 +293,17 @@ else
         var newContext = new AnnotationContext(annotation, colorProvider);
         annotationContexts.Add(newContext);
         drawingEngine!.Drawables.Add(newContext.Shape);
+
+
+        annotation
+            .PointsX
+            .Zip(annotation.PointsY, (x, y)
+                => new CanvasDisplayEngine.Point(x, y))
+            .ToList()
+            .ForEach(p => newContext.Shape.AddPoint(p));
+
+        newContext.Shape.IsClosed = annotation.IsClosed;
+
         currentAnnotationContext = newContext;
         selectionIndicator.Shape = currentAnnotationContext.Shape;
 
@@ -268,13 +328,34 @@ else
 
     private async Task Save()
     {
-        await annotationServiceProvider.SetAnnotations(0, annotationContexts.Select(x => x.Annotation).ToList());
+        await annotationServiceProvider.SetAnnotations(imageId, annotationContexts.Select(x => x.Annotation).ToList());
     }
-    
+
     private async Task<List<AnnotationClass>> LoadAnnotationClassesFromProject()
     {
         var jobId = Id;
         var projectId = await jobServiceProvider.GetProjectIdOfJob(jobId);
         return await annotationServiceProvider.GetAnnotationClasses(projectId);
+    }
+
+    private async Task Navigate(int index)
+    {
+        if (IsTooLow(index) || await IsTooHigh(index))
+        {
+            return;
+        }
+
+        NavigationManager.NavigateTo($"/annotate/{Id}/{index}", forceLoad:true);
+    }
+
+    private bool IsTooLow(int index)
+    {
+        return index < 0;
+    }
+
+    private async Task<bool> IsTooHigh(int index)
+    {
+        var count = await imagesServiceProvider.GetAnnotatedImagesInProjectCount(Id);
+        return index >= count;
     }
 }

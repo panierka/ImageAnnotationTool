@@ -15,7 +15,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 
         public List<Image> Images { get; set; }
 
-        public List<Annotation> Annotations { get; set; }
+        public List<AnnotationCoco> Annotations { get; set; }
 
         public List<Category> Categories { get; set; }
 

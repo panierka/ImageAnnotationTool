@@ -125,16 +125,16 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 
 			return returnBbox;
 		}
-		public static List<Annotation> CreateAnnotationsOfImage(AnnotatedImage annotatedImage)
+		public static List<AnnotationCoco> CreateAnnotationsOfImage(AnnotatedImage annotatedImage)
 		{
 			var annotationsOfImage = annotatedImage.Annotations;
-			var annotations = new List<Annotation>();
+			var annotations = new List<AnnotationCoco>();
 
 			foreach (var annotation in annotationsOfImage)
 			{
 				var points = annotation.PointsX.Zip(annotation.PointsY, (x, y) => new Point(x, y)).ToList();
 				var segmentation = new List<List<double>> { CreateSegmentation(points) };
-				var returnAnnotation = new Annotation()
+				var returnAnnotation = new AnnotationCoco()
 				{
 					Id = annotatedImage.Id,
 					CategoryId = annotation.Class.Id,
@@ -148,9 +148,9 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 			}
 			return annotations;
 		}
-		public static List<Annotation> CreateAnnotations(List<AnnotatedImage> annotatedImages)
+		public static List<AnnotationCoco> CreateAnnotations(List<AnnotatedImage> annotatedImages)
 		{
-			var annotations = new List<Annotation>();
+			var annotations = new List<AnnotationCoco>();
 			var images = annotatedImages;
 			foreach (var image in images)
 			{
