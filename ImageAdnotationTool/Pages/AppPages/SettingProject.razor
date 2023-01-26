@@ -236,6 +236,12 @@
             var userAddId = await userServiceProvider.GetUserAccountId(userAddForm.NewName);
             var teamId = (await projectServiceProvider.GetProjectById(Id)).Team.Id;
             var teamMemberSeat = await teamServiceProvider.GetTeamMember(userAddId.Value,teamId );
+
+            if (teamMemberSeat is null)
+            {
+                return;
+            }
+
             var ifAlreadyInTeam = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
 
             if(ifAlreadyInTeam is not { })

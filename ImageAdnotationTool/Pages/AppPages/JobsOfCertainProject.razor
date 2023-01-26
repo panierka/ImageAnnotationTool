@@ -86,22 +86,26 @@
 						</h5>
 					</li>
 			}
-				@if(classCount == 0)
+					@if(projectMemberSeat.Role == ProjectMemberSeat.ProjectRole.Admin)
 					{
-						<li>
-							<h5 class="project-name">
-								Najpierw zdefiniuj klasy.
-							</h5>						
-						</li>
+						@if (classCount == 0)
+						{
+							<li>
+								<h5 class="project-name">
+									Najpierw zdefiniuj klasy.
+								</h5>
+							</li>
+						}
+						else
+						{
+							<li @onclick="@ShowModal">
+								<h5 class="project-name">
+									Dodaj nową pracę +
+								</h5>
+							</li>
+						}
 					}
-					else
-					{
-					<li @onclick="@ShowModal">
-						<h5 class="project-name">
-							Dodaj nową pracę +
-						</h5>
-					</li>
-					}
+
 				</ul>
 
 
@@ -165,7 +169,8 @@
 		);
 
 		var userInProjectSeat = await projectServiceProvider.GetProjectMember(teamMemberSeat.Id, Id);
-		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(userInProjectSeat.Id);
+
+		jobs = await LoadJobsForUserRole(projectMemberSeat);
 
 		isAuthorized =true;
 
@@ -173,6 +178,16 @@
 		classCount = classes.Count;
 
 		StateHasChanged();
+	}
+
+	private async Task<List<Job>> LoadJobsForUserRole(ProjectMemberSeat seat)
+	{
+		return seat.Role switch
+		{
+			ProjectMemberSeat.ProjectRole.User => await jobsServiceProvider.GetJobsOfProjectMemeber(seat.Id),
+			ProjectMemberSeat.ProjectRole.Admin => await jobsServiceProvider.GetJobsOfProject(Id),
+			_ => throw new Exception()
+		};
 	}
 
 
@@ -206,7 +221,18 @@
 		}
 
 		var invitedAnnotatorTeamSeat = await teamServiceProvider.GetTeamMember(accountIdRequest.Value, teamId);
+
+		if (invitedAnnotatorTeamSeat is null)
+		{
+			return;
+		}
+
 		var userInProjectSeat = await projectServiceProvider.GetProjectMember(invitedAnnotatorTeamSeat.Id, Id);
+
+		if (userInProjectSeat is null)
+		{
+			return;
+		}
 
 		Job job = new() { AssignedProjectMember = userInProjectSeat };
 
