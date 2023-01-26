@@ -162,17 +162,19 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 		}
 
 		//Category
-		public static List<Category> CreateCategories(AnnotatedImage annotatedImage)
+		public static List<Category> CreateCategories(List<AnnotatedImage> annotatedImages)
 		{
-			var annotationClasses = annotatedImage.Annotations;
+			var annotations = annotatedImages
+				.SelectMany(x => x.Annotations)
+				.DistinctBy(x => x.Class.Id);
 			var categories = new List<Category>();
-			foreach (var annotationClass in annotationClasses)
+			foreach (var annotation in annotations)
 			{
 				var category = new Category()
 				{
 					Supercategory = "",
-					Id = annotationClass.Class.Id,
-					Name = annotationClass.Class.Name
+					Id = annotation.Class.Id,
+					Name = annotation.Class.Name
 				};
 				categories.Add(category);
 			}
@@ -198,6 +200,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 				Info = CreateInfo(team),
 				Images = CreateImages(annotatedImages),
 				Annotations = CreateAnnotations(annotatedImages),
+				Categories = CreateCategories(annotatedImages),
 				Exifs = CreateExifs(annotatedImages)
 			};
             
