@@ -1,28 +1,46 @@
 ﻿@page "/charts/{Id:int}"
 
+@using AnnotationEditor;
 @using ChartJs.Blazor.PieChart;
 @using ChartJs.Blazor;
 
 @using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
-@inject IAnnotatedImagesServiceProvider imagesProvider;
-
-@if (isConnected)
-{
-    <Chart Config="classesPieChartConfig" @ref="@classesPieChart"></Chart>
-}
+@inject IProjectServiceProvider projectServiceProvider;
+@inject IAnnotationServiceProvider annotationServiceProvider;
+@inject IColorProvider colorProvider;
 
 
+<Chart 
+    Config="classesPieChartConfig" 
+    @ref=pieChart></Chart>
+
+    
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    private List<AnnotatedImage> AnnotatedImages { get; set; }
 
-    private PieConfig classesPieChartConfig;
-    private Chart classesPieChart;
+    private PieConfig classesPieChartConfig = null!;
+    private Chart pieChart = null!;
 
     private bool isConnected;
 
+    protected override void OnInitialized()
+    {
+        classesPieChartConfig = new PieConfig
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Udział klas wykorzystanych w projekcie"
+                }
+            }
+        };
+    }
+    
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
@@ -30,32 +48,36 @@
             return;
         }
 
-        var imageCount = await imagesProvider.GetAnnotatedImagesInProjectCount(Id);
-        AnnotatedImages = await imagesProvider.GetAnnotatedImagesFromProject(Id, 0, imageCount);
+        var annotatedImages = await projectServiceProvider.GetAllAnnotatedImagesFromProject(Id);
+        var annotations = annotatedImages.SelectMany(x => x.Annotations);
+        var classCounts = annotations
+            .GroupBy(x => x.Class.Name)
+            .Select(group => new ClassCount(group.Key, group.Count()))
+            .ToList();
 
-        classesPieChartConfig = new PieConfig
-            {
-                Options = new PieOptions
-                {
-                    Responsive = true,
-                    Title = new OptionsTitle
-                    {
-                        Display = true,
-                        Text = "ChartJs.Blazor Pie Chart"
-                    }
-                }
-            };
-
-        PieDataset<int> dataset = new PieDataset<int>();
-
-        classesPieChartConfig.Data.Datasets.Add(dataset);
-
-        foreach (var element in new string[] { "Red", "Orange", "Yellow", "Green", "Blue" })
+        foreach (var name in classCounts.Select(x => x.Name))
         {
-            classesPieChartConfig.Data.Labels.Add(element);
+            classesPieChartConfig.Data.Labels.Add(name);
         }
 
-        await classesPieChart.Update();
-        isConnected = true;
+        var colors = new string[classCounts.Count];
+        for(int i = 0; i < classCounts.Count; i++)
+        {
+            var color = colorProvider.GetNextColor();
+            colors[i] = $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+        }
+
+        var dataset = new PieDataset<int>(classCounts
+            .Select(x => x.Count)
+            .ToArray())
+        {
+            BackgroundColor = colors
+        };
+
+        classesPieChartConfig.Data.Datasets.Add(dataset);
+        await pieChart.Update();
+        StateHasChanged();
     }
+    
+    private record ClassCount(string Name, int Count);
 }

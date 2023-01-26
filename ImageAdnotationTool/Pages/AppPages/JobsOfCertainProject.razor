@@ -50,9 +50,15 @@
 			</nav>
 			
 			<div>
+				<button onclick="@(() => NavigationManager
+						.NavigateTo($"/charts/{Id}"))">
+					Statystyki projektu
+				</button>
+				<br />
+				<br />
 				<button onclick="@(() => DownloadCocoJson())">
 					Pobierz plik COCO
-				</button>
+				</button>		
 			</div>
 
 			<div class="main-container">
