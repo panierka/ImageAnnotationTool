@@ -192,10 +192,14 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             var project = await dbContext
                 .Projects
                 .Include(x => x.Jobs)
-                .ThenInclude(x => x.AnnotatedImages)
-                .ThenInclude(x => x.ImageData)
-                .ThenInclude(x => x.Exif)
-                .AsNoTrackingWithIdentityResolution()
+                    .ThenInclude(x => x.AnnotatedImages)
+                    .ThenInclude(x => x.ImageData)
+                    .ThenInclude(x => x.Exif)
+                .Include(x => x.Jobs)
+				    .ThenInclude(x => x.AnnotatedImages)
+					.ThenInclude(x => x.Annotations)
+                    .ThenInclude(x => x.Class)
+				.AsNoTrackingWithIdentityResolution()
                 .FirstOrDefaultAsync(x => x.Id == projectId);
 
             var annotatedImages = project?
