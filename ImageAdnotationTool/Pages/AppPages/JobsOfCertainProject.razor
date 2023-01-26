@@ -48,6 +48,12 @@
 					<_leftMenu/>
 
 			</nav>
+			
+			<div>
+				<button onclick="@(() => DownloadCocoJson())">
+					Pobierz plik COCO
+				</button>
+			</div>
 
 			<div class="main-container">
 
@@ -207,11 +213,16 @@
 			NavigationManager.NavigateTo($"/annotate/{jobId}/{0}");
 			return;
 		}
-		
+
 		NavigationManager.NavigateTo($"/upload/{jobId}");
 
 		StateHasChanged();
-    }
+	}
+
+	private void DownloadCocoJson()
+	{
+		NavigationManager.NavigateTo($"/download/{Id}", true);
+	}
 
 	//TODO: Przy usuwaniu projektu jest aktywne odwołanie do niego może jakoś autoamtycznie odświeżyć stornę, zeby z tego wyjść
 

@@ -10,25 +10,40 @@ namespace ImageAnnotationTool.Pages
 {
 	public class DownloadModel : PageModel
 	{
-		private readonly IWebHostEnvironment _env;
-		//private readonly Coco _cocoService;
-		private readonly int _projectId;
+		private readonly IWebHostEnvironment env;
+		private readonly IProjectServiceProvider projectServiceProvider;
 
-		public DownloadModel(IWebHostEnvironment env, int projectId)
+		public DownloadModel(IWebHostEnvironment env, IProjectServiceProvider projectServiceProvider)
 		{
-			_env = env;
-			//_cocoService = coco;
-			_projectId = projectId;
+			this.env = env;
+			this.projectServiceProvider = projectServiceProvider;
 		}
-		public async Task<IActionResult> OnGetAsync()
+        
+        public async Task<IActionResult> OnGetAsync(int? projectId)
 		{
-			//var projectServiceProvider = new ProjectServiceProvider();
-			var coco = new Coco();
+			if (projectId is not int id)
+			{
+				return new NotFoundResult();
+			}
+            
+            var annotatedImages = await projectServiceProvider.GetAllAnnotatedImagesFromProject(id);
+			var project = await projectServiceProvider.GetProjectById(id);
+
+			if (project is null)
+			{
+				return new NotFoundResult();
+			}
+
+			var team = project.Team;
+
+			var coco = CocoCreator.CreateCoco(team, annotatedImages);
 			var serialization = new JsonSerialization<Coco>();
 			var jsonstr = serialization.Serialize(coco);
-			byte[] byteArray = System.Text.ASCIIEncoding.ASCII.GetBytes(jsonstr);
+			byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(jsonstr);
 
-			return File(byteArray, "application/force-download", "coco.json");
+			var name = $"{project.Name}-COCO"; 
+
+			return File(byteArray, "application/force-download", $"{name}.json");
 		}
 	}
 }

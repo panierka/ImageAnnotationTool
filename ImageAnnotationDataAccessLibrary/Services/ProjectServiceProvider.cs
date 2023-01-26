@@ -184,5 +184,26 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 				.AsNoTracking()
 				.FirstOrDefaultAsync();
 		}
-	}
+
+        public async Task<List<AnnotatedImage>> GetAllAnnotatedImagesFromProject(int projectId)
+        {
+            using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+            var project = await dbContext
+                .Projects
+                .Include(x => x.Jobs)
+                .ThenInclude(x => x.AnnotatedImages)
+                .ThenInclude(x => x.ImageData)
+                .ThenInclude(x => x.Exif)
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefaultAsync(x => x.Id == projectId);
+
+            var annotatedImages = project?
+                .Jobs
+                .SelectMany(x => x.AnnotatedImages)
+                .ToList();
+            
+            return annotatedImages ?? new();
+        }
+    }
 }

@@ -191,7 +191,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 		}
 
 		//Coco
-		public static void CreateCoco(Team team, List<AnnotatedImage> annotatedImages)
+		public static Coco CreateCoco(Team team, List<AnnotatedImage> annotatedImages)
 		{
 			var coco = new Coco()
 			{
@@ -200,6 +200,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation.Coco
 				Annotations = CreateAnnotations(annotatedImages),
 				Exifs = CreateExifs(annotatedImages)
 			};
+            
+            return coco;
 		}
 	}
 }

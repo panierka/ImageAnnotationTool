@@ -1,4 +1,5 @@
-﻿﻿using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
+﻿using ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation;
+using ImageAnnotationToolDataAccessLibrary.Models.TeamManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,5 +37,6 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
         public Task SetProjectMembersRole(int teamMemberId, int projectId, ProjectMemberSeat.ProjectRole role);
 
+        public Task<List<AnnotatedImage>> GetAllAnnotatedImagesFromProject(int projectId);
 	}
 }
