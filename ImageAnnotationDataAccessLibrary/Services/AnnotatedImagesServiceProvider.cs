@@ -42,7 +42,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
             return await dbContext.AnnotatedImages
                 .Where(x => x.Job.Id == jobId)
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Skip(startIndex)
                 .Take(amount)
                 .ToListAsync();
@@ -55,7 +55,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             return await dbContext
                 .AnnotatedImages
                 .Where(x => x.Job.Id == jobId)
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .CountAsync();
         }
 
@@ -67,7 +67,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
                 .AnnotatedImages
                 .Where(x => x.Id == annotatedImageId)
                 .Include(x => x.ImageData)
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .FirstAsync();
 
             return annotatedImage.ImageData;

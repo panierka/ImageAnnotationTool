@@ -79,12 +79,12 @@ namespace ShapeEditing.Tools
 
             currentMovements!.ForEach(data =>
             {
-                if (Math.Abs(data.StartingX - startingX) < 5)
+                if (Math.Abs(data.StartingX - startingX) < 0.1)
                 {
                     data.Point.X += dx;
                 }
 
-                if (Math.Abs(data.StartingY - startingY) < 5)
+                if (Math.Abs(data.StartingY - startingY) < 0.1)
                 {
                     data.Point.Y += dy;
                 }

@@ -39,20 +39,20 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
             return await dbContext
                 .AnnotationClasses
                 .Where(x => x.ParentProject.Id == projectId)
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .ToListAsync();
         }
 
         public async Task<List<Annotation>> GetAnnotations(int imageId)
         {
             using var dbContext = await dbContextFactory.CreateDbContextAsync();
-
             var annotatedImage = await dbContext
                 .AnnotatedImages
                 .Include(x => x.Annotations)
-                .AsNoTracking()
+                .ThenInclude(x => x.Class)
+                .AsNoTrackingWithIdentityResolution()
                 .FirstAsync(x => x.Id == imageId);
-            
+
             return annotatedImage
                 .Annotations
                 .ToList();
@@ -64,6 +64,7 @@ namespace ImageAnnotationToolDataAccessLibrary.Services
 
             var image = await dbContext
                 .AnnotatedImages
+                .AsNoTrackingWithIdentityResolution()
                 .FirstAsync(i => i.Id == imageId);
             
             image.Annotations = annotations;

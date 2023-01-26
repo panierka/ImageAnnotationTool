@@ -10,7 +10,7 @@
 @using ShapeEditing;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 @using ShapeEditing.Tools;
-@using CanvasDisplayEngine;
+
 @inject IColorProvider colorProvider;
 @inject ITeamServiceProvider teamServiceProvider;
 @inject IProjectServiceProvider projectServiceProvider;
@@ -44,7 +44,7 @@
             @*<button class="btn btn-primary" @onclick="@Save">Wyjdź</button>*@
         
         </div>
-
+        <br />
         <div @onmousedown=@RegisterMouseDownAsync
          @onmouseup=@RegisterMouseUpAsync
          @onmousemove=@RegisterMouseUpdateAsync
@@ -351,6 +351,7 @@ else
             return;
         }
 
+        await Save();
         NavigationManager.NavigateTo($"/annotate/{Id}/{index}", forceLoad:true);
     }
 
