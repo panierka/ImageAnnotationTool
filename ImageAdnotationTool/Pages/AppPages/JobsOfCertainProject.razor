@@ -207,8 +207,8 @@
 			NavigationManager.NavigateTo($"/annotate/{jobId}/{0}");
 			return;
 		}
-
-		NavigationManager.NavigateTo($"upload");
+		
+		NavigationManager.NavigateTo($"/upload/{jobId}");
 
 		StateHasChanged();
     }

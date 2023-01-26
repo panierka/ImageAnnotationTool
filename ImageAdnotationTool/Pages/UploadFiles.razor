@@ -9,7 +9,7 @@
 
 <PageTitle>Test wczytywania plików</PageTitle>
 
-<h1>Naciśnij, aby wczytać</h1>
+@*<h1>Naciśnij, aby wczytać</h1>
 <form>
   <fieldset>
     <div class="form-group">
@@ -17,46 +17,52 @@
       <input class="form-control" type="file" id="formFile">
     </div>
     </fieldset>
-</form>
-<button 
-    class ="btn btn-primary"
-    @onclick="@AddFilesToProjectAsync">
+</form>*@
 
-    Prześlij wybrane pliki do projektu
-</button>
-<br />
-<br />
+<div style="max-width: 500px;
+  margin: auto;">
+    <InputFile OnChange="@LoadFilesAsync"
+               multiple
+               accept=".png,.jpg,.jpeg" />
+    Wczytaj pliki
+    <br />
+    <InputFile OnChange="@LoadFilesAsync"
+               multiple
+               webkitdirectory />
+    Wczytaj folder
+    <br />
 
-<InputFile OnChange="@LoadFilesAsync"
-    multiple
-    accept=".png,.jpg,.jpeg"/>
-Wczytaj pliki
-<br />
-<InputFile OnChange="@LoadFilesAsync"
-    multiple
-    webkitdirectory/>
-Wczytaj folder
+    <button class="btn btn-primary"
+            @onclick="@AddFilesToProjectAsync">
 
-@if (images is {})
-{
-    <table>
-    @for (int i = 0; i < images.Count; i += 3)
+        Prześlij wybrane pliki do projektu
+    </button>
+    <br />
+    <br />
+
+    @if (images is { })
     {
-        <tr>
-            @for (int j = 0; j < 3 && i + j < images.Count; j++)
+        <table>
+            @for (int i = 0; i < images.Count; i += 3)
             {
-                var image = images[i + j];
-                <td>                      
-                    <img src=@image.SourceBase64
-                         alt=@image.Name
-                         title=@image.Name
-                         style="width: 300px; height: auto"/>
-                </td>
+                <tr>
+                    @for (int j = 0; j < 3 && i + j < images.Count; j++)
+                    {
+                        var image = images[i + j];
+                        <td style="width:250px; height:250px">
+                            <img src=@image.SourceBase64
+                             alt=@image.Name
+                             title=@image.Name
+                     align="middle"
+                     style="max-height:100%; max-width:100%" />
+                        </td>
+                    }
+                </tr>
             }
-        </tr>
+        </table>
     }
-    </table>
-}
+</div>
+
 
 @code{
     private List<ImageData> images = new();

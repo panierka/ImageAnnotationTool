@@ -27,7 +27,10 @@
         <div class="annotate-options">
         @if (isAuthorized)
         {
-            <button class="btn btn-primary">Wrzuć zdjęcia</button>
+            <button class="btn btn-primary"
+            @onclick="@NavigateToUpload">
+                Wrzuć zdjęcia
+            </button>
         }
 
             <button class="btn btn-primary"
@@ -364,5 +367,10 @@ else
     {
         var count = await imagesServiceProvider.GetAnnotatedImagesInProjectCount(Id);
         return index >= count;
+    }
+    
+    private void NavigateToUpload()
+    {
+        NavigationManager.NavigateTo($"/upload/{Id}", true);
     }
 }
