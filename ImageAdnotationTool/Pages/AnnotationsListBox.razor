@@ -39,9 +39,14 @@
     [Parameter]
     public Action<Annotation> OnSelectAnnotation { get; set; }
 
-    
+
     private void AddElement()
     {
+        if (Classes.Count == 0)
+        {
+            return;
+        }
+
         var annotation = new Annotation()
         {
             Class = Classes[0]

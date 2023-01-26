@@ -52,11 +52,15 @@
          @onmouseup=@RegisterMouseUpAsync
          @onmousemove=@RegisterMouseUpdateAsync
          style="background-image: url('@imageData.SourceBase64');
-     background-repeat: no-repeat">
+        width: @sizeX;
+        height: @sizeY;
+        background-size: contain;
+        background-repeat: no-repeat;
+        ">
             <BECanvas 
-                Width="@imageData.Width" 
-                Height="@imageData.Height" 
-                @ref="@canvas"></BECanvas>
+                Width="@sizeX"
+                  Height="@sizeY"
+                  @ref="@canvas"></BECanvas>
         </div>
 
         <div class="annotate-options">
@@ -122,6 +126,15 @@ else
         Width = 1,
         Height = 1,
     };
+
+    private const int MAX_CANVAS_SIZE_X = 736;
+    private const int MAX_CANVAS_SIZE_Y = 414;
+
+    private int sizeX;
+    private int sizeY;
+
+    private double scalar = 1;
+
     private string DOG = PlaceholderData.ExampleBase64s.DOG;
     private Canvas2DContext? context;
     private BECanvasComponent canvas;
@@ -207,6 +220,14 @@ else
 
         var annotations = await annotationServiceProvider.GetAnnotations(imageId);
 
+        scalar = Math.Min(
+            (double)MAX_CANVAS_SIZE_X / imageData.Width,
+            (double)MAX_CANVAS_SIZE_Y / imageData.Height
+        );
+
+        sizeX = (int)Math.Floor(imageData.Width * scalar);
+        sizeY = (int)Math.Floor(imageData.Height * scalar);
+
         foreach (var annotation in annotations)
         {
             await AddAnnotationContext(annotation);
@@ -247,7 +268,7 @@ else
         {
             await drawingEngine.RenderFrame();
         }
-        currentAnnotationContext?.UpdateModel();
+        currentAnnotationContext?.UpdateModel(scalar);
     }
 
     private async Task Undo()
@@ -306,7 +327,7 @@ else
         annotation
             .PointsX
             .Zip(annotation.PointsY, (x, y)
-                => new CanvasDisplayEngine.Point(x, y))
+                => new CanvasDisplayEngine.Point(x * scalar, y * scalar))
             .ToList()
             .ForEach(p => newContext.Shape.AddPoint(p));
 
@@ -318,7 +339,7 @@ else
         var shapeType = (ShapeEditionType)annotation.ShapeType;
         currentMode = shapeType;
         newContext.Mode = shapeType;
-
+        newContext.ToolsetHandler.EquipToolset(shapeType);
         StateHasChanged();
         await drawingEngine.RenderFrame();
     }
@@ -337,9 +358,13 @@ else
 
     private async Task Save()
     {
-        await annotationServiceProvider.SetAnnotations(imageId, annotationContexts.Select(x => x.Annotation).ToList());
+        var annotationsToSave = annotationContexts
+            .Select(x => x.Annotation)
+            .Where(x => x.IsClosed);
+        annotationContexts.Clear();
+        await annotationServiceProvider.SetAnnotations(imageId, annotationsToSave.ToList());
     }
-
+    
     private async Task<List<AnnotationClass>> LoadAnnotationClassesFromProject()
     {
         var jobId = Id;

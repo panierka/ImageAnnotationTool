@@ -11,6 +11,7 @@
 @inject IUserAccountsServiceProvider userAccountsService;
 @inject IJobsServiceProvider jobsServiceProvider;
 @inject IAnnotatedImagesServiceProvider imagesServiceProvider;
+@inject IAnnotationServiceProvider annotationServiceProvider;
 @inject NavigationManager NavigationManager;
 
 <div class="page-after-logon">
@@ -85,11 +86,22 @@
 						</h5>
 					</li>
 			}
+				@if(classCount == 0)
+					{
+						<li>
+							<h5 class="project-name">
+								Najpierw zdefiniuj klasy.
+							</h5>						
+						</li>
+					}
+					else
+					{
 					<li @onclick="@ShowModal">
 						<h5 class="project-name">
 							Dodaj nową pracę +
 						</h5>
 					</li>
+					}
 				</ul>
 
 
@@ -119,6 +131,8 @@
 
 	private bool isAuthorized = false;
 	private int teamId;
+
+	private int classCount;
 
 	protected async override Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -154,6 +168,10 @@
 		jobs = await jobsServiceProvider.GetJobsOfProjectMemeber(userInProjectSeat.Id);
 
 		isAuthorized =true;
+
+		var classes = await annotationServiceProvider.GetAnnotationClasses(Id);
+		classCount = classes.Count;
+
 		StateHasChanged();
 	}
 

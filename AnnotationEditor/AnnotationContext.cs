@@ -60,10 +60,10 @@ namespace AnnotationEditor
             Shape.Color = color;
         }
 
-        public void UpdateModel()
+        public void UpdateModel(double scalar = 1)
         {
-            annotation.PointsX = Shape.Points.Select(p => p.X).ToList();
-            annotation.PointsY = Shape.Points.Select(p => p.Y).ToList();
+            annotation.PointsX = Shape.Points.Select(p => p.X / scalar).ToList();
+            annotation.PointsY = Shape.Points.Select(p => p.Y / scalar).ToList();
             annotation.IsClosed = Shape.IsClosed;
         }
     }
