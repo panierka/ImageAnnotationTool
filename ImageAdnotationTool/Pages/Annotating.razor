@@ -362,9 +362,9 @@ else
             .Select(x => x.Annotation)
             .Where(x => x.IsClosed);
         await annotationServiceProvider.SetAnnotations(imageId, annotationsToSave.ToList());
-        annotationContexts.Clear();
+
     }
-    
+
     private async Task<List<AnnotationClass>> LoadAnnotationClassesFromProject()
     {
         var jobId = Id;
@@ -380,6 +380,7 @@ else
         }
 
         await Save();
+        annotationContexts.Clear();
         NavigationManager.NavigateTo($"/annotate/{Id}/{index}", forceLoad:true);
     }
 
