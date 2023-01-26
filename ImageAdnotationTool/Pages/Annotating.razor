@@ -275,6 +275,11 @@ else
 
         if (currentAnnotationContext is { })
         {
+            currentAnnotationContext.Annotation.ShapeType = (int)type;
+        }
+
+        if (currentAnnotationContext is { })
+        {
             currentAnnotationContext.Mode = type;
         }
 
@@ -307,8 +312,9 @@ else
         currentAnnotationContext = newContext;
         selectionIndicator.Shape = currentAnnotationContext.Shape;
 
-        currentMode = ShapeEditionType.Rectangle;
-        newContext.Mode = ShapeEditionType.Rectangle;
+        var shapeType = (ShapeEditionType)annotation.ShapeType;
+        currentMode = shapeType;
+        newContext.Mode = shapeType;
 
         StateHasChanged();
         await drawingEngine.RenderFrame();

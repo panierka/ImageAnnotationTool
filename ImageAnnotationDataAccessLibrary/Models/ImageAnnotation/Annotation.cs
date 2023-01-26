@@ -27,6 +27,8 @@ namespace ImageAnnotationToolDataAccessLibrary.Models.ImageAnnotation
 
         public bool IsClosed { get; set; }
 
+        public int ShapeType { get; set; }
+
         public Annotation()
         {
             PointsX = new();
